@@ -6,31 +6,58 @@
 <style>
 body { font-family: Arial; background:black; color:white; text-align:center; padding:20px;}
 .card { background:#111; border:1px solid red; border-radius:12px; padding:15px; margin:10px;}
+input { padding:10px; margin:5px; width:80%; }
 button { background:red; color:white; padding:10px; border:none; border-radius:8px;}
-input { padding:8px; width:80%; }
 </style>
 </head>
 <body>
+
 <h1 style="color:red;">RailCrew Pro</h1>
-<p>Track your runs, delays, and pay</p>
+<p>Track runs, delays, and pay</p>
 
 <div class="card">
-<h3>Add Entry</h3>
-<input id="hours" placeholder="Hours worked"><br><br>
-<button onclick="add()">Add</button>
+<h3>Add Run</h3>
+
+<input id="train" placeholder="Train Number"><br>
+<input id="report" type="time"><br>
+<input id="release" type="time"><br>
+<input id="delay" placeholder="Delay (minutes)"><br><br>
+
+<button onclick="addRun()">Add Run</button>
 </div>
 
 <div class="card">
-<h3>Total Hours</h3>
-<p id="total">0</p>
+<h3>Totals</h3>
+<p>Hours: <span id="hours">0</span></p>
+<p>Pay: $<span id="pay">0</span></p>
 </div>
 
 <script>
-let total = 0;
-function add(){
- let h = Number(document.getElementById('hours').value || 0);
- total += h;
- document.getElementById('total').innerText = total.toFixed(2);
+let totalHours = 0;
+let payRate = 26.69;
+
+function timeToHours(time) {
+  let [h, m] = time.split(":");
+  return parseInt(h) + (m/60);
+}
+
+function addRun() {
+  let report = document.getElementById("report").value;
+  let release = document.getElementById("release").value;
+  let delay = Number(document.getElementById("delay").value || 0)/60;
+
+  let hours = timeToHours(release) - timeToHours(report);
+
+  if (hours < 0) hours += 24;
+
+  hours += delay;
+
+  totalHours += hours;
+
+  let pay = totalHours * payRate;
+
+  document.getElementById("hours").innerText = totalHours.toFixed(2);
+  document.getElementById("pay").innerText = pay.toFixed(2);
 }
 </script>
 
