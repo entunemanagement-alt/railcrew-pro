@@ -1,0 +1,250 @@
+import React, { useEffect, useMemo, useState } from 'react'; import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'; import { Button } from '@/components/ui/button'; import { Input } from '@/components/ui/input'; import { Label } from '@/components/ui/label'; import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'; import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'; import { Lock, Smartphone, Download, TrainFront, ShieldCheck, DollarSign, Clock3, Receipt, Wifi, TrendingUp, Plus, Trash2 } from 'lucide-react';
+
+const HOURLY_RATE = 26.69; const EARLY_CODES = ['EARLY10', 'CREW10'];
+
+const SAMPLE_ENTRIES = [ { id: 1, date: '2026-03-19', train: '0056 / 0177', onDuty: '10:33', offDuty: '21:52', scheduledHours: 11.32, actualHours: 11.32, payDate: '2026-04-10', pay: 302.13, notes: 'Day 1', legs: [ { id: '1a', train: '0056', onDuty: '10:33', offDuty: '19:01', hours: 8.47 }, { id: '1b', train: '0177', onDuty: '19:01', offDuty: '21:52', hours: 2.85 }, ], }, { id: 2, date: '2026-03-21', train: '0152 / 0065', onDuty: '11:13', offDuty: '23:02', scheduledHours: 11.82, actualHours: 11.82, payDate: '2026-04-10', pay: 315.48, notes: 'Day 3', legs: [ { id: '2a', train: '0152', onDuty: '11:13', offDuty: '16:28', hours: 5.25 }, { id: '2b', train: '0065', onDuty: '16:28', offDuty: '23:02', hours: 6.57 }, ], }, ];
+
+function parseHours(onDuty: string, offDuty: string) { if (!onDuty || !offDuty) return 0; const start = new Date(2026-01-01T${onDuty}); let end = new Date(2026-01-01T${offDuty}); if (end < start) end = new Date(2026-01-02T${offDuty}); return (end.getTime() - start.getTime()) / 3600000; }
+
+function money(value: number) { return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value || 0); }
+
+function hours(value: number) { return Number(value || 0).toFixed(2); }
+
+type Leg = { id: string; train: string; onDuty: string; offDuty: string; hours?: number; };
+
+type Entry = { id: number | string; date: string; train: string; onDuty: string; offDuty: string; scheduledHours: number; actualHours: number; payDate: string; pay: number; notes?: string; legs: Leg[]; };
+
+export default function App() { const [isPro, setIsPro] = useState(false); const [code, setCode] = useState(''); const [installPrompt, setInstallPrompt] = useState<any>(null); const [installMessage, setInstallMessage] = useState(''); const [entries, setEntries] = useState<Entry[]>(SAMPLE_ENTRIES); const [delayMinutes, setDelayMinutes] = useState(''); const [actualRelease, setActualRelease] = useState(''); const [notes, setNotes] = useState(''); const [form, setForm] = useState({ date: '', scheduledHours: '' }); const [legs, setLegs] = useState<Leg[]>([{ id: crypto.randomUUID(), train: '', onDuty: '', offDuty: '' }]);
+
+useEffect(() => { const handler = (e: any) => { e.preventDefault(); setInstallPrompt(e); }; window.addEventListener('beforeinstallprompt', handler); return () => window.removeEventListener('beforeinstallprompt', handler); }, []);
+
+const handleInstall = async () => { const isIphone = /iPhone|iPad|iPod/i.test(window.navigator.userAgent); if (installPrompt) { installPrompt.prompt(); await installPrompt.userChoice; setInstallMessage('Install prompt opened on this device.'); return; } if (isIphone) { setInstallMessage('On iPhone: open in Safari, tap Share, then Add to Home Screen.'); return; } setInstallMessage('On Android: use Chrome menu and tap Install App or Add to Home Screen.'); };
+
+const unlock = () => { if (EARLY_CODES.includes(code.trim().toUpperCase())) { setIsPro(true); setInstallMessage('Pro unlocked. Founders lifetime access active.'); } else { setInstallMessage('Invalid unlock code.'); } };
+
+const totals = useMemo(() => entries.reduce((acc, entry) => { acc.hours += Number(entry.actualHours || 0); acc.pay += Number(entry.pay || 0); acc.variance += Number(entry.actualHours || 0) - Number(entry.scheduledHours || 0); return acc; }, { hours: 0, pay: 0, variance: 0 }), [entries]);
+
+const nextPayStub = useMemo(() => { const gross = totals.pay; const federal = gross * 0.12; const state = gross * 0.05; const medicare = gross * 0.0145; const social = gross * 0.062; const deductions = federal + state + medicare + social; return { gross, federal, state, medicare, social, net: gross - deductions }; }, [totals]);
+
+const addLeg = () => { setLegs((prev) => [...prev, { id: crypto.randomUUID(), train: '', onDuty: '', offDuty: '' }]); };
+
+const updateLeg = (id: string, key: keyof Leg, value: string) => { setLegs((prev) => prev.map((leg) => (leg.id === id ? { ...leg, [key]: value } : leg))); };
+
+const removeLeg = (id: string) => { setLegs((prev) => (prev.length === 1 ? prev : prev.filter((leg) => leg.id !== id))); };
+
+const resetEntryForm = () => { setForm({ date: '', scheduledHours: '' }); setLegs([{ id: crypto.randomUUID(), train: '', onDuty: '', offDuty: '' }]); setDelayMinutes(''); setActualRelease(''); setNotes(''); };
+
+const saveEntry = () => { const validLegs = legs.filter((leg) => leg.train && leg.onDuty && leg.offDuty); if (!form.date || validLegs.length === 0) return;
+
+const computedLegs = validLegs.map((leg) => ({
+  ...leg,
+  hours: parseHours(leg.onDuty, leg.offDuty),
+}));
+
+if (actualRelease && computedLegs.length) {
+  const last = computedLegs[computedLegs.length - 1];
+  last.offDuty = actualRelease;
+  last.hours = parseHours(last.onDuty, actualRelease);
+}
+
+const actualHours = computedLegs.reduce((sum, leg) => sum + Number(leg.hours || 0), 0) + Number(delayMinutes || 0) / 60;
+const scheduledHours = Number(form.scheduledHours || actualHours);
+const onDuty = computedLegs[0]?.onDuty || '';
+const offDuty = computedLegs[computedLegs.length - 1]?.offDuty || '';
+const train = computedLegs.map((leg) => leg.train).join(' / ');
+
+setEntries((prev) => [
+  {
+    id: crypto.randomUUID(),
+    date: form.date,
+    train,
+    onDuty,
+    offDuty,
+    scheduledHours,
+    actualHours,
+    payDate: '2026-04-10',
+    pay: actualHours * HOURLY_RATE,
+    notes,
+    legs: computedLegs,
+  },
+  ...prev,
+]);
+
+resetEntryForm();
+
+};
+
+const applyDelaySync = () => { if (!actualRelease) return; setNotes((prev) => [prev, delayMinutes ? ${delayMinutes} min delay : '', actualRelease ? actual release ${actualRelease} : ''].filter(Boolean).join(' | ')); };
+
+return ( <div className="min-h-screen bg-[radial-gradient(circle_at_top,#3a0000_0%,#0a0a0a_45%,#000_100%)] text-white p-4 md:p-8"> <div className="max-w-6xl mx-auto space-y-6"> <div className="rounded-3xl border border-red-500/20 bg-black/50 backdrop-blur-xl p-5 shadow-2xl shadow-red-950/20"> <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-center"> <div> <div className="flex items-center gap-3"> <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-red-600 shadow-lg shadow-red-900/40 ring-1 ring-white/10"> <TrainFront className="h-7 w-7 text-white" /> </div> <div> <h1 className="text-3xl font-bold tracking-tight text-white">RailCrew Pro</h1> <div className="mt-1 inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-950/40 px-3 py-1 text-xs text-red-200"> <ShieldCheck className="h-3.5 w-3.5" /> Premium crew edition </div> </div> </div> <p className="mt-3 text-sm text-slate-300">Built for railroad crews. Track each train leg separately, then total the whole day automatically.</p> </div> <div className="flex flex-wrap gap-2 items-center"> {!isPro && ( <> <Input placeholder="Code" value={code} onChange={e => setCode(e.target.value)} className="w-36 bg-black/60 border-red-500/30 text-white placeholder:text-slate-500" /> <Button onClick={unlock} className="rounded-2xl bg-red-600 hover:bg-red-500">Unlock</Button> </> )} <Button onClick={handleInstall} variant="outline" className="rounded-2xl border-red-500/40 bg-black/40 text-white hover:bg-red-950"> <Download className="mr-2 h-4 w-4" /> Install </Button> </div> </div> {installMessage && <div className="mt-4 rounded-2xl bg-red-950/40 border border-red-500/20 px-4 py-3 text-sm text-red-100">{installMessage}</div>} </div>
+
+<div className="grid gap-4 md:grid-cols-4">
+      <Card className="rounded-3xl bg-black/60 border border-white/10 shadow-xl"><CardHeader className="pb-2"><CardTitle className="text-sm text-slate-400 flex items-center gap-2"><Clock3 className="h-4 w-4" /> Hours</CardTitle></CardHeader><CardContent className="text-3xl font-bold">{hours(totals.hours)}</CardContent></Card>
+      <Card className="rounded-3xl bg-black/60 border border-white/10 shadow-xl"><CardHeader className="pb-2"><CardTitle className="text-sm text-slate-400 flex items-center gap-2"><DollarSign className="h-4 w-4" /> Pay</CardTitle></CardHeader><CardContent className="text-3xl font-bold">{money(totals.pay)}</CardContent></Card>
+      <Card className="rounded-3xl bg-black/60 border border-white/10 shadow-xl"><CardHeader className="pb-2"><CardTitle className="text-sm text-slate-400 flex items-center gap-2"><TrendingUp className="h-4 w-4" /> Variance</CardTitle></CardHeader><CardContent className="text-3xl font-bold">{hours(totals.variance)}</CardContent></Card>
+      <Card className="rounded-3xl bg-black/60 border border-white/10 shadow-xl"><CardHeader className="pb-2"><CardTitle className="text-sm text-slate-400">Next Check</CardTitle></CardHeader><CardContent className="text-3xl font-bold">4/10/2026</CardContent></Card>
+    </div>
+
+    <Tabs defaultValue="timesheet" className="space-y-4">
+      <TabsList className="grid w-full grid-cols-4 rounded-2xl bg-black/50 border border-red-500/20 p-1">
+        <TabsTrigger value="timesheet" className="rounded-xl">Timesheet</TabsTrigger>
+        <TabsTrigger value="delay" className="rounded-xl">Delay Sync</TabsTrigger>
+        <TabsTrigger value="paystub" className="rounded-xl">Pay Stub</TabsTrigger>
+        <TabsTrigger value="landing" className="rounded-xl">Landing Page</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="timesheet" className="space-y-4">
+        <Card className="rounded-3xl bg-black/60 border border-red-500/20 shadow-xl">
+          <CardHeader>
+            <CardTitle>Add Entry</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              <div>
+                <Label>Date</Label>
+                <Input placeholder="YYYY-MM-DD" value={form.date} onChange={e => setForm(prev => ({ ...prev, date: e.target.value }))} className="mt-1 bg-black/40 border-red-500/30" />
+              </div>
+              <div>
+                <Label>Scheduled Hours</Label>
+                <Input placeholder="11.32" value={form.scheduledHours} onChange={e => setForm(prev => ({ ...prev, scheduledHours: e.target.value }))} className="mt-1 bg-black/40 border-red-500/30" />
+              </div>
+              <div>
+                <Label>Notes</Label>
+                <Input placeholder="Day 1 / overtime / delay note" value={notes} onChange={e => setNotes(e.target.value)} className="mt-1 bg-black/40 border-red-500/30" />
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-red-500/20 bg-red-950/10 p-4">
+              <div className="mb-3 flex items-center justify-between">
+                <div>
+                  <div className="text-lg font-semibold">Train Legs</div>
+                  <div className="text-sm text-slate-400">Add each train with its own on-duty and off-duty time so you can distinguish every leg.</div>
+                </div>
+                <Button type="button" onClick={addLeg} className="rounded-2xl bg-red-600 hover:bg-red-500">
+                  <Plus className="mr-2 h-4 w-4" /> Add Leg
+                </Button>
+              </div>
+
+              <div className="space-y-3">
+                {legs.map((leg, index) => (
+                  <div key={leg.id} className="rounded-2xl border border-white/10 bg-black/40 p-4">
+                    <div className="mb-3 flex items-center justify-between">
+                      <div className="font-medium text-slate-200">Leg {index + 1}</div>
+                      <Button type="button" variant="outline" onClick={() => removeLeg(leg.id)} className="rounded-xl border-red-500/20 text-slate-200 hover:bg-red-950/40">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      <div>
+                        <Label>Train</Label>
+                        <Input placeholder="0056" value={leg.train} onChange={e => updateLeg(leg.id, 'train', e.target.value)} className="mt-1 bg-black/40 border-red-500/30" />
+                      </div>
+                      <div>
+                        <Label>On Duty</Label>
+                        <Input type="time" value={leg.onDuty} onChange={e => updateLeg(leg.id, 'onDuty', e.target.value)} className="mt-1 bg-black/40 border-red-500/30" />
+                      </div>
+                      <div>
+                        <Label>Off Duty</Label>
+                        <Input type="time" value={leg.offDuty} onChange={e => updateLeg(leg.id, 'offDuty', e.target.value)} className="mt-1 bg-black/40 border-red-500/30" />
+                      </div>
+                    </div>
+                    {leg.onDuty && leg.offDuty && <div className="mt-3 text-sm text-slate-400">Leg hours: {hours(parseHours(leg.onDuty, leg.offDuty))}</div>}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <Label>Actual Release Override</Label>
+                <Input type="time" value={actualRelease} onChange={e => setActualRelease(e.target.value)} className="mt-1 bg-black/40 border-red-500/30" />
+              </div>
+              <div>
+                <Label>Delay Minutes</Label>
+                <Input placeholder="0" value={delayMinutes} onChange={e => setDelayMinutes(e.target.value)} className="mt-1 bg-black/40 border-red-500/30" />
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <Button onClick={saveEntry} className="rounded-2xl bg-red-600 hover:bg-red-500 text-lg tracking-wide px-6">Save Entry</Button>
+              <Button onClick={resetEntryForm} variant="outline" className="rounded-2xl border-red-500/30 bg-black/20 text-white hover:bg-red-950/30">Clear</Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-3xl bg-black/60 border border-red-500/20 shadow-xl">
+          <CardHeader><CardTitle>Daily Log</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-3">
+              {entries.map((entry) => (
+                <div key={entry.id} className="rounded-2xl border border-white/10 bg-black/40 p-4">
+                  <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+                    <div>
+                      <div className="text-lg font-semibold">{entry.date} · {entry.train}</div>
+                      <div className="text-sm text-slate-400">Actual {hours(entry.actualHours)} hrs · Scheduled {hours(entry.scheduledHours)} hrs · Pay {money(entry.pay)}</div>
+                    </div>
+                    <div className="text-sm text-slate-400">Variance {hours(Number(entry.actualHours) - Number(entry.scheduledHours))}</div>
+                  </div>
+                  <div className="mt-4 grid gap-2">
+                    {entry.legs?.map((leg) => (
+                      <div key={leg.id} className="rounded-xl bg-white/5 px-3 py-2 text-sm text-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                        <span>Train {leg.train}</span>
+                        <span>{leg.onDuty} - {leg.offDuty}</span>
+                        <span>{hours(leg.hours || parseHours(leg.onDuty, leg.offDuty))} hrs</span>
+                      </div>
+                    ))}
+                  </div>
+                  {entry.notes && <div className="mt-3 text-sm text-slate-400">{entry.notes}</div>}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="delay">
+        <Card className="rounded-3xl bg-black/60 border border-red-500/20 shadow-xl">
+          <CardHeader><CardTitle className="flex items-center gap-2"><Wifi className="h-5 w-5 text-red-400" /> Delay Sync</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
+            <div className="text-sm text-slate-300">Use the official train status page, then apply the delay to the last leg or set an actual release override before saving.</div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <Input placeholder="Delay Minutes" value={delayMinutes} onChange={e => setDelayMinutes(e.target.value)} className="bg-black/40 border-red-500/30" />
+              <Input type="time" value={actualRelease} onChange={e => setActualRelease(e.target.value)} className="bg-black/40 border-red-500/30" />
+              <Input placeholder="Delay note" value={notes} onChange={e => setNotes(e.target.value)} className="bg-black/40 border-red-500/30" />
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              <Button onClick={applyDelaySync} className="rounded-2xl bg-red-600 hover:bg-red-500">Apply Delay Sync</Button>
+              <Button onClick={handleInstall} variant="outline" className="rounded-2xl border-red-500/40 bg-black/40 text-white hover:bg-red-950">Open Install / Status Workflow</Button>
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="paystub">
+        <Card className="rounded-3xl bg-black/60 border border-red-500/20 shadow-xl relative overflow-hidden">
+          {!isPro && (
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-10">
+              <div className="text-center p-6">
+                <Lock className="mx-auto mb-2 text-red-400" />
+                <p className="font-medium text-white">Pro Feature</p>
+                <p className="mt-1 text-xs text-slate-400">Unlock lifetime early access for your first customers.</p>
+                <Button onClick={unlock} className="mt-4 rounded-2xl bg-red-600 hover:bg-red-500">Unlock Pro</Button>
+              </div>
+            </div>
+          )}
+          <CardHeader><CardTitle className="flex items-center gap-2"><Receipt className="h-5 w-5 text-red-400" /> Pay Stub Preview</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-3">
+              <Card className="rounded-2xl bg-black/50 border border-red-500/20"><CardContent className="p-4"><div className="text-sm text-slate-400">Gross</div><div className="text-2xl font-bold">{money(nextPayStub.gross)}</div></CardContent></Card>
+              <Card className="rounded-2xl bg-black/50 border border-red-500/20"><CardContent className="p-4"><div className="text-sm text-slate-400">Deductions</div><div className="text-2xl font-bold">{money(nextPayStub.federal + nextPayStub.state + nextPayStub.medicare + nextPayStub.social)}</div></CardContent></Card>
+              <Card className="rounded-2xl bg-black/50 border border-red-500/20"><CardContent className="p-4"><div className="text-sm text-slate-400">Net</div><div className="text-2xl font-bold">{money(nextPayStub.net)}</div></CardContent></Card>
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="landing">
+        <Card className="rounded-3xl bg-black/60 border border-red-500/20 shadow-xl">
+          <CardHeader><CardTitle>Simple Landing Page Copy</CardTitle></CardHeader>
+          <CardContent className="space-y-4 text-slate-300">
+            <div className="rounded-3xl bo
