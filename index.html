@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RailCrew Pro v7 Lite</title>
+<style>
+body{font-family:Arial,sans-serif;background:#000;color:#fff;padding:16px}
+.card{background:#111;border:1px solid #b91c1c;border-radius:16px;padding:16px;margin-bottom:16px}
+h1,h2,h3,p{margin:0 0 10px 0}
+input,select{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid #666}
+button{background:#dc2626;color:#fff;border:none;border-radius:10px;padding:12px 16px;font-weight:bold;margin:4px 4px 4px 0}
+.small{color:#bbb;font-size:12px}
+.grid{display:grid;gap:12px}
+@media(min-width:700px){.grid2{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:1fr 1fr 1fr}}
+.leg{border:1px solid #333;border-radius:12px;padding:12px;margin-top:10px;background:#181818}
+.run{border-top:1px solid #333;padding:12px 0}
+</style>
+</head>
+<body>
+<h1>RailCrew Pro v7 Lite</h1>
+<p class="small">Stable version with guarantee pay, pickup-day setup, and multi-leg daily entries.</p>
+
+<div class="card">
+  <h2>Pay Settings</h2>
+  <div class="grid grid3">
+    <div><label>Hourly Rate</label><input id="hourlyRate" type="number" step="0.01" value="26.69"></div>
+    <div><label>Guarantee Hours</label><input id="guaranteeHours" type="number" value="185"></div>
+    <div><label>OT Starts After</label><input id="otThreshold" type="number" value="186"></div>
+  </div>
+  <button onclick="savePay()">Save Pay Settings</button>
+  <div id="payMsg" class="small"></div>
+</div>
+
+<div class="card">
+  <h2>Position Key Setup</h2>
+  <div class="grid grid3">
+    <div><label>Position Key</label><input id="positionKey" placeholder="SFNYP006EC837R"></div>
+    <div><label>Pickup Day</label>
+      <select id="pickupDay">
+        <option>Sunday</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+        <option>Thursday</option><option>Friday</option><option>Saturday</option>
+      </select>
+    </div>
+    <div><label>Cycle Length</label><input id="cycleLength" type="number" value="7"></div>
+  </div>
+  <div class="grid grid3">
+    <div><label>Day 1</label><select id="status1"><option value="work">Work</option><option value="off">Off</option></select></div>
+    <div><label>Day 2</label><select id="status2"><option value="work">Work</option><option value="off">Off</option></select></div>
+    <div><label>Day 3</label><select id="status3"><option value="work">Work</option><option value="off">Off</option></select></div>
+    <div><label>Day 4</label><select id="status4"><option value="work">Work</option><option value="off">Off</option></select></div>
+    <div><label>Day 5</label><select id="status5"><option value="off">Off</option><option value="work">Work</option></select></div>
+    <div><label>Day 6</label><select id="status6"><option value="off">Off</option><option value="work">Work</option></select></div>
+    <div><label>Day 7</label><select id="status7"><option value="off">Off</option><option value="work">Work</option></select></div>
+  </div>
+  <button onclick="saveSetup()">Save Setup</button>
+  <button onclick="loadExample()">Load 4 On / 3 Off</button>
+  <div id="setupMsg" class="small"></div>
+</div>
+
+<div class="card">
+  <h2>Daily Entry</h2>
+  <div class="grid grid3">
+    <div><label>Date</label><input id="workDate" type="date"></div>
+    <div><label>Scheduled Hours</label><input id="scheduledHours" type="number" step="0.01"></div>
+    <div><label>Delay Minutes</label><input id="delayMinutes" type="number" value="0"></div>
+  </div>
+  <label><input id="dayOff" type="checkbox" style="width:auto"> Took day off (breaks guarantee)</label>
+  <div style="margin-top:10px"><label>Notes</label><input id="notes" placeholder="Delay / extra work / off day"></div>
+
+  <div class="card" style="margin-top:12px">
+    <h3>Train Legs</h3>
+    <button onclick="addLeg()">+ Add Leg</button>
+    <div id="legs"></div>
+  </div>
+
+  <button onclick="saveDay()">Save Day</button>
+  <button onclick="clearDay()">Clear</button>
+  <div id="dayMsg" class="small"></div>
+</div>
+
+<div class="card">
+  <h2>Month Summary</h2>
+  <div class="grid grid2">
+    <div><strong>Actual Hours:</strong> <span id="actualHours">0.00</span></div>
+    <div><strong>Paid Hours:</strong> <span id="paidHours">0.00</span></div>
+    <div><strong>Guarantee Owed:</strong> <span id="guaranteeOwed">0.00</span></div>
+    <div><strong>OT Hours:</strong> <span id="otHours">0.00</span></div>
+    <div><strong>Guarantee Status:</strong> <span id="guaranteeStatus">Active</span></div>
+    <div><strong>Last Check Payout:</strong> <span id="lastCheckPayout">$0.00</span></div>
+    <div><strong>Total Month Pay:</strong> <span id="monthPay">$0.00</span></div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Saved Days</h2>
+  <div id="savedDays" class="small">No saved days yet.</div>
+</div>
+
+<script>
+const PAY_KEY = 'railcrew_v7lite_pay';
+const SETUP_KEY = 'railcrew_v7lite_setup';
+const DAYS_KEY = 'railcrew_v7lite_days';
+
+let pay = JSON.parse(localStorage.getItem(PAY_KEY) || '{}');
+let setup = JSON.parse(localStorage.getItem(SETUP_KEY) || '{}');
+let days = JSON.parse(localStorage.getItem(DAYS_KEY) || '[]');
+
+function saveLocal(){ localStorage.setItem(DAYS_KEY, JSON.stringify(days)); }
+function money(v){ return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(v||0); }
+function fmt(v){ return Number(v||0).toFixed(2); }
+function uid(){ return Math.random().toString(36).slice(2)+Date.now().toString(36); }
+
+function parseHours(startStr, endStr){
+  if(!startStr || !endStr) return 0;
+  const start = new Date('2026-01-01T' + startStr);
+  let end = new Date('2026-01-01T' + endStr);
+  if(end < start) end = new Date('2026-01-02T' + endStr);
+  return (end - start) / 3600000;
+}
+
+function addLeg(prefill){
+  const d = document.createElement('div');
+  d.className = 'leg';
+  d.innerHTML = '<label>Train</label><input class="leg-train" placeholder="0056" value="'+((prefill&&prefill.train)||'')+'">' +
+                '<label>On Duty</label><input class="leg-on" type="time" value="'+((prefill&&prefill.onDuty)||'')+'">' +
+                '<label>Off Duty</label><input class="leg-off" type="time" value="'+((prefill&&prefill.offDuty)||'')+'">' +
+                '<button onclick="this.parentElement.remove()">Remove</button>';
+  document.getElementById('legs').appendChild(d);
+}
+
+function clearDay(){
+  document.getElementById('workDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('scheduledHours').value = '';
+  document.getElementById('delayMinutes').value = '0';
+  document.getElementById('notes').value = '';
+  document.getElementById('dayOff').checked = false;
+  document.getElementById('legs').innerHTML = '';
+  addLeg();
+  document.getElementById('dayMsg').textContent = '';
+}
+
+function savePay(){
+  pay = {
+    hourlyRate: Number(document.getElementById('hourlyRate').value || 26.69),
+    guaranteeHours: Number(document.getElementById('guaranteeHours').value || 185),
+    otThreshold: Number(document.getElementById('otThreshold').value || 186)
+  };
+  localStorage.setItem(PAY_KEY, JSON.stringify(pay));
+  document.getElementById('payMsg').textContent = 'Saved';
+  renderSummary();
+}
+
+function saveSetup(){
+  setup = {
+    positionKey: document.getElementById('positionKey').value,
+    pickupDay: document.getElementById('pickupDay').value,
+    cycleLength: Number(document.getElementById('cycleLength').value || 7),
+    statuses: {
+      1: document.getElementById('status1').value,
+      2: document.getElementById('status2').value,
+      3: document.getElementById('status3').value,
+      4: document.getElementById('status4').value,
+      5: document.getElementById('status5').value,
+      6: document.getElementById('status6').value,
+      7: document.getElementById('status7').value
+    }
+  };
+  localStorage.setItem(SETUP_KEY, JSON.stringify(setup));
+  document.getElementById('setupMsg').textContent = 'Saved';
+}
+
+function loadExample(){
+  document.getElementById('pickupDay').value = 'Thursday';
+  document.getElementById('cycleLength').value = 7;
+  document.getElementById('status1').value = 'work';
+  document.getElementById('status2').value = 'work';
+  document.getElementById('status3').value = 'work';
+  document.getElementById('status4').value = 'work';
+  document.getElementById('status5').value = 'off';
+  document.getElementById('status6').value = 'off';
+  document.getElementById('status7').value = 'off';
+  saveSetup();
+}
+
+function saveDay(){
+  const date = document.getElementById('workDate').value;
+  const scheduledHours = Number(document.getElementById('scheduledHours').value || 0);
+  const delayMinutes = Number(document.getElementById('delayMinutes').value || 0);
+  const notes = document.getElementById('notes').value.trim();
+  const tookDayOff = document.getElementById('dayOff').checked;
+  const legs = Array.from(document.querySelectorAll('#legs .leg')).map(el => ({
+    train: el.querySelector('.leg-train').value.trim(),
+    onDuty: el.querySelector('.leg-on').value,
+    offDuty: el.querySelector('.leg-off').value
+  })).filter(x => x.train && x.onDuty && x.offDuty);
+
+  if(!date){ document.getElementById('dayMsg').textContent = 'Pick a date.'; return; }
+  if(!tookDayOff && legs.length === 0){ document.getElementById('dayMsg').textContent = 'Add at least one leg or mark day off.'; return; }
+
+  const actualHours = tookDayOff ? 0 : legs.reduce((sum, leg) => sum + parseHours(leg.onDuty, leg.offDuty), 0) + (delayMinutes/60);
+  days.unshift({ id: uid(), date, scheduledHours, delayMinutes, notes, tookDayOff, actualHours, legs });
+  saveLocal();
+  document.getElementById('dayMsg').textContent = 'Saved';
+  clearDay();
+  renderDays();
+  renderSummary();
+}
+
+function deleteDay(id){
+  days = days.filter(d => d.id !== id);
+  saveLocal();
+  renderDays();
+  renderSummary();
+}
+
+function renderDays(){
+  const box = document.getElementById('savedDays');
+  if(!days.length){ box.innerHTML = 'No saved days yet.'; return; }
+  box.innerHTML = days.map(day => {
+    const legs = day.tookDayOff ? '<div>Day off taken</div>' : day.legs.map(leg =>
+      '<div>Train ' + leg.train + ' · ' + leg.onDuty + ' - ' + leg.offDuty + ' · ' + fmt(parseHours(leg.onDuty, leg.offDuty)) + ' hrs</div>'
+    ).join('');
+    return '<div class="run"><strong>' + day.date + '</strong> · Actual ' + fmt(day.actualHours) + ' hrs · Scheduled ' + fmt(day.scheduledHours) +
+           ' hrs<br>' + legs + (day.notes ? '<div>' + day.notes + '</div>' : '') +
+           '<div style="margin-top:8px"><button onclick="deleteDay(\'' + day.id + '\')">Delete</button></div></div>';
+  }).join('');
+}
+
+function renderSummary(){
+  const now = new Date();
+  const monthDays = days.filter(d => {
+    const x = new Date(d.date + 'T00:00:00');
+    return x.getMonth() === now.getMonth() && x.getFullYear() === now.getFullYear();
+  });
+
+  const rate = Number(pay.hourlyRate || 26.69);
+  const guaranteeHours = Number(pay.guaranteeHours || 185);
+  const otThreshold = Number(pay.otThreshold || 186);
+
+  const actualHours = monthDays.reduce((s,d)=>s+Number(d.actualHours||0),0);
+  const guaranteeBroken = monthDays.some(d => d.tookDayOff);
+  const guaranteeActive = !guaranteeBroken;
+  const guaranteeOwed = guaranteeActive && actualHours < guaranteeHours ? (guaranteeHours - actualHours) : 0;
+  const paidHours = guaranteeActive ? Math.max(actualHours, guaranteeHours) : actualHours;
+  const otHours = Math.max(0, actualHours - otThreshold);
+  const monthPay = (paidHours * rate) + (otHours * rate * 0.5);
+  const lastCheckPayout = guaranteeOwed * rate;
+
+  document.getElementById('actualHours').textContent = fmt(actualHours);
+  document.getElementById('paidHours').textContent = fmt(paidHours);
+  document.getElementById('guaranteeOwed').textContent = fmt(guaranteeOwed);
+  document.getElementById('otHours').textContent = fmt(otHours);
+  document.getElementById('guaranteeStatus').textContent = guaranteeActive ? 'Active' : 'Broken';
+  document.getElementById('lastCheckPayout').textContent = money(lastCheckPayout);
+  document.getElementById('monthPay').textContent = money(monthPay);
+}
+
+function hydrate(){
+  document.getElementById('hourlyRate').value = pay.hourlyRate || 26.69;
+  document.getElementById('guaranteeHours').value = pay.guaranteeHours || 185;
+  document.getElementById('otThreshold').value = pay.otThreshold || 186;
+  document.getElementById('positionKey').value = setup.positionKey || '';
+  document.getElementById('pickupDay').value = setup.pickupDay || 'Thursday';
+  document.getElementById('cycleLength').value = setup.cycleLength || 7;
+  for(let i=1;i<=7;i++){
+    document.getElementById('status'+i).value = (setup.statuses && setup.statuses[i]) || (i <= 4 ? 'work' : 'off');
+  }
+  clearDay();
+  renderDays();
+  renderSummary();
+}
+
+hydrate();
+</script>
+</body>
+</html>
