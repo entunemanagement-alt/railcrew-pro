@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RailCrew Pro v5</title>
+<style>
+body { font-family: Arial, sans-serif; background:#000; color:#fff; text-align:center; padding:20px; }
+.card { background:#111; border:1px solid red; border-radius:14px; padding:18px; margin:14px auto; max-width:760px; }
+input, select { padding:12px; margin:6px 0; width:85%; border-radius:8px; border:1px solid #666; font-size:18px; }
+button { background:red; color:white; padding:12px 18px; border:none; border-radius:10px; font-size:18px; cursor:pointer; margin:4px; }
+button.secondary { background:#333; }
+button.locked { background:#550000; }
+.small { color:#bbb; font-size:14px; }
+.run { text-align:left; border-top:1px solid #333; padding:10px 0; }
+.summary { font-size:24px; margin:8px 0; }
+.grid { display:grid; grid-template-columns:1fr; gap:12px; }
+.badge { display:inline-block; padding:6px 10px; border:1px solid red; border-radius:999px; color:#ffb3b3; font-size:12px; margin-bottom:8px; }
+.lockbox { border:1px dashed #aa3333; padding:14px; border-radius:12px; margin-top:10px; }
+@media (min-width: 700px) { .grid { grid-template-columns:1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<h1 style="color:red;">RailCrew Pro v5</h1>
+<p>Track runs, pay periods, OT, and monthly totals</p>
+<div class="badge" id="planBadge">Free Mode</div>
+
+<div class="card">
+  <h3>Unlock Pro</h3>
+  <div class="small">Founders lifetime code unlocks premium features.</div>
+  <input id="unlockCode" placeholder="Enter unlock code">
+  <div>
+    <button onclick="unlockPro()">Unlock Pro</button>
+  </div>
+  <div id="unlockMessage" class="small"></div>
+</div>
+
+<div class="card">
+  <h3>Quick Presets</h3>
+  <div>
+    <select id="preset" onchange="applyPreset()">
+      <option value="">Choose a preset</option>
+      <option value="day1">Day 1 / Day 2 - 56 & 177</option>
+      <option value="day3">Day 3 - 152 & 65</option>
+      <option value="day4">Day 4 - 2256 & 2295</option>
+    </select>
+  </div>
+  <div class="small">Presets fill scheduled hours based on your shift.</div>
+</div>
+
+<div class="card">
+  <h3>Add Run</h3>
+  <div><input id="date" type="date"></div>
+  <div><input id="train" placeholder="Train Number(s)"></div>
+  <div><input id="report" type="time"></div>
+  <div><input id="release" type="time"></div>
+  <div><input id="scheduledRelease" type="time" placeholder="Scheduled Release"></div>
+  <div><input id="delay" type="number" inputmode="numeric" placeholder="Delay (minutes)"></div>
+  <div><input id="scheduledHours" type="number" step="0.01" placeholder="Scheduled Hours"></div>
+  <div><input id="notes" placeholder="Notes"></div>
+  <div>
+    <button onclick="saveRun()">Save Run</button>
+    <button class="secondary" onclick="resetForm()">Clear</button>
+  </div>
+  <div id="message" class="small"></div>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h3>Totals</h3>
+    <div class="summary">Hours: <span id="hours">0.00</span></div>
+    <div class="summary">Pay: $<span id="pay">0.00</span></div>
+    <div class="summary">Variance: <span id="variance">0.00</span></div>
+  </div>
+
+  <div class="card">
+    <h3>This Month</h3>
+    <div class="summary">Month Hours: <span id="monthHours">0.00</span></div>
+    <div class="summary">OT Hours: <span id="otHours">0.00</span></div>
+    <div class="summary">Month Pay: $<span id="monthPay">0.00</span></div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Pay Period</h3>
+  <div class="summary">Current Period: <span id="currentPeriod">—</span></div>
+  <div class="summary">Next Pay Date: <span id="nextPayDate">—</span></div>
+  <div class="summary">Period Hours: <span id="periodHours">0.00</span></div>
+  <div class="summary">Period Pay: $<span id="periodPay">0.00</span></div>
+
+  <div id="proOnlyBox" class="lockbox">
+    <div><strong>Pro Feature</strong></div>
+    <div class="small">Paycheck forecasting and export are part of Pro.</div>
+    <button id="proExportBtn" class="locked" onclick="exportRuns()">Export Runs CSV</button>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Saved Runs</h3>
+  <div id="runs" class="small">No runs yet.</div>
+</div>
+
+<script>
+const payRate = 26.69;
+const otThreshold = 186;
+const validCodes = ['EARLY10', 'CREW10'];
+let editingId = null;
+let isPro = localStorage.getItem('railcrew_is_pro_v5') === 'true';
+let runs = JSON.parse(localStorage.getItem('railcrew_runs_v5') || '[]');
+
+const payrollCalendar = [
+  { start: '2026-03-16', end: '2026-03-29', payDate: '2026-04-10' },
+  { start: '2026-03-30', end: '2026-04-12', payDate: '2026-04-24' },
+  { start: '2026-04-13', end: '2026-04-26', payDate: '2026-05-08' },
+  { start: '2026-04-27', end: '2026-05-10', payDate: '2026-05-22' },
+  { start: '2026-05-11', end: '2026-05-24', payDate: '2026-06-05' },
+  { start: '2026-05-25', end: '2026-06-07', payDate: '2026-06-18' },
+  { start: '2026-06-08', end: '2026-06-21', payDate: '2026-07-03' },
+  { start: '2026-06-22', end: '2026-07-05', payDate: '2026-07-17' },
+  { start: '2026-07-06', end: '2026-07-19', payDate: '2026-07-31' },
+  { start: '2026-07-20', end: '2026-08-02', payDate: '2026-08-14' },
+  { start: '2026-08-03', end: '2026-08-16', payDate: '2026-08-28' },
+  { start: '2026-08-17', end: '2026-08-30', payDate: '2026-09-11' },
+  { start: '2026-08-31', end: '2026-09-13', payDate: '2026-09-25' },
+  { start: '2026-09-14', end: '2026-09-27', payDate: '2026-10-09' },
+  { start: '2026-09-28', end: '2026-10-11', payDate: '2026-10-23' },
+  { start: '2026-10-12', end: '2026-10-25', payDate: '2026-11-06' },
+  { start: '2026-10-26', end: '2026-11-08', payDate: '2026-11-20' },
+  { start: '2026-11-09', end: '2026-11-22', payDate: '2026-12-04' },
+  { start: '2026-11-23', end: '2026-12-06', payDate: '2026-12-18' },
+  { start: '2026-12-07', end: '2026-12-20', payDate: '2026-12-31' }
+];
+
+function timeToHours(timeStr) {
+  if (!timeStr) return NaN;
+  let clean = String(timeStr).trim().toUpperCase();
+
+  if (/^\\d{1,2}:\\d{2}$/.test(clean)) {
+    const parts = clean.split(':');
+    const h = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10);
+    return h + (m / 60);
+  }
+
+  const match = clean.match(/^(\\d{1,2}):(\\d{2})\\s*(AM|PM)$/);
+  if (match) {
+    let h = parseInt(match[1], 10);
+    const m = parseInt(match[2], 10);
+    const suffix = match[3];
+    if (suffix === 'PM' && h !== 12) h += 12;
+    if (suffix === 'AM' && h === 12) h = 0;
+    return h + (m / 60);
+  }
+  return NaN;
+}
+
+function calcHours(report, release, delayMinutes) {
+  let start = timeToHours(report);
+  let end = timeToHours(release);
+  if (Number.isNaN(start) || Number.isNaN(end)) return NaN;
+  let runHours = end - start;
+  if (runHours < 0) runHours += 24;
+  runHours += (Number(delayMinutes || 0) / 60);
+  return runHours;
+}
+
+function format(n) { return Number(n || 0).toFixed(2); }
+
+function saveStorage() {
+  localStorage.setItem('railcrew_runs_v5', JSON.stringify(runs));
+  localStorage.setItem('railcrew_is_pro_v5', isPro ? 'true' : 'false');
+}
+
+function unlockPro() {
+  const code = document.getElementById('unlockCode').value.trim().toUpperCase();
+  const msg = document.getElementById('unlockMessage');
+  if (validCodes.includes(code)) {
+    isPro = true;
+    saveStorage();
+    msg.textContent = 'Pro unlocked.';
+    applyProState();
+  } else {
+    msg.textContent = 'Invalid code.';
+  }
+}
+
+function applyProState() {
+  document.getElementById('planBadge').textContent = isPro ? 'Pro Mode' : 'Free Mode';
+  document.getElementById('proExportBtn').disabled = !isPro;
+  document.getElementById('proExportBtn').className = isPro ? '' : 'locked';
+}
+
+function applyPreset() {
+  const preset = document.getElementById('preset').value;
+  if (preset === 'day1') {
+    document.getElementById('train').value = '56 and 177';
+    document.getElementById('report').value = '10:33';
+    document.getElementById('release').value = '21:52';
+    document.getElementById('scheduledRelease').value = '21:52';
+    document.getElementById('scheduledHours').value = '11.32';
+  } else if (preset === 'day3') {
+    document.getElementById('train').value = '152 and 65';
+    document.getElementById('report').value = '11:13';
+    document.getElementById('release').value = '23:02';
+    document.getElementById('scheduledRelease').value = '23:02';
+    document.getElementById('scheduledHours').value = '11.82';
+  } else if (preset === 'day4') {
+    document.getElementById('train').value = '2256 and 2295';
+    document.getElementById('report').value = '11:45';
+    document.getElementById('release').value = '22:06';
+    document.getElementById('scheduledRelease').value = '22:06';
+    document.getElementById('scheduledHours').value = '10.35';
+  }
+}
+
+function resetForm() {
+  editingId = null;
+  document.getElementById('date').value = '';
+  document.getElementById('train').value = '';
+  document.getElementById('report').value = '';
+  document.getElementById('release').value = '';
+  document.getElementById('scheduledRelease').value = '';
+  document.getElementById('delay').value = '';
+  document.getElementById('scheduledHours').value = '';
+  document.getElementById('notes').value = '';
+  document.getElementById('message').textContent = '';
+  document.getElementById('preset').value = '';
+}
+
+function saveRun() {
+  const date = document.getElementById('date').value;
+  const train = document.getElementById('train').value.trim();
+  const report = document.getElementById('report').value;
+  const release = document.getElementById('release').value;
+  const scheduledRelease = document.getElementById('scheduledRelease').value;
+  const delay = Number(document.getElementById('delay').value || 0);
+  const scheduledHoursInput = Number(document.getElementById('scheduledHours').value || 0);
+  const notes = document.getElementById('notes').value.trim();
+  const message = document.getElementById('message');
+
+  if (!date || !train || !report || !release) {
+    message.textContent = 'Please fill date, train, report, and release.';
+    return;
+  }
+
+  const actualHours = calcHours(report, release, delay);
+  if (Number.isNaN(actualHours)) {
+    message.textContent = 'Time format not recognized.';
+    return;
+  }
+
+  let scheduledHours = scheduledHoursInput;
+  if (!scheduledHours && scheduledRelease) scheduledHours = calcHours(report, scheduledRelease, 0);
+  if (!scheduledHours) scheduledHours = actualHours;
+
+  const pay = actualHours * payRate;
+  const run = {
+    id: editingId || Date.now().toString(),
+    date, train, report, release, scheduledRelease, delay, scheduledHours, actualHours, pay, notes
+  };
+
+  if (editingId) runs = runs.map(r => r.id === editingId ? run : r);
+  else runs.unshift(run);
+
+  saveStorage();
+  renderRuns();
+  resetForm();
+}
+
+function editRun(id) {
+  const r = runs.find(x => x.id === id);
+  if (!r) return;
+  editingId = id;
+  document.getElementById('date').value = r.date || '';
+  document.getElementById('train').value = r.train || '';
+  document.getElementById('report').value = r.report || '';
+  document.getElementById('release').value = r.release || '';
+  document.getElementById('scheduledRelease').value = r.scheduledRelease || '';
+  document.getElementById('delay').value = r.delay || '';
+  document.getElementById('scheduledHours').value = r.scheduledHours || '';
+  document.getElementById('notes').value = r.notes || '';
+  document.getElementById('message').textContent = 'Editing run.';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function deleteRun(id) {
+  runs = runs.filter(r => r.id !== id);
+  saveStorage();
+  renderRuns();
+}
+
+function findPayrollPeriod(dateStr) {
+  return payrollCalendar.find(p => dateStr >= p.start && dateStr <= p.end) || null;
+}
+
+function updatePayPeriod() {
+  const today = new Date().toISOString().slice(0, 10);
+  const period = findPayrollPeriod(today) || payrollCalendar[0];
+  let periodHours = 0;
+  let periodPay = 0;
+
+  runs.forEach(run => {
+    const p = findPayrollPeriod(run.date);
+    if (p && p.start === period.start && p.end === period.end) {
+      periodHours += Number(run.actualHours || 0);
+      periodPay += Number(run.pay || 0);
+    }
+  });
+
+  document.getElementById('currentPeriod').innerText = period ? `${period.start} to ${period.end}` : '—';
+  document.getElementById('nextPayDate').innerText = period ? period.payDate : '—';
+  document.getElementById('periodHours').innerText = format(periodHours);
+  document.getElementById('periodPay').innerText = format(periodPay);
+}
+
+function updateTotals() {
+  let totalHours = 0;
+  let totalPay = 0;
+  let totalVariance = 0;
+
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+  let monthHours = 0;
+  let monthPay = 0;
+
+  runs.forEach(run => {
+    totalHours += Number(run.actualHours || 0);
+    totalPay += Number(run.pay || 0);
+    totalVariance += Number(run.actualHours || 0) - Number(run.scheduledHours || 0);
+
+    const d = new Date(run.date + 'T00:00:00');
+    if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
+      monthHours += Number(run.actualHours || 0);
+      monthPay += Number(run.pay || 0);
+    }
+  });
+
+  const otHours = Math.max(0, monthHours - otThreshold);
+
+  document.getElementById('hours').innerText = format(totalHours);
+  document.getElementById('pay').innerText = format(totalPay);
+  document.getElementById('variance').innerText = format(totalVariance);
+  document.getElementById('monthHours').innerText = format(monthHours);
+  document.getElementById('otHours').innerText = format(otHours);
+  document.getElementById('monthPay').innerText = format(monthPay);
+
+  updatePayPeriod();
+}
+
+function exportRuns() {
+  if (!isPro) return;
+  const headers = ['Date','Train','Report','Release','Scheduled Hours','Actual Hours','Pay','Notes'];
+  const rows = runs.map(r => [r.date, r.train, r.report, r.release, r.scheduledHours, r.actualHours, r.pay, r.notes || '']);
+  const csv = [headers, ...rows].map(row => row.map(v => `"${String(v ?? '').replaceAll('"','""')}"`).join(',')).join('\\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'railcrew_runs_v5.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function renderRuns() {
+  const container = document.getElementById('runs');
+  if (!runs.length) {
+    container.innerHTML = 'No runs yet.';
+    updateTotals();
+    return;
+  }
+
+  container.innerHTML = runs.map((run) => `
+    <div class="run">
+      <div><strong>${run.date}</strong> · Train ${run.train}</div>
+      <div>Actual: ${run.report} - ${run.release} · ${format(run.actualHours)} hrs · $${format(run.pay)}</div>
+      <div>Scheduled: ${format(run.scheduledHours)} hrs · Variance: ${format(run.actualHours - run.scheduledHours)}</div>
+      <div>${run.notes || ''}</div>
+      <div style="margin-top:8px;">
+        <button class="secondary" onclick="editRun('${run.id}')">Edit</button>
+        <button onclick="deleteRun('${run.id}')">Delete</button>
+      </div>
+    </div>
+  `).join('');
+
+  updateTotals();
+}
+
+applyProState();
+renderRuns();
+</script>
+
+</body>
+</html>
