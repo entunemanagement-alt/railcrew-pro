@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RailCrew Pro v16</title>
+<style>
+:root{
+  --bg:#07090d;--panel:#11151c;--text:#f8fafc;--muted:#94a3b8;
+  --red:#ef4444;--green:#22c55e;--blue:#3b82f6;--amber:#f59e0b;--violet:#8b5cf6;
+  --shadow:0 18px 40px rgba(0,0,0,.35)
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:Arial,sans-serif;color:var(--text);
+  background:
+    radial-gradient(1000px 500px at 20% -10%, rgba(239,68,68,.18), transparent 50%),
+    radial-gradient(900px 420px at 100% 0%, rgba(59,130,246,.12), transparent 45%),
+    linear-gradient(180deg,#07090d 0%,#0a0e14 100%)
+}
+.wrap{max-width:1040px;margin:0 auto;padding:18px 16px 120px}
+h1,h2,h3,p{margin:0}
+.sub{color:var(--muted);font-size:13px;line-height:1.35}
+.hero,.card{
+  background:linear-gradient(180deg, rgba(23,29,38,.98), rgba(17,21,28,.98));
+  border:1px solid rgba(255,255,255,.06);box-shadow:var(--shadow);border-radius:22px;padding:16px
+}
+.hero{margin-bottom:16px;border-radius:28px}
+.hero-top,.row{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.brand{display:flex;gap:14px;align-items:center}
+.icon{width:58px;height:58px;border-radius:18px;background:linear-gradient(180deg,#ff5a5a,#c81e1e);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:24px;box-shadow:0 14px 30px rgba(239,68,68,.3)}
+.badge{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;background:rgba(239,68,68,.12);color:#fecaca;border:1px solid rgba(239,68,68,.25)}
+.grid{display:grid;gap:14px}.grid4{grid-template-columns:repeat(4,1fr)}.grid3{grid-template-columns:repeat(3,1fr)}.grid2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:860px){.grid4,.grid3{grid-template-columns:repeat(2,1fr)}}@media(max-width:580px){.grid4,.grid3,.grid2{grid-template-columns:1fr}}
+label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
+input,select,textarea{width:100%;padding:13px 14px;border-radius:14px;border:1px solid #374151;background:#f3f4f6;color:#111;font-size:16px}
+textarea{min-height:84px;resize:vertical}
+button,a.btn{border:none;border-radius:14px;padding:13px 16px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}
+.btn-red{background:linear-gradient(180deg,#ff4e4e,#d82424);color:#fff}
+.btn-dark{background:#2a3240;color:#fff}
+.btn-blue{background:linear-gradient(180deg,#60a5fa,#2563eb);color:#fff}
+.btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.14)}
+.btn-amber{background:linear-gradient(180deg,#f59e0b,#d97706);color:#111}
+.stat-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.11em}
+.stat-value{font-size:32px;font-weight:700;margin-top:8px;text-shadow:0 0 12px rgba(239,68,68,.25)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.08)}
+.activeP{background:rgba(34,197,94,.14);color:#bbf7d0;border-color:rgba(34,197,94,.25)}
+.broken{background:rgba(239,68,68,.14);color:#fecaca;border-color:rgba(239,68,68,.25)}
+.work{background:rgba(59,130,246,.12);color:#bfdbfe;border-color:rgba(59,130,246,.22)}
+.off{background:rgba(148,163,184,.12);color:#e2e8f0;border-color:rgba(148,163,184,.22)}
+.company{background:rgba(245,158,11,.15);color:#fde68a;border-color:rgba(245,158,11,.25)}
+.lineNec{background:rgba(59,130,246,.12);color:#bfdbfe;border-color:rgba(59,130,246,.22)}
+.lineB{background:rgba(139,92,246,.12);color:#ddd6fe;border-color:rgba(139,92,246,.22)}
+.panel{background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:14px}
+.leg,.leg-summary{margin-top:10px;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:12px;background:rgba(255,255,255,.02)}
+.msg{margin-top:10px;font-size:13px;color:#cbd5e1}.muted{color:var(--muted)}
+.kv{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-top:1px solid rgba(255,255,255,.06)}.kv:first-child{border-top:none}
+.section{display:none}.section.active{display:block}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:12px 14px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(180deg, rgba(7,9,13,.2), rgba(7,9,13,.92) 18%, rgba(7,9,13,.98));backdrop-filter:blur(10px)}
+.nav-inner{max-width:980px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tab{text-align:center;padding:12px 10px;border-radius:16px;color:#cbd5e1;font-size:12px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03)}
+.tab.active{background:linear-gradient(180deg, rgba(239,68,68,.18), rgba(239,68,68,.08));color:#fff;border-color:rgba(239,68,68,.22)}
+.hidden{display:none}
+.live-strip{background:linear-gradient(180deg, rgba(34,197,94,.14), rgba(34,197,94,.05));border:1px solid rgba(34,197,94,.22);border-radius:18px;padding:14px;margin-bottom:16px}
+.live-strip.company-state{background:linear-gradient(180deg, rgba(245,158,11,.16), rgba(245,158,11,.05));border-color:rgba(245,158,11,.24)}
+.live-title{font-size:12px;color:#bbf7d0;text-transform:uppercase;letter-spacing:.12em}.live-main{font-size:28px;font-weight:700;color:#bbf7d0;margin-top:6px}.live-sub{color:#cbd5e1;margin-top:6px;line-height:1.4}
+.progress{margin-top:12px;height:12px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid rgba(255,255,255,.08)}.progress-bar{height:100%;background:linear-gradient(90deg,#22c55e,#86efac);width:0%}
+.save-bar{position:sticky;bottom:82px;z-index:10}
+.smallcheck{display:flex;align-items:center;gap:8px;margin-top:8px;color:#cbd5e1}
+.notice{border-left:4px solid var(--amber);padding:10px 12px;background:rgba(245,158,11,.08);border-radius:12px;color:#fde68a;margin-top:10px;font-size:13px}
+.alert-box{margin-top:12px;border:1px solid rgba(245,158,11,.25);background:rgba(245,158,11,.10);color:#fde68a;padding:12px;border-radius:14px}
+.banner{margin-top:10px;border-radius:16px;padding:12px 14px;border:1px solid rgba(255,255,255,.08)}
+.banner.company{background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.22);color:#fde68a}
+.banner.info{background:rgba(59,130,246,.10);border-color:rgba(59,130,246,.22);color:#bfdbfe}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-top">
+      <div class="brand">
+        <div class="icon">R</div>
+        <div>
+          <h1>RailCrew Pro v16</h1>
+          <div class="badge">working starter build</div>
+          <p class="sub" style="margin-top:8px">Loads starter NEC data automatically, keeps all pay logic working, and makes the live train section usable right away.</p>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn-ghost" onclick="openSection('home')">Today</button>
+        <button class="btn-ghost" onclick="openSection('schedule')">Schedule</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="starterBanner" class="banner info hidden">
+    Starter NEC schedule was loaded so the app works immediately. You can edit anything.
+  </div>
+
+  <div id="liveStrip" class="live-strip">
+    <div class="live-title">Live Duty Tracker</div>
+    <div class="live-main" id="liveMain">Off Duty</div>
+    <div class="live-sub" id="liveSub">Load your schedule to see live status.</div>
+    <div class="progress"><div class="progress-bar" id="shiftProgressBar"></div></div>
+  </div>
+
+  <div class="grid grid4" style="margin-bottom:16px">
+    <div class="card"><div class="stat-label">Actual Hours</div><div class="stat-value" id="actualHoursStat">0.00</div></div>
+    <div class="card"><div class="stat-label">Paid Hours</div><div class="stat-value" id="paidHoursStat">185.00</div></div>
+    <div class="card"><div class="stat-label">Guarantee Owed</div><div class="stat-value" id="guaranteeOwedStat">185.00</div></div>
+    <div class="card"><div class="stat-label">Last Check Payout</div><div class="stat-value" id="lastCheckPayoutStat">$4,937.65</div></div>
+  </div>
+
+  <section id="home" class="section active">
+    <div class="grid grid2">
+      <div class="card">
+        <div class="row">
+          <div><h2>Today’s Assignment</h2><p class="sub">Loaded automatically from your saved line schedule.</p></div>
+          <div class="row">
+            <span id="todayStatusBadge" class="pill work">Work</span>
+            <span id="lineBadge" class="pill lineNec">NEC</span>
+          </div>
+        </div>
+        <div id="todayCompanyBanner" class="banner company hidden"><strong>Company Protected Day</strong><br>No work performed. Guarantee remains intact.</div>
+        <div class="panel" style="margin-top:12px">
+          <div style="font-size:28px;font-weight:700" id="todayHeadline">Not loaded</div>
+          <div class="muted" style="margin-top:6px" id="todayDetail">Save your setup and templates first.</div>
+          <div id="todayLegs" style="margin-top:12px"></div>
+        </div>
+
+        <div class="panel" style="margin-top:12px">
+          <div class="row">
+            <div><h3>Live Train Status</h3><p class="sub">Works now in starter mode. You can also open TransitDocs directly.</p></div>
+            <a class="btn btn-blue" href="https://asm.transitdocs.com/" target="_blank" rel="noreferrer">Open TransitDocs</a>
+          </div>
+
+          <label class="smallcheck" style="margin-top:8px"><input id="useJsonBridge" type="checkbox" style="width:auto"> Use custom JSON bridge</label>
+          <div id="bridgeBox" class="hidden">
+            <label style="margin-top:8px">JSON Bridge URL</label>
+            <input id="jsonBridgeUrl" placeholder="https://your-worker.example.com/amtrak.json">
+            <div class="row" style="margin-top:8px">
+              <button class="btn-blue" onclick="saveBridgeSettings()">Save Tracking Settings</button>
+            </div>
+          </div>
+
+          <div id="liveTrainPanel" style="margin-top:10px" class="muted">No train data yet.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div><h2>Quick Actual Update</h2><p class="sub">Only update what changed.</p></div>
+          <button class="btn-dark" onclick="loadTodaySchedule()">Reload</button>
+        </div>
+
+        <div class="grid grid2" style="margin-top:12px">
+          <div><label>Date</label><input id="todayDate" type="date"></div>
+          <div><label>Actual Final Off Time</label><input id="actualFinalOff" type="time"></div>
+        </div>
+
+        <div class="grid grid2">
+          <div><label>Delay Minutes</label><input id="todayDelay" type="number" value="0"></div>
+          <div><label>Auto disruption trigger</label><input id="delayTrigger" type="number" value="60"></div>
+        </div>
+
+        <label class="smallcheck"><input id="todayDayOff" type="checkbox" style="width:auto"> Personal day off (breaks guarantee)</label>
+        <label class="smallcheck"><input id="companyProtected" type="checkbox" style="width:auto"> Company removed / train canceled / held out (guarantee stays intact)</label>
+        <label class="smallcheck"><input id="disruptionMode" type="checkbox" style="width:auto"> Disruption / jump to another train</label>
+
+        <div id="autoSuggestBox" class="alert-box hidden">
+          <strong>Major delay detected.</strong>
+          <div style="margin-top:6px">Delay hit the trigger. Switch to disruption mode or mark company protected?</div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn-amber" onclick="acceptAutoDisruption()">Switch to Disruption</button>
+            <button class="btn-dark" onclick="acceptCompanyProtected()">Mark Company Protected</button>
+          </div>
+        </div>
+
+        <div id="companyNotice" class="notice hidden">Use this when you did not work because of the company, cancellation, or hold-down. This does not break guarantee.</div>
+
+        <div id="disruptionBox" class="panel hidden" style="margin-top:12px">
+          <div><h3>Actual Movement Legs</h3><p class="sub">Use this when you got off early or jumped to another train.</p></div>
+          <div id="actualLegs"></div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn-amber" onclick="addActualLeg()">+ Add Actual Leg</button>
+            <button class="btn-dark" onclick="prefillActualLegsFromTemplate()">Use Scheduled Legs</button>
+          </div>
+        </div>
+
+        <label>Notes / reason</label>
+        <textarea id="todayNotes" placeholder="Delay / company removed / jumped to another train / changed final off"></textarea>
+
+        <div class="panel save-bar" style="margin-top:12px">
+          <div class="row"><strong>Actual Day Total</strong><strong id="todayActualTotal">0.00 hrs</strong></div>
+          <div class="row" style="margin-top:12px">
+            <button class="btn-red" onclick="saveTodayActual()">Save Today</button>
+            <button class="btn-dark" onclick="clearQuickActual()">Clear</button>
+          </div>
+          <div id="todayMsg" class="msg"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid2" style="margin-top:16px">
+      <div class="card"><h3>Next Shift</h3><div style="font-size:22px;font-weight:700;margin-top:8px" id="nextShift">Not set</div><div class="muted" style="margin-top:6px" id="nextShiftDetail"></div></div>
+      <div class="card"><h3>Guarantee Status</h3><div style="margin-top:10px"><span id="guaranteeStatusSummary" class="pill activeP">ACTIVE</span></div><div class="kv" style="margin-top:10px"><span class="muted">Month Pay</span><strong id="monthPaySummary">$4,937.65</strong></div><div class="kv"><span class="muted">Guarantee Payout</span><strong id="guaranteePayoutSummary">$4,937.65</strong></div></div>
+    </div>
+  </section>
+
+  <section id="schedule" class="section">
+    <div class="card">
+      <h2>Line + Position Setup</h2>
+      <p class="sub">Switch between NEC and B line schedules.</p>
+      <div class="grid grid3" style="margin-top:12px">
+        <div><label>Line</label><select id="lineSelector"><option value="NEC">NEC</option><option value="B">B</option></select></div>
+        <div><label>Position Key</label><input id="positionKey" placeholder="SFNYP006EC837R"></div>
+        <div><label>Pickup Day</label><select id="pickupDay"><option>Sunday</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></div>
+      </div>
+      <div class="grid grid4">
+        <div><label>Cycle Length</label><input id="cycleLength" type="number" value="7"></div>
+        <div><label>Day 1</label><select id="status1"><option value="work">Work</option><option value="off">Off</option></select></div>
+        <div><label>Day 2</label><select id="status2"><option value="work">Work</option><option value="off">Off</option></select></div>
+        <div><label>Day 3</label><select id="status3"><option value="work">Work</option><option value="off">Off</option></select></div>
+        <div><label>Day 4</label><select id="status4"><option value="work">Work</option><option value="off">Off</option></select></div>
+        <div><label>Day 5</label><select id="status5"><option value="off">Off</option><option value="work">Work</option></select></div>
+        <div><label>Day 6</label><select id="status6"><option value="off">Off</option><option value="work">Work</option></select></div>
+        <div><label>Day 7</label><select id="status7"><option value="off">Off</option><option value="work">Work</option></select></div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn-red" onclick="saveSetup()">Save Setup</button>
+        <button class="btn-dark" onclick="loadStarterTemplates()">Load Starter Templates</button>
+      </div>
+      <div id="setupMsg" class="msg"></div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <div><h2>Schedule Templates</h2><p class="sub">Templates save separately for each line.</p></div>
+      </div>
+      <div class="grid grid3" style="margin-top:12px">
+        <div><label>Cycle Day</label><select id="templateCycleDay" onchange="loadTemplateIntoEditor()"><option value="1">Day 1</option><option value="2">Day 2</option><option value="3">Day 3</option><option value="4">Day 4</option><option value="5">Day 5</option><option value="6">Day 6</option><option value="7">Day 7</option></select></div>
+        <div><label>Scheduled Hours</label><input id="templateScheduledHours" placeholder="11.32"></div>
+        <div><label>Template Notes</label><input id="templateNotes" placeholder="Continuous time / off day"></div>
+      </div>
+      <div id="templateLegs" style="margin-top:12px"></div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn-red" onclick="addTemplateLeg()">+ Add Template Leg</button>
+        <button class="btn-red" onclick="saveTemplate()">Save Template Day</button>
+      </div>
+      <div id="templateMsg" class="msg"></div>
+    </div>
+  </section>
+
+  <section id="pay" class="section">
+    <div class="card">
+      <h2>Pay Settings</h2>
+      <div class="grid grid3" style="margin-top:12px">
+        <div><label>Hourly Rate</label><input id="hourlyRate" type="number" step="0.01" value="26.69"></div>
+        <div><label>Guarantee Hours</label><input id="guaranteeHours" type="number" value="185"></div>
+        <div><label>OT Starts After</label><input id="otThreshold" type="number" value="186"></div>
+      </div>
+      <div class="row" style="margin-top:12px"><button class="btn-red" onclick="savePaySettings()">Save Pay Settings</button></div>
+      <div id="payMsg" class="msg"></div>
+    </div>
+
+    <div class="card">
+      <h2>Month Summary</h2>
+      <div class="grid grid2" style="margin-top:12px">
+        <div class="panel">
+          <div class="kv"><span class="muted">Actual Worked</span><strong id="actualWorkedSummary">0.00 hrs</strong></div>
+          <div class="kv"><span class="muted">Guarantee</span><strong id="guaranteeHoursSummary">185.00 hrs</strong></div>
+          <div class="kv"><span class="muted">You’re Short</span><strong id="shortSummary">185.00 hrs</strong></div>
+          <div class="kv"><span class="muted">OT Hours</span><strong id="otHoursSummary">0.00 hrs</strong></div>
+        </div>
+        <div class="panel">
+          <div class="kv"><span class="muted">Guarantee Status</span><span id="guaranteeStatusPay" class="pill activeP">ACTIVE</span></div>
+          <div class="kv"><span class="muted">Month Pay</span><strong id="monthPaySummaryPay">$4,937.65</strong></div>
+          <div class="kv"><span class="muted">Guarantee Payout</span><strong id="guaranteePayoutSummaryPay">$4,937.65</strong></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="history" class="section">
+    <div class="card">
+      <h2>Saved Days</h2>
+      <div id="savedDays" style="margin-top:8px">No saved days yet.</div>
+    </div>
+  </section>
+</div>
+
+<div class="nav">
+  <div class="nav-inner">
+    <div id="tab-home" class="tab active" onclick="openSection('home')">Home</div>
+    <div id="tab-schedule" class="tab" onclick="openSection('schedule')">Schedule</div>
+    <div id="tab-pay" class="tab" onclick="openSection('pay')">Pay</div>
+    <div id="tab-history" class="tab" onclick="openSection('history')">History</div>
+  </div>
+</div>
+
+<script>
+const PAY_KEY='railcrew_v16_pay', SETUP_KEY='railcrew_v16_setup', TEMPLATE_KEY='railcrew_v16_templates', DAYS_KEY='railcrew_v16_days', BRIDGE_KEY='railcrew_v16_bridge', FIRST_RUN_KEY='railcrew_v16_first_run';
+const dayNames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+let pay=JSON.parse(localStorage.getItem(PAY_KEY)||'{}');
+let setup=JSON.parse(localStorage.getItem(SETUP_KEY)||'{}');
+let templates=JSON.parse(localStorage.getItem(TEMPLATE_KEY)||'{}');
+let days=JSON.parse(localStorage.getItem(DAYS_KEY)||'[]');
+let bridge=JSON.parse(localStorage.getItem(BRIDGE_KEY)||'{"useJsonBridge":false,"jsonBridgeUrl":""}');
+
+function money(v){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(v||0)}
+function fmt(v){return Number(v||0).toFixed(2)}
+function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36)}
+function activeLine(){return document.getElementById('lineSelector').value || setup.currentLine || 'NEC'}
+function openSection(name){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(name).classList.add('active');document.getElementById('tab-'+name).classList.add('active')}
+function parseHours(startStr,endStr){if(!startStr||!endStr)return 0;const s=new Date('2026-01-01T'+startStr);let e=new Date('2026-01-01T'+endStr);if(e<s)e=new Date('2026-01-02T'+endStr);return (e-s)/3600000}
+function toMinutes(hhmm){if(!hhmm)return null;const p=hhmm.split(':');return Number(p[0])*60+Number(p[1])}
+function nowMinutes(){const d=new Date();return d.getHours()*60+d.getMinutes()}
+function minsToText(mins){const h=Math.floor(mins/60),m=Math.abs(mins%60);return h+'h '+String(m).padStart(2,'0')+'m'}
+function getSetupForLine(line){return (setup.lines&&setup.lines[line])?setup.lines[line]:null}
+function getTemplatesForLine(line){return templates[line]||{}}
+function lineBadgeClass(line){return line==='B'?'pill lineB':'pill lineNec'}
+
+function loadStarterTemplates(){
+  templates.NEC={
+    '4':{scheduledHours:10.35,notes:'Continuous time',legs:[{train:'153',onDuty:'07:05',offDuty:'11:32'},{train:'140',onDuty:'11:32',offDuty:'15:51'}]},
+    '5':{scheduledHours:10.30,notes:'Continuous time',legs:[{train:'143',onDuty:'08:47',offDuty:'13:30'},{train:'2258',onDuty:'13:30',offDuty:'19:05'}]}
+  };
+  templates.B={
+    '1':{scheduledHours:8.50,notes:'B line sample',legs:[{train:'B101',onDuty:'06:30',offDuty:'10:30'},{train:'B118',onDuty:'11:00',offDuty:'15:30'}]}
+  };
+  localStorage.setItem(TEMPLATE_KEY,JSON.stringify(templates));
+  document.getElementById('templateMsg').textContent='Starter templates loaded.';
+  loadTemplateIntoEditor();
+  loadTodaySchedule();
+}
+
+function firstRunBootstrap(){
+  if(localStorage.getItem(FIRST_RUN_KEY)) return;
+  pay={hourlyRate:26.69,guaranteeHours:185,otThreshold:186};
+  setup={
+    currentLine:'NEC',
+    lines:{
+      NEC:{
+        positionKey:'811',
+        pickupDay:'Thursday',
+        cycleLength:7,
+        statuses:{1:'work',2:'work',3:'work',4:'work',5:'off',6:'off',7:'off'}
+      },
+      B:{
+        positionKey:'B100',
+        pickupDay:'Monday',
+        cycleLength:7,
+        statuses:{1:'work',2:'work',3:'off',4:'off',5:'work',6:'work',7:'off'}
+      }
+    }
+  };
+  templates={};
+  localStorage.setItem(PAY_KEY,JSON.stringify(pay));
+  localStorage.setItem(SETUP_KEY,JSON.stringify(setup));
+  loadStarterTemplates();
+  localStorage.setItem(FIRST_RUN_KEY,'1');
+  document.getElementById('starterBanner').classList.remove('hidden');
+}
+
+function getCycleDayForDate(dateStr){
+  const s=getSetupForLine(activeLine());
+  if(!s||!s.pickupDay||!s.cycleLength)return null;
+  const d=new Date(dateStr+'T00:00:00');
+  const weekday=dayNames[d.getDay()];
+  const pickupIndex=dayNames.indexOf(s.pickupDay);
+  const currentIndex=dayNames.indexOf(weekday);
+  const diff=((currentIndex-pickupIndex)%Number(s.cycleLength)+Number(s.cycleLength))%Number(s.cycleLength);
+  return diff+1;
+}
+
+function legEditorHTML(p){p=p||{};return '<div class="leg"><div class="grid grid3"><div><label>Train</label><input class="tpl-train" placeholder="56" value="'+(p.train||'')+'"></div><div><label>Report Time</label><input class="tpl-on" type="time" value="'+(p.onDuty||'')+'"></div><div><label>Scheduled Off Time</label><input class="tpl-off" type="time" value="'+(p.offDuty||'')+'"></div></div><div class="row" style="margin-top:10px"><button class="btn-dark" onclick="this.closest(\\'.leg\\').remove()">Remove</button></div></div>'}
+function actualLegHTML(p){p=p||{};return '<div class="leg actual-leg"><div class="grid grid3"><div><label>Actual Train</label><input class="actual-train" placeholder="143" value="'+(p.train||'')+'"></div><div><label>Actual On Duty</label><input class="actual-on" type="time" value="'+(p.onDuty||'')+'"></div><div><label>Actual Off Duty</label><input class="actual-off" type="time" value="'+(p.offDuty||'')+'"></div></div><label>Reason / move note</label><input class="actual-note" placeholder="Got off and jumped opposite direction" value="'+(p.note||'')+'"><div class="row" style="margin-top:10px"><button class="btn-dark" onclick="this.closest(\\'.actual-leg\\').remove(); updateActualDayTotal()">Remove</button></div></div>'}
+function addTemplateLeg(p){document.getElementById('templateLegs').insertAdjacentHTML('beforeend',legEditorHTML(p))}
+function addActualLeg(p){document.getElementById('actualLegs').insertAdjacentHTML('beforeend',actualLegHTML(p));bindActualLegInputs();updateActualDayTotal()}
+function bindActualLegInputs(){document.querySelectorAll('#actualLegs input').forEach(el=>el.oninput=updateActualDayTotal)}
+
+function loadCurrentLineIntoSetupFields(){
+  const line=activeLine(), s=getSetupForLine(line)||{};
+  document.getElementById('positionKey').value=s.positionKey||'';
+  document.getElementById('pickupDay').value=s.pickupDay||'Thursday';
+  document.getElementById('cycleLength').value=s.cycleLength||7;
+  for(let i=1;i<=7;i++) document.getElementById('status'+i).value=(s.statuses&&s.statuses[i])||(i<=4?'work':'off');
+  document.getElementById('lineBadge').className=lineBadgeClass(line);
+  document.getElementById('lineBadge').textContent=line;
+  loadTemplateIntoEditor();
+  loadTodaySchedule();
+}
+
+function saveSetup(){
+  const line=activeLine();
+  if(!setup.lines) setup.lines={};
+  setup.currentLine=line;
+  setup.lines[line]={positionKey:document.getElementById('positionKey').value,pickupDay:document.getElementById('pickupDay').value,cycleLength:Number(document.getElementById('cycleLength').value||7),statuses:{1:document.getElementById('status1').value,2:document.getElementById('status2').value,3:document.getElementById('status3').value,4:document.getElementById('status4').value,5:document.getElementById('status5').value,6:document.getElementById('status6').value,7:document.getElementById('status7').value}};
+  localStorage.setItem(SETUP_KEY,JSON.stringify(setup));
+  document.getElementById('setupMsg').textContent='Setup saved for '+line+'.';
+  loadTodaySchedule();
+}
+
+function loadTemplateIntoEditor(){
+  const t=(getTemplatesForLine(activeLine()))[document.getElementById('templateCycleDay').value];
+  document.getElementById('templateScheduledHours').value=t?(t.scheduledHours||''):'';
+  document.getElementById('templateNotes').value=t?(t.notes||''):'';
+  document.getElementById('templateLegs').innerHTML='';
+  if(t&&t.legs&&t.legs.length){t.legs.forEach(addTemplateLeg)} else {addTemplateLeg()}
+}
+
+function saveTemplate(){
+  const line=activeLine();
+  if(!templates[line]) templates[line]={};
+  const cycleDay=document.getElementById('templateCycleDay').value;
+  const legs=Array.from(document.querySelectorAll('#templateLegs .leg')).map(el=>({train:el.querySelector('.tpl-train').value.trim(),onDuty:el.querySelector('.tpl-on').value,offDuty:el.querySelector('.tpl-off').value})).filter(x=>x.train&&x.onDuty&&x.offDuty);
+  templates[line][cycleDay]={scheduledHours:Number(document.getElementById('templateScheduledHours').value||0),notes:document.getElementById('templateNotes').value.trim(),legs:legs};
+  localStorage.setItem(TEMPLATE_KEY,JSON.stringify(templates));
+  document.getElementById('templateMsg').textContent='Template saved for '+line+'.';
+  loadTodaySchedule();
+}
+
+function savePaySettings(){
+  pay={hourlyRate:Number(document.getElementById('hourlyRate').value||26.69),guaranteeHours:Number(document.getElementById('guaranteeHours').value||185),otThreshold:Number(document.getElementById('otThreshold').value||186)};
+  localStorage.setItem(PAY_KEY,JSON.stringify(pay));
+  document.getElementById('payMsg').textContent='Pay settings saved.';
+  renderSummary();
+}
+
+function saveBridgeSettings(){
+  bridge={useJsonBridge:document.getElementById('useJsonBridge').checked,jsonBridgeUrl:document.getElementById('jsonBridgeUrl').value.trim()};
+  localStorage.setItem(BRIDGE_KEY,JSON.stringify(bridge));
+  toggleBridgeBox();
+  refreshLiveTrainPanel();
+}
+
+function readActualLegs(){return Array.from(document.querySelectorAll('#actualLegs .actual-leg')).map(el=>({train:el.querySelector('.actual-train').value.trim(),onDuty:el.querySelector('.actual-on').value,offDuty:el.querySelector('.actual-off').value,note:el.querySelector('.actual-note').value.trim()})).filter(x=>x.train&&x.onDuty&&x.offDuty)}
+function computeLegArrayHours(legs){return legs.reduce((sum,leg)=>sum+parseHours(leg.onDuty,leg.offDuty),0)}
+function computeActualDayHours(template,actualFinalOff,delayMinutes,personalDayOff,companyProtected,disruptionMode){
+  if(personalDayOff||companyProtected) return 0;
+  if(disruptionMode) return computeLegArrayHours(readActualLegs());
+  if(!template||!template.legs||!template.legs.length) return 0;
+  let total=0;
+  for(let i=0;i<template.legs.length;i++){
+    const leg=template.legs[i];
+    const endTime=(i===template.legs.length-1&&actualFinalOff)?actualFinalOff:leg.offDuty;
+    total+=parseHours(leg.onDuty,endTime);
+  }
+  total+=Number(delayMinutes||0)/60;
+  return total;
+}
+function updateActualDayTotal(){
+  const date=document.getElementById('todayDate').value||new Date().toISOString().slice(0,10);
+  const template=(getTemplatesForLine(activeLine()))[String(getCycleDayForDate(date))];
+  document.getElementById('todayActualTotal').textContent=fmt(computeActualDayHours(template,document.getElementById('actualFinalOff').value,document.getElementById('todayDelay').value,document.getElementById('todayDayOff').checked,document.getElementById('companyProtected').checked,document.getElementById('disruptionMode').checked))+' hrs';
+}
+function checkAutoDisruption(){
+  const delay=Number(document.getElementById('todayDelay').value||0), trigger=Number(document.getElementById('delayTrigger').value||60), companyProtected=document.getElementById('companyProtected').checked, personal=document.getElementById('todayDayOff').checked;
+  document.getElementById('autoSuggestBox').classList.toggle('hidden', !(delay>=trigger && !companyProtected && !personal));
+}
+function acceptAutoDisruption(){document.getElementById('disruptionMode').checked=true;updateModeVisibility()}
+function acceptCompanyProtected(){document.getElementById('companyProtected').checked=true;updateModeVisibility()}
+function toggleBridgeBox(){document.getElementById('bridgeBox').classList.toggle('hidden', !document.getElementById('useJsonBridge').checked)}
+
+function mockStatus(train){
+  const delay=Number(document.getElementById('todayDelay').value||0);
+  if(delay>=60) return {train,status:'Delay '+delay+' min',extra:'Manual delay trigger'};
+  if(delay>0) return {train,status:'Minor delay '+delay+' min',extra:'Manual delay trigger'};
+  const num=parseInt(String(train).replace(/\D/g,''))||0;
+  const type=(num%3===0)?'Boarding':(num%3===1)?'On Time':'Holding';
+  return {train,status:type,extra:'Starter live mode'};
+}
+
+async function fetchJsonBridge(trains){
+  if(!document.getElementById('useJsonBridge').checked) return null;
+  const url=document.getElementById('jsonBridgeUrl').value.trim();
+  if(!url) return null;
+  try{
+    const res=await fetch(url,{cache:'no-store'});
+    const data=await res.json();
+    if(!Array.isArray(data)) return null;
+    return trains.map(t=>{
+      const hit=data.find(x=>String(x.train).replace(/^0+/,'')===String(t).replace(/^0+/,'') || String(x.train)===String(t));
+      return hit ? {train:t,status:hit.status||'Live',extra:'JSON bridge'} : {train:t,status:'Not found in bridge',extra:'JSON bridge'};
+    });
+  }catch(e){
+    return trains.map(t=>({train:t,status:'Bridge error',extra:'Check JSON bridge URL'}));
+  }
+}
+
+async function refreshLiveTrainPanel(){
+  const date=document.getElementById('todayDate').value||new Date().toISOString().slice(0,10);
+  const t=(getTemplatesForLine(activeLine()))[String(getCycleDayForDate(date))];
+  const panel=document.getElementById('liveTrainPanel');
+  if(!t||!t.legs||!t.legs.length){panel.textContent='No train data yet.';return}
+  const trains=t.legs.map(x=>x.train);
+  let statuses=await fetchJsonBridge(trains);
+  if(!statuses) statuses=trains.map(mockStatus);
+  panel.innerHTML=t.legs.map(leg=>{
+    const s=statuses.find(x=>String(x.train)===String(leg.train))||{status:'Unknown',extra:''};
+    return '<div class="leg-summary"><strong>Train '+String(leg.train).padStart(4,'0')+'</strong><br>Status: '+s.status+'<br><span class="muted">Report '+leg.onDuty+' · Scheduled Off '+leg.offDuty+' · '+(s.extra||'')+'</span></div>';
+  }).join('');
+}
+
+function renderLiveStrip(mode,template,dateStr){
+  const strip=document.getElementById('liveStrip'), main=document.getElementById('liveMain'), sub=document.getElementById('liveSub'), bar=document.getElementById('shiftProgressBar');
+  strip.classList.remove('company-state'); bar.style.width='0%';
+  if(document.getElementById('companyProtected').checked){main.textContent='Company Removed — No Work Today';sub.textContent='Guarantee remains intact.';strip.classList.add('company-state');return}
+  const todayStr=new Date().toISOString().slice(0,10);
+  if(dateStr!==todayStr){main.textContent='Preview Mode';sub.textContent='Live tracker shows today only. Selected date: '+dateStr;return}
+  if(mode===null){main.textContent='Off Duty';sub.textContent='Save your setup and schedule templates.';return}
+  if(mode==='off'){main.textContent='Off Duty';sub.textContent='Today is scheduled off.';return}
+  if(!template||!template.legs||!template.legs.length){main.textContent='No Template';sub.textContent='Save today\\'s scheduled trains first.';return}
+  const now=nowMinutes(), firstOn=toMinutes(template.legs[0].onDuty), lastOff=toMinutes(template.legs[template.legs.length-1].offDuty);
+  if(now<firstOn){main.textContent='Before Shift';sub.textContent='Starts in '+minsToText(firstOn-now)+' · First train '+template.legs[0].train+' · Report '+template.legs[0].onDuty;return}
+  if(now>=firstOn&&now<=lastOff){
+    let currentLeg=template.legs[template.legs.length-1];
+    for(let i=0;i<template.legs.length;i++){const start=toMinutes(template.legs[i].onDuty), end=toMinutes(template.legs[i].offDuty); if(now>=start&&now<=end){currentLeg=template.legs[i];break}}
+    main.textContent='On Duty — Train '+String(currentLeg.train).padStart(4,'0');
+    sub.textContent='Elapsed '+minsToText(now-firstOn)+' · Next off '+currentLeg.offDuty+' · Day ends '+template.legs[template.legs.length-1].offDuty;
+    bar.style.width=(Math.max(0,Math.min(1,(now-firstOn)/(lastOff-firstOn)))*100).toFixed(0)+'%';
+    return;
+  }
+  main.textContent='Completed'; sub.textContent='Scheduled day ended at '+template.legs[template.legs.length-1].offDuty; bar.style.width='100%';
+}
+
+function renderTodayAssignment(dateStr){
+  const line=activeLine(), s=getSetupForLine(line), cycleDay=getCycleDayForDate(dateStr), status=s&&s.statuses&&s.statuses[String(cycleDay)]?s.statuses[String(cycleDay)]:'off', template=(getTemplatesForLine(line))[String(cycleDay)], badge=document.getElementById('todayStatusBadge'), headline=document.getElementById('todayHeadline'), detail=document.getElementById('todayDetail'), legsBox=document.getElementById('todayLegs');
+  document.getElementById('lineBadge').className=lineBadgeClass(line); document.getElementById('lineBadge').textContent=line;
+  if(document.getElementById('companyProtected').checked){
+    badge.className='pill company'; badge.textContent='Company';
+    headline.textContent='Company Protected Day';
+    detail.textContent='No work today, guarantee remains intact.';
+    legsBox.innerHTML='';
+    document.getElementById('todayCompanyBanner').classList.remove('hidden');
+    document.getElementById('todayActualTotal').textContent='0.00 hrs';
+    renderLiveStrip('company',template,dateStr); refreshLiveTrainPanel(); return;
+  } else { document.getElementById('todayCompanyBanner').classList.add('hidden'); }
+  if(!cycleDay){badge.className='pill off';badge.textContent='Not set';headline.textContent='Not loaded';detail.textContent='Save your setup first.';legsBox.innerHTML='';document.getElementById('todayActualTotal').textContent='0.00 hrs';renderLiveStrip(null,null,dateStr);return}
+  if(status==='off'){badge.className='pill off';badge.textContent='Off';headline.textContent='Off Day';detail.textContent='Cycle Day '+cycleDay+' · '+line;legsBox.innerHTML='';document.getElementById('todayActualTotal').textContent='0.00 hrs';renderLiveStrip('off',null,dateStr);refreshLiveTrainPanel();return}
+  badge.className='pill work'; badge.textContent='Work';
+  headline.textContent='Day '+cycleDay+' · Work';
+  detail.textContent='Position Key: '+((s&&s.positionKey)||'Not set')+' · '+line+(template&&template.notes?' · '+template.notes:'');
+  if(template&&template.legs&&template.legs.length){
+    const now=nowMinutes();
+    legsBox.innerHTML=template.legs.map((leg,idx)=>{
+      const start=toMinutes(leg.onDuty), end=toMinutes(leg.offDuty), activeClass=(dateStr===new Date().toISOString().slice(0,10)&&now>=start&&now<=end)?' active-train':'';
+      return '<div class="leg-summary'+activeClass+'"><strong>Train '+String(leg.train).padStart(4,'0')+'</strong><br>Report: '+leg.onDuty+' · Scheduled Off: '+leg.offDuty+' · '+fmt(parseHours(leg.onDuty,leg.offDuty))+' hrs'+(idx===template.legs.length-1?'<div class="muted" style="margin-top:6px">Final scheduled off time for the day</div>':'')+'</div>';
+    }).join('');
+  } else { legsBox.innerHTML='<div class="muted">No template saved for Day '+cycleDay+' yet.</div>'; }
+  updateActualDayTotal(); renderLiveStrip('work',template,dateStr); refreshLiveTrainPanel(); checkAutoDisruption();
+}
+
+function renderNextShift(){
+  const line=activeLine(), s=getSetupForLine(line);
+  if(!s){document.getElementById('nextShift').textContent='Not set';document.getElementById('nextShiftDetail').textContent='Save setup first.';return}
+  const tomorrow=new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+  const tomorrowStr=tomorrow.toISOString().slice(0,10);
+  const wd=dayNames[tomorrow.getDay()], pickupIndex=dayNames.indexOf(s.pickupDay), currentIndex=dayNames.indexOf(wd), diff=((currentIndex-pickupIndex)%Number(s.cycleLength)+Number(s.cycleLength))%Number(s.cycleLength), cycleDay=diff+1, status=s.statuses&&s.statuses[String(cycleDay)]?s.statuses[String(cycleDay)]:'off', template=(getTemplatesForLine(line))[String(cycleDay)];
+  document.getElementById('nextShift').textContent=status==='work'?'Tomorrow: Work':'Tomorrow: Off';
+  document.getElementById('nextShiftDetail').textContent=status==='work'?'Line '+line+' · Cycle Day '+cycleDay+(template&&template.legs&&template.legs.length?' · Report '+template.legs[0].onDuty+' · Train '+template.legs.map(l=>String(l.train).padStart(4,'0')).join(' / ')+' · Scheduled Off '+template.legs[template.legs.length-1].offDuty:''):'Line '+line+' · Cycle Day '+cycleDay;
+}
+
+function loadTodaySchedule(){
+  const date=document.getElementById('todayDate').value||new Date().toISOString().slice(0,10);
+  document.getElementById('todayDate').value=date;
+  renderTodayAssignment(date);
+  renderNextShift();
+}
+
+function clearQuickActual(){
+  document.getElementById('actualFinalOff').value='';
+  document.getElementById('todayDelay').value='0';
+  document.getElementById('todayNotes').value='';
+  document.getElementById('todayDayOff').checked=false;
+  document.getElementById('companyProtected').checked=false;
+  document.getElementById('disruptionMode').checked=false;
+  document.getElementById('actualLegs').innerHTML='';
+  document.getElementById('companyNotice').classList.add('hidden');
+  document.getElementById('disruptionBox').classList.add('hidden');
+  document.getElementById('todayMsg').textContent='';
+  updateActualDayTotal();
+  loadTodaySchedule();
+}
+
+function prefillActualLegsFromTemplate(){
+  const date=document.getElementById('todayDate').value||new Date().toISOString().slice(0,10);
+  const t=(getTemplatesForLine(activeLine()))[String(getCycleDayForDate(date))];
+  document.getElementById('actualLegs').innerHTML='';
+  if(t&&t.legs&&t.legs.length){t.legs.forEach(leg=>addActualLeg({train:leg.train,onDuty:leg.onDuty,offDuty:leg.offDuty,note:''}))} else {addActualLeg()}
+}
+
+function saveTodayActual(){
+  const date=document.getElementById('todayDate').value;
+  if(!date){document.getElementById('todayMsg').textContent='Pick a date.';return}
+  const line=activeLine(), template=(getTemplatesForLine(line))[String(getCycleDayForDate(date))], delayMinutes=Number(document.getElementById('todayDelay').value||0), personalDayOff=document.getElementById('todayDayOff').checked, companyProtected=document.getElementById('companyProtected').checked, disruptionMode=document.getElementById('disruptionMode').checked, actualFinalOff=document.getElementById('actualFinalOff').value, notes=document.getElementById('todayNotes').value.trim();
+  if(personalDayOff&&companyProtected){document.getElementById('todayMsg').textContent='Choose either personal day off or company protected day, not both.';return}
+  const actualHours=computeActualDayHours(template,actualFinalOff,delayMinutes,personalDayOff,companyProtected,disruptionMode);
+  let savedLegs=[];
+  if(disruptionMode){
+    savedLegs=readActualLegs().map(leg=>({train:leg.train,onDuty:leg.onDuty,offDuty:leg.offDuty,note:leg.note,isActualDisruption:true}));
+    if(!savedLegs.length&&!companyProtected&&!personalDayOff){document.getElementById('todayMsg').textContent='Add at least one actual movement leg in disruption mode.';return}
+  } else {
+    savedLegs=(template&&template.legs?template.legs:[]).map((leg,idx,arr)=>({train:leg.train,onDuty:leg.onDuty,offDuty:(idx===arr.length-1&&actualFinalOff)?actualFinalOff:leg.offDuty,scheduledOffDuty:leg.offDuty}))
+  }
+  const scheduledHours=template?Number(template.scheduledHours||0):0;
+  const payload={line,date,cycleDay:getCycleDayForDate(date),scheduledHours,delayMinutes,notes,personalDayOff,companyProtected,disruptionMode,actualHours,actualFinalOff,legs:savedLegs};
+  let existing=days.find(d=>d.date===date&&d.line===line);
+  if(existing){Object.assign(existing,payload)} else {days.unshift(Object.assign({id:uid()},payload))}
+  localStorage.setItem(DAYS_KEY,JSON.stringify(days));
+  document.getElementById('todayMsg').textContent='Today saved.';
+  renderDays(); renderSummary(); renderTodayAssignment(date);
+}
+
+function updateModeVisibility(){
+  const companyProtected=document.getElementById('companyProtected').checked, disruptionMode=document.getElementById('disruptionMode').checked;
+  document.getElementById('companyNotice').classList.toggle('hidden', !companyProtected);
+  document.getElementById('disruptionBox').classList.toggle('hidden', !disruptionMode);
+  if(companyProtected){
+    document.getElementById('todayDayOff').checked=false;
+    document.getElementById('disruptionMode').checked=false;
+    document.getElementById('disruptionBox').classList.add('hidden');
+  }
+  updateActualDayTotal(); checkAutoDisruption(); loadTodaySchedule();
+}
+
+function deleteDay(id){days=days.filter(d=>d.id!==id);localStorage.setItem(DAYS_KEY,JSON.stringify(days));renderDays();renderSummary()}
+function toggleDayDetails(id){document.getElementById('details-'+id).classList.toggle('hidden')}
+function renderDays(){
+  const box=document.getElementById('savedDays');
+  if(!days.length){box.innerHTML='No saved days yet.';return}
+  box.innerHTML=days.map(day=>{
+    let topBadges='<span class="'+(day.line==='B'?'pill lineB':'pill lineNec')+'">'+day.line+'</span> ';
+    if(day.companyProtected) topBadges+='<span class="pill company">Company Protected</span> ';
+    if(day.personalDayOff) topBadges+='<span class="pill broken">Personal Day Off</span> ';
+    if(day.disruptionMode) topBadges+='<span class="pill work">Disruption Day</span>';
+    const body=day.companyProtected?'<div class="leg-summary">No work due to company / cancellation / hold-down. Guarantee stays intact.</div>':day.personalDayOff?'<div class="leg-summary">Personal day off taken. This breaks guarantee.</div>':day.legs.map((leg,idx,arr)=>day.disruptionMode?'<div class="leg-summary"><strong>Train '+leg.train+'</strong><br>Actual On: '+leg.onDuty+' · Actual Off: '+leg.offDuty+(leg.note?'<div class="muted" style="margin-top:6px">'+leg.note+'</div>':'')+'</div>':'<div class="leg-summary"><strong>Train '+leg.train+'</strong><br>Report: '+leg.onDuty+' · Scheduled Off: '+(leg.scheduledOffDuty||leg.offDuty)+' · Actual Off: '+leg.offDuty+(idx===arr.length-1?'<div class="muted" style="margin-top:6px">Final actual off time saved here</div>':'')+'</div>').join('');
+    return '<div class="panel" style="margin-top:10px"><div class="row"><div onclick="toggleDayDetails(\\''+day.id+'\\')" style="flex:1;cursor:pointer"><div style="font-size:18px;font-weight:700">'+day.date+(day.cycleDay?' · Day '+day.cycleDay:'')+'</div><div class="muted">Actual: '+fmt(day.actualHours)+' hrs · Scheduled: '+fmt(day.scheduledHours)+' hrs</div><div style="margin-top:8px">'+topBadges+'</div></div><div><button class="btn-red" onclick="deleteDay(\\''+day.id+'\\')">Delete</button></div></div><div id="details-'+day.id+'" class="hidden" style="margin-top:8px">'+body+(day.notes?'<div class="muted" style="margin-top:8px">'+day.notes+'</div>':'')+'</div></div>';
+  }).join('');
+}
+
+function renderSummary(){
+  const now=new Date();
+  const monthDays=days.filter(d=>{const x=new Date(d.date+'T00:00:00');return x.getMonth()===now.getMonth()&&x.getFullYear()===now.getFullYear()});
+  const rate=Number(pay.hourlyRate||26.69), guaranteeHours=Number(pay.guaranteeHours||185), otThreshold=Number(pay.otThreshold||186), actualHours=monthDays.reduce((s,d)=>s+Number(d.actualHours||0),0), guaranteeBroken=monthDays.some(d=>d.personalDayOff), guaranteeActive=!guaranteeBroken, guaranteeOwed=guaranteeActive&&actualHours<guaranteeHours?(guaranteeHours-actualHours):0, paidHours=guaranteeActive?Math.max(actualHours,guaranteeHours):actualHours, otHours=Math.max(0,actualHours-otThreshold), monthPay=(paidHours*rate)+(otHours*rate*0.5), lastCheckPayout=guaranteeOwed*rate;
+  document.getElementById('actualHoursStat').textContent=fmt(actualHours);
+  document.getElementById('paidHoursStat').textContent=fmt(paidHours);
+  document.getElementById('guaranteeOwedStat').textContent=fmt(guaranteeOwed);
+  document.getElementById('lastCheckPayoutStat').textContent=money(lastCheckPayout);
+  document.getElementById('actualWorkedSummary').textContent=fmt(actualHours)+' hrs';
+  document.getElementById('guaranteeHoursSummary').textContent=fmt(guaranteeHours)+' hrs';
+  document.getElementById('shortSummary').textContent=fmt(guaranteeOwed)+' hrs';
+  document.getElementById('otHoursSummary').textContent=fmt(otHours)+' hrs';
+  document.getElementById('monthPaySummary').textContent=money(monthPay);
+  document.getElementById('guaranteePayoutSummary').textContent=money(lastCheckPayout);
+  document.getElementById('monthPaySummaryPay').textContent=money(monthPay);
+  document.getElementById('guaranteePayoutSummaryPay').textContent=money(lastCheckPayout);
+  ['guaranteeStatusSummary','guaranteeStatusPay'].forEach(id=>{const el=document.getElementById(id);if(guaranteeActive){el.textContent='ACTIVE';el.className='pill activeP'}else{el.textContent='BROKEN';el.className='pill broken'}})
+}
+
+function hydrate(){
+  firstRunBootstrap();
+  pay=JSON.parse(localStorage.getItem(PAY_KEY)||'{}');
+  setup=JSON.parse(localStorage.getItem(SETUP_KEY)||'{}');
+  templates=JSON.parse(localStorage.getItem(TEMPLATE_KEY)||'{}');
+  days=JSON.parse(localStorage.getItem(DAYS_KEY)||'[]');
+  bridge=JSON.parse(localStorage.getItem(BRIDGE_KEY)||'{"useJsonBridge":false,"jsonBridgeUrl":""}');
+  document.getElementById('hourlyRate').value=pay.hourlyRate||26.69;
+  document.getElementById('guaranteeHours').value=pay.guaranteeHours||185;
+  document.getElementById('otThreshold').value=pay.otThreshold||186;
+  document.getElementById('todayDate').value=new Date().toISOString().slice(0,10);
+  document.getElementById('lineSelector').value=setup.currentLine||'NEC';
+  document.getElementById('templateCycleDay').value='4';
+  document.getElementById('useJsonBridge').checked=!!bridge.useJsonBridge;
+  document.getElementById('jsonBridgeUrl').value=bridge.jsonBridgeUrl||'';
+  toggleBridgeBox();
+  loadCurrentLineIntoSetupFields();
+  renderDays();
+  renderSummary();
+  loadTodaySchedule();
+
+  ['todayDelay','actualFinalOff','todayDate','delayTrigger'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{loadTodaySchedule();updateActualDayTotal();checkAutoDisruption()}));
+  document.getElementById('todayDayOff').addEventListener('change',updateModeVisibility);
+  document.getElementById('companyProtected').addEventListener('change',updateModeVisibility);
+  document.getElementById('disruptionMode').addEventListener('change',updateModeVisibility);
+  document.getElementById('lineSelector').addEventListener('change',loadCurrentLineIntoSetupFields);
+  document.getElementById('useJsonBridge').addEventListener('change',toggleBridgeBox);
+  setInterval(()=>{loadTodaySchedule();refreshLiveTrainPanel()},60000);
+}
+hydrate();
+</script>
+</body>
+</html>
