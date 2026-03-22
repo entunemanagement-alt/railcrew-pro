@@ -2,26 +2,39 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RailCrew Pro v29.2</title>
+<title>RailCrew Pro v30 Smart Mode</title>
 <style>
-body{font-family:Arial;background:#0b1220;color:white;margin:0;padding:15px}
-.card{background:#121a2b;padding:15px;border-radius:12px;margin-bottom:12px}
-button{padding:12px 14px;border:none;border-radius:8px;margin:5px;font-weight:700;cursor:pointer}
-.red{background:#ef4444;color:white}
-.blue{background:#2563eb;color:white}
-.green{background:#16a34a;color:white}
-.gray{background:#e5e7eb;color:#111}
-label{display:block;margin:12px 0 6px;font-size:14px}
-input[type="time"], input[type="number"]{width:100%;padding:10px;margin:5px 0;border-radius:8px;border:1px solid #475569;background:#eef2f7;color:#111;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#0b1220;color:#fff;margin:0;padding:15px}
+.card{background:#121a2b;padding:16px;border-radius:14px;margin-bottom:14px;border:1px solid #24324d}
+button{padding:12px 14px;border:none;border-radius:10px;margin:5px;font-weight:700;cursor:pointer}
+.red{background:#ef4444;color:#fff}.blue{background:#2563eb;color:#fff}.green{background:#16a34a;color:#fff}.gray{background:#374151;color:#fff}
+label{display:block;margin:12px 0 6px;font-size:14px;color:#d9e2f1}
+input[type="time"],input[type="number"],textarea{width:100%;padding:11px;margin:5px 0;border-radius:10px;border:1px solid #475569;background:#eef2f7;color:#111;box-sizing:border-box}
+textarea{min-height:84px;resize:vertical}
 .checkrow{display:flex;align-items:center;gap:10px;margin:10px 0}
+.checkrow input{width:auto}
 .msg{margin-top:10px;color:#bbf7d0;font-size:14px;min-height:20px}
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .small{font-size:12px;color:#cbd5e1}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid rgba(255,255,255,.08)}
+.kv:first-child{border-top:none}
+.pill{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.ok{background:#11492b;color:#bbf7d0}.warn{background:#5f4317;color:#fde68a}
 </style>
 </head>
 <body>
 
-<h2>RailCrew Pro v29.2</h2>
+<h2>RailCrew Pro v30 Smart Mode</h2>
+
+<div class="card">
+  <div class="row" style="justify-content:space-between;align-items:center">
+    <div>
+      <div class="small">Phone-only smart version</div>
+      <h3 style="margin:4px 0 0">Daily crew tool</h3>
+    </div>
+    <span class="pill ok">Smart Mode</span>
+  </div>
+</div>
 
 <div class="card">
   <h3>Quick Check</h3>
@@ -35,7 +48,7 @@ input[type="time"], input[type="number"]{width:100%;padding:10px;margin:5px 0;bo
   <label for="report">Report Time</label>
   <input type="time" id="report">
 
-  <label for="station">Station Time</label>
+  <label for="station">Station / Track Time</label>
   <input type="time" id="station">
 
   <label for="off">Off Time</label>
@@ -43,58 +56,175 @@ input[type="time"], input[type="number"]{width:100%;padding:10px;margin:5px 0;bo
   <div class="row">
     <button class="green" id="endShiftBtn" type="button">End Shift Now</button>
   </div>
-  <div class="small">This fills the Off Time with your phone's current time.</div>
+  <div class="small">This fills Off Time with your phone's current time.</div>
 
   <label for="delay">Delay (min)</label>
   <input type="number" id="delay" min="0" value="0">
 
+  <label for="mealMinutes">Meal Trigger Minutes</label>
+  <input type="number" id="mealMinutes" min="1" value="360">
+
+  <label for="notes">Notes</label>
+  <textarea id="notes" placeholder="Delay / station issues / jumped train / company notes"></textarea>
+
+  <label class="checkrow"><input type="checkbox" id="companyProtected"> Company protected</label>
+  <label class="checkrow"><input type="checkbox" id="personalDayOff"> Personal day off</label>
+
   <div class="msg" id="timeMsg"></div>
+  <div class="msg" id="alertMsg"></div>
 </div>
 
 <div class="card">
   <h3>Meals</h3>
+  <div class="small">Auto-detect runs from your times. You can still change anything manually.</div>
   <label class="checkrow"><input type="checkbox" id="breakfast"> Breakfast</label>
   <label class="checkrow"><input type="checkbox" id="lunch"> Lunch</label>
   <label class="checkrow"><input type="checkbox" id="dinner"> Dinner</label>
   <label class="checkrow"><input type="checkbox" id="custom"> Custom Meal</label>
+  <div class="msg" id="mealMsg"></div>
+</div>
+
+<div class="card">
+  <h3>Smart Totals</h3>
+  <div class="kv"><span>Scheduled / Planned Hours</span><strong id="plannedHours">0.00 hrs</strong></div>
+  <div class="kv"><span>Actual Hours</span><strong id="actualHours">0.00 hrs</strong></div>
+  <div class="kv"><span>Variance</span><strong id="varianceHours">0.00 hrs</strong></div>
+  <div class="kv"><span>Meal Count</span><strong id="mealCount">0</strong></div>
+  <div class="kv"><span>Track Alert</span><strong id="stationAlert">No alert</strong></div>
 </div>
 
 <div class="card">
   <h3>Actions</h3>
   <button class="red" id="saveBtn" type="button">Save Day</button>
   <button class="gray" id="loadBtn" type="button">Load</button>
+  <button class="blue" id="autoMealsBtn" type="button">Auto Meals</button>
+  <button class="gray" id="clearBtn" type="button">Clear</button>
   <div class="msg" id="saveMsg"></div>
 </div>
 
 <script>
-const STORAGE_KEY = "railcrew_v29_2";
+const STORAGE_KEY = "railcrew_v30_smart";
 
 function byId(id){ return document.getElementById(id); }
-
 function flash(id, text){
   byId(id).textContent = text;
   setTimeout(() => {
     if (byId(id).textContent === text) byId(id).textContent = "";
-  }, 2200);
+  }, 2400);
 }
-
 function nowHHMM(){
   const d = new Date();
   return String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
 }
+function toMinutes(v){
+  if(!v) return null;
+  const parts = v.split(":");
+  if(parts.length !== 2) return null;
+  return Number(parts[0]) * 60 + Number(parts[1]);
+}
+function diffHours(start, end){
+  const s = toMinutes(start), e0 = toMinutes(end);
+  if(s === null || e0 === null) return 0;
+  let e = e0;
+  if(e < s) e += 1440;
+  return (e - s) / 60;
+}
+function countedMeals(){
+  return ["breakfast","lunch","dinner","custom"].filter(id => byId(id).checked).length;
+}
+function recalcHoursAndAlerts(){
+  const report = byId("report").value;
+  const off = byId("off").value;
+  const delay = Number(byId("delay").value || 0);
+  const company = byId("companyProtected").checked;
+  const personal = byId("personalDayOff").checked;
 
+  const planned = diffHours(report, off);
+  let actual = planned + (delay / 60);
+
+  if(company || personal){
+    actual = 0;
+  }
+
+  byId("plannedHours").textContent = planned.toFixed(2) + " hrs";
+  byId("actualHours").textContent = actual.toFixed(2) + " hrs";
+  const variance = actual - planned;
+  byId("varianceHours").textContent = (variance >= 0 ? "+" : "") + variance.toFixed(2) + " hrs";
+  byId("mealCount").textContent = String(countedMeals());
+
+  const station = byId("station").value;
+  const stationMin = toMinutes(station);
+  if(stationMin === null){
+    byId("stationAlert").textContent = "No station time";
+    byId("alertMsg").textContent = "";
+    return;
+  }
+
+  const now = new Date();
+  const current = now.getHours()*60 + now.getMinutes();
+  let diff = stationMin - current;
+  if(diff < -720) diff += 1440;
+  if(diff > 720) diff -= 1440;
+
+  if(diff <= 10 && diff >= 0){
+    byId("stationAlert").textContent = "Be at track in " + diff + " min";
+    byId("alertMsg").textContent = "Track alert: be ready soon.";
+  } else if(diff < 0 && diff >= -15){
+    byId("stationAlert").textContent = "Train should be at station now";
+    byId("alertMsg").textContent = "Station time is now or just passed.";
+  } else {
+    byId("stationAlert").textContent = "No alert";
+    byId("alertMsg").textContent = "";
+  }
+}
+function autoMeals(){
+  const report = byId("report").value;
+  const off = byId("off").value;
+  const hours = diffHours(report, off);
+  const mealTriggerHours = Number(byId("mealMinutes").value || 360) / 60;
+
+  byId("breakfast").checked = false;
+  byId("lunch").checked = false;
+  byId("dinner").checked = false;
+
+  const r = toMinutes(report);
+  const o = toMinutes(off);
+
+  if(r !== null){
+    if(r <= 7*60+30) byId("breakfast").checked = true;
+    if(r <= 13*60 && (hours >= 4 || hours >= mealTriggerHours)) byId("lunch").checked = true;
+  }
+  if(o !== null){
+    let offAdjusted = o;
+    if(r !== null && o < r) offAdjusted += 1440;
+    if(offAdjusted >= 18*60 || hours >= 10) byId("dinner").checked = true;
+  }
+
+  if(hours >= mealTriggerHours){
+    if(!byId("lunch").checked) byId("lunch").checked = true;
+  }
+
+  const selected = [];
+  ["breakfast","lunch","dinner","custom"].forEach(id => { if(byId(id).checked) selected.push(id); });
+  byId("mealMsg").textContent = selected.length ? ("Auto selected: " + selected.join(", ")) : "No meals auto selected.";
+  recalcHoursAndAlerts();
+}
 function setEndShiftNow(){
   const t = nowHHMM();
   byId("off").value = t;
   flash("timeMsg", "Off time set to " + t);
+  recalcHoursAndAlerts();
 }
-
 function getFormData(){
   return {
     report: byId("report").value || "",
     station: byId("station").value || "",
     off: byId("off").value || "",
     delay: byId("delay").value || "0",
+    mealMinutes: byId("mealMinutes").value || "360",
+    notes: byId("notes").value || "",
+    companyProtected: byId("companyProtected").checked,
+    personalDayOff: byId("personalDayOff").checked,
     meals: {
       breakfast: byId("breakfast").checked,
       lunch: byId("lunch").checked,
@@ -103,19 +233,22 @@ function getFormData(){
     }
   };
 }
-
 function applyFormData(data){
   byId("report").value = data.report || "";
   byId("station").value = data.station || "";
   byId("off").value = data.off || "";
   byId("delay").value = data.delay || "0";
+  byId("mealMinutes").value = data.mealMinutes || "360";
+  byId("notes").value = data.notes || "";
+  byId("companyProtected").checked = !!data.companyProtected;
+  byId("personalDayOff").checked = !!data.personalDayOff;
   const meals = data.meals || {};
   byId("breakfast").checked = !!meals.breakfast;
   byId("lunch").checked = !!meals.lunch;
   byId("dinner").checked = !!meals.dinner;
   byId("custom").checked = !!meals.custom;
+  recalcHoursAndAlerts();
 }
-
 function saveDay(){
   try{
     localStorage.setItem(STORAGE_KEY, JSON.stringify(getFormData()));
@@ -124,7 +257,6 @@ function saveDay(){
     flash("saveMsg", "Save failed.");
   }
 }
-
 function loadDay(){
   try{
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -138,15 +270,36 @@ function loadDay(){
     flash("saveMsg", "Load failed.");
   }
 }
+function clearDay(){
+  applyFormData({
+    report:"",
+    station:"",
+    off:"",
+    delay:"0",
+    mealMinutes:"360",
+    notes:"",
+    companyProtected:false,
+    personalDayOff:false,
+    meals:{breakfast:false,lunch:false,dinner:false,custom:false}
+  });
+  flash("saveMsg", "Cleared.");
+}
 
 byId("endShiftBtn").onclick = setEndShiftNow;
 byId("saveBtn").onclick = saveDay;
 byId("loadBtn").onclick = loadDay;
+byId("autoMealsBtn").onclick = autoMeals;
+byId("clearBtn").onclick = clearDay;
 byId("amtrakBtn").onclick = function(){ window.open("https://www.amtrak.com/track-your-train.html", "_blank"); };
 byId("transitBtn").onclick = function(){ window.open("https://asm.transitdocs.com/", "_blank"); };
 
-// auto-load once on open
+["report","station","off","delay","mealMinutes","notes","companyProtected","personalDayOff","breakfast","lunch","dinner","custom"].forEach(id => {
+  byId(id).addEventListener("input", recalcHoursAndAlerts);
+  byId(id).addEventListener("change", recalcHoursAndAlerts);
+});
+
 loadDay();
+recalcHoursAndAlerts();
 </script>
 
 </body>
