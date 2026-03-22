@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>RailCrew Pro v25 Full Rebuild</title>
+<style>
+:root{
+  --bg:#08101c; --card:#111a2b; --card2:#0d1524; --line:#2a3550;
+  --text:#f8fafc; --muted:#9fb0c7; --red:#ef4444; --blue:#2563eb;
+  --green:#16a34a; --amber:#f59e0b; --off:#64748b;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#08101c,#0b1424);color:var(--text)}
+.wrap{max-width:1100px;margin:0 auto;padding:16px 16px 110px}
+.card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:16px}
+.hero{padding:20px}
+.row{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.grid2,.grid3,.grid4{display:grid;gap:12px}
+.grid2{grid-template-columns:1fr 1fr}
+.grid3{grid-template-columns:1fr 1fr 1fr}
+.grid4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.grid4,.grid3{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
+@media(max-width:560px){.grid4,.grid3,.grid2{grid-template-columns:1fr}}
+h1,h2,h3,p{margin:0}
+.sub{color:var(--muted);font-size:13px;line-height:1.35}
+.icon{width:56px;height:56px;border-radius:16px;background:linear-gradient(180deg,#ff6060,#cc2323);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700}
+.brand{display:flex;gap:14px;align-items:center}
+.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);font-size:12px;color:#fecaca}
+label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
+input,select,textarea{width:100%;padding:12px 13px;border-radius:12px;border:1px solid #4b5878;background:#eef2f7;color:#111;box-sizing:border-box;font-size:16px}
+textarea{min-height:84px;resize:vertical}
+button{padding:12px 14px;border:none;border-radius:12px;font-weight:700;cursor:pointer}
+.btn-red{background:linear-gradient(180deg,#ff5555,#d62626);color:#fff}
+.btn-blue{background:linear-gradient(180deg,#60a5fa,#2563eb);color:#fff}
+.btn-dark{background:#374151;color:#fff}
+.btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.15)}
+.pill{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.p-work{background:#17345f;color:#cfe3ff}
+.p-off{background:#334155;color:#e2e8f0}
+.p-good{background:#11492b;color:#bbf7d0}
+.p-warn{background:#5f4317;color:#fde68a}
+.stat-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+.stat-value{font-size:32px;font-weight:700;margin-top:8px}
+.section{display:none}.section.active{display:block}
+.nav{position:fixed;left:0;right:0;bottom:0;background:#0a1020;border-top:1px solid #233149;padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
+.navin{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.tab{background:#152032;color:#dbe7f3;border:1px solid #2a3550;text-align:center;padding:12px;border-radius:12px;cursor:pointer}
+.tab.active{background:#7f1d1d}
+.live{background:linear-gradient(180deg,rgba(22,163,74,.15),rgba(22,163,74,.05));border:1px solid rgba(22,163,74,.22);border-radius:18px;padding:16px;margin-bottom:16px}
+.live.off{background:linear-gradient(180deg,rgba(100,116,139,.15),rgba(100,116,139,.05));border-color:rgba(100,116,139,.22)}
+.live.warn{background:linear-gradient(180deg,rgba(245,158,11,.15),rgba(245,158,11,.05));border-color:rgba(245,158,11,.22)}
+.live-title{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#c7f9d7}
+.live-main{font-size:30px;font-weight:700;margin-top:8px}
+.live-sub{margin-top:6px;color:#dbe7f2}
+.progress{height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid rgba(255,255,255,.08);margin-top:12px}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,#22c55e,#86efac)}
+.leg{border:1px solid var(--line);border-radius:14px;padding:12px;background:rgba(255,255,255,.02);margin-top:10px}
+.notice{margin-top:10px;background:rgba(245,158,11,.10);border-left:4px solid var(--amber);padding:10px 12px;border-radius:12px;color:#fde7ba}
+.msg{margin-top:10px;color:#cfe1ff;font-size:13px}
+.daytabs{display:flex;gap:8px;overflow:auto;padding-bottom:4px}
+.daytab{white-space:nowrap;background:#152032;border:1px solid #2a3550;color:#fff;padding:10px 12px;border-radius:10px;cursor:pointer}
+.daytab.active{background:#1d4ed8}
+.hidden{display:none}
+.preview{border:1px dashed #4b5878;border-radius:14px;padding:12px;background:rgba(255,255,255,.02);text-align:center}
+.preview img{max-width:100%;max-height:340px;border-radius:10px}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid rgba(255,255,255,.06)}
+.kv:first-child{border-top:none}
+.smallcheck{display:flex;gap:8px;align-items:flex-start;margin-top:8px}
+.smallcheck input{width:auto;margin-top:3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card hero">
+    <div class="row">
+      <div class="brand">
+        <div class="icon">R</div>
+        <div>
+          <h1>RailCrew Pro v25 Full Rebuild</h1>
+          <div class="badge">full single-file working rebuild</div>
+          <p class="sub" style="margin-top:8px">Built to keep the buttons working while bringing the real features back.</p>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn-ghost" id="starterBtnTop">Load Starter</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="liveBox" class="live">
+    <div class="live-title">Live Duty Tracker</div>
+    <div id="liveMain" class="live-main">Loading…</div>
+    <div id="liveSub" class="live-sub"></div>
+    <div class="progress"><div id="liveBar"></div></div>
+  </div>
+
+  <div class="grid4">
+    <div class="card"><div class="stat-label">Actual Hours</div><div id="statActual" class="stat-value">0.00</div></div>
+    <div class="card"><div class="stat-label">Paid Hours</div><div id="statPaid" class="stat-value">185.00</div></div>
+    <div class="card"><div class="stat-label">Guarantee Owed</div><div id="statOwed" class="stat-value">185.00</div></div>
+    <div class="card"><div class="stat-label">Estimated Pay</div><div id="statPay" class="stat-value">$4,937.65</div></div>
+  </div>
+
+  <section id="home" class="section active">
+    <div class="grid2">
+      <div class="card">
+        <div class="row">
+          <div><h2>Today's Assignment</h2><p class="sub">Loaded from your saved cycle schedule.</p></div>
+          <div class="row">
+            <span id="todayBadge" class="pill p-work">Work</span>
+            <span id="todayLine" class="pill p-work">NEC</span>
+          </div>
+        </div>
+        <div id="companyBanner" class="notice hidden">Company protected day selected. Guarantee stays intact.</div>
+        <div class="card" style="padding:14px;margin-top:12px">
+          <div id="todayTitle" style="font-size:28px;font-weight:700">Day 1 · Work</div>
+          <div id="todaySummary" class="sub" style="margin-top:6px"></div>
+          <div id="todayLegs"></div>
+        </div>
+        <div class="card" style="padding:14px">
+          <h3>Today's Totals</h3>
+          <div class="kv" style="margin-top:10px"><span class="sub">Scheduled Hours</span><strong id="todaySched">0.00 hrs</strong></div>
+          <div class="kv"><span class="sub">Actual Hours</span><strong id="todayActual">0.00 hrs</strong></div>
+          <div class="kv"><span class="sub">Variance</span><strong id="todayVar">0.00 hrs</strong></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div><h2>Daily Update</h2><p class="sub">Update what changed today.</p></div>
+          <button class="btn-dark" id="reloadTodayBtn">Reload</button>
+        </div>
+        <div class="grid2" style="margin-top:12px">
+          <div><label>Date</label><input id="workDate" type="date"></div>
+          <div><label>Delay Minutes</label><input id="delay" type="number" value="0"></div>
+        </div>
+        <div class="grid2">
+          <div><label>Actual Final Off</label><input id="actualOff" type="time"></div>
+          <div><label>Auto Trigger</label><input id="delayTrigger" type="number" value="60"></div>
+        </div>
+        <label class="smallcheck"><input id="companyProtected" type="checkbox"><span>Company removed / canceled / held out</span></label>
+        <label class="smallcheck"><input id="personalDayOff" type="checkbox"><span>Personal day off</span></label>
+        <label class="smallcheck"><input id="disruptionMode" type="checkbox"><span>Disruption / jumped to another train</span></label>
+        <div id="delayNotice" class="notice hidden">Major delay hit the trigger. Use disruption if you had to switch trains.</div>
+
+        <div class="card" style="padding:14px;margin-top:12px">
+          <div class="row">
+            <div><h3>Actual Station Timing</h3><p class="sub">Enter actual times per leg if needed.</p></div>
+            <div class="row">
+              <button class="btn-dark" id="copySchedBtn">Use Scheduled</button>
+              <button class="btn-blue" id="applyDelayBtn">Apply Delay</button>
+            </div>
+          </div>
+          <div id="actualLegsBox"></div>
+        </div>
+
+        <label style="margin-top:12px">Notes</label>
+        <textarea id="notes" placeholder="Delay, company protected, jumped trains, changed final off, etc."></textarea>
+        <div class="row" style="margin-top:12px">
+          <button id="saveTodayBtn" class="btn-red">Save Today</button>
+          <button id="clearTodayBtn" class="btn-dark">Clear</button>
+        </div>
+        <div class="msg" id="todayMsg"></div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Next Shift</h3>
+        <div id="nextShiftMain" style="font-size:28px;font-weight:700;color:#86efac;margin-top:10px">Tomorrow: Off</div>
+        <div id="nextShiftSub" class="sub" style="margin-top:6px"></div>
+      </div>
+      <div class="card">
+        <h3>Reminder Summary</h3>
+        <div class="kv" style="margin-top:10px"><span class="sub">Start Reminder</span><strong id="remStartOut">Off</strong></div>
+        <div class="kv"><span class="sub">End-of-Day Reminder</span><strong id="remEndOut">Off</strong></div>
+        <div class="kv"><span class="sub">Reminder Time</span><strong id="remTimeOut">--:--</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="builder" class="section">
+    <div class="grid2">
+      <div class="card">
+        <h2>Schedule Setup</h2>
+        <div class="grid3" style="margin-top:12px">
+          <div><label>Line</label><select id="line"><option>NEC</option><option>B</option></select></div>
+          <div><label>Position Key</label><input id="positionKey"></div>
+          <div><label>Pickup Day</label><select id="pickupDay"><option>Sunday</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></div>
+        </div>
+        <div class="grid2">
+          <div><label>Cycle Length</label><input id="cycleLength" type="number" min="1" max="31"></div>
+          <div><label>Hourly Rate</label><input id="builderRate" type="number" step="0.01"></div>
+        </div>
+        <div class="grid2">
+          <div><label>Guarantee Hours</label><input id="builderGuarantee" type="number"></div>
+          <div><label>OT Starts After</label><input id="builderOt" type="number"></div>
+        </div>
+        <div class="row" style="margin-top:12px">
+          <button id="saveSetupBtn" class="btn-red">Save Setup</button>
+          <button id="loadStarterBtn" class="btn-dark">Load Starter</button>
+        </div>
+        <div class="msg" id="builderMsg"></div>
+      </div>
+
+      <div class="card">
+        <h2>Screenshot Helper</h2>
+        <p class="sub">Upload your schedule screenshot and keep it visible while you switch day tabs.</p>
+        <input id="imageInput" type="file" accept="image/*" style="margin-top:12px">
+        <div class="preview" style="margin-top:12px">
+          <img id="previewImg" class="hidden" alt="schedule preview">
+          <div id="previewPlaceholder" class="sub">No screenshot loaded yet.</div>
+        </div>
+        <div class="row" style="margin-top:12px">
+          <button id="clearImageBtn" class="btn-dark">Clear Image</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <div><h2>Cycle Day Builder</h2><p class="sub">Use day tabs instead of scrolling.</p></div>
+        <button id="saveDaysBtn" class="btn-red">Save Cycle Days</button>
+      </div>
+      <div class="card" style="padding:14px;margin-top:12px">
+        <div class="kv"><span class="sub">Total Scheduled Hours</span><strong id="cycleSchedOut">0.00 hrs</strong></div>
+        <div class="kv"><span class="sub">Current Month Actual Hours</span><strong id="cycleActualOut">0.00 hrs</strong></div>
+      </div>
+      <div id="dayTabs" class="daytabs" style="margin-top:12px"></div>
+      <div id="dayEditor"></div>
+      <div class="msg" id="daysMsg"></div>
+    </div>
+  </section>
+
+  <section id="reminder" class="section">
+    <div class="card">
+      <h2>Reminder Settings</h2>
+      <label class="smallcheck"><input id="remStart" type="checkbox"><span>Remind me before my next shift</span></label>
+      <label class="smallcheck"><input id="remEnd" type="checkbox"><span>Remind me to log actual time at end of day</span></label>
+      <div class="grid2" style="margin-top:12px">
+        <div><label>Reminder Time</label><input id="remTime" type="time"></div>
+        <div><label>Reminder Note</label><input id="remNote" placeholder="Tomorrow you start work at..."></div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button id="saveReminderBtn" class="btn-red">Save Reminders</button>
+      </div>
+      <div class="msg" id="reminderMsg"></div>
+    </div>
+  </section>
+
+  <section id="pay" class="section">
+    <div class="card">
+      <h2>Pay</h2>
+      <div class="grid3" style="margin-top:12px">
+        <div><label>Hourly Rate</label><input id="payRate" type="number" step="0.01"></div>
+        <div><label>Guarantee Hours</label><input id="payGuarantee" type="number"></div>
+        <div><label>OT Starts After</label><input id="payOt" type="number"></div>
+      </div>
+      <div class="row" style="margin-top:12px"><button id="savePayBtn" class="btn-red">Save Pay Settings</button></div>
+      <div class="msg" id="payMsg"></div>
+      <div class="card" style="padding:14px;margin-top:12px">
+        <div class="kv"><span class="sub">Actual Hours</span><strong id="payActualOut">0.00</strong></div>
+        <div class="kv"><span class="sub">Paid Hours</span><strong id="payPaidOut">185.00</strong></div>
+        <div class="kv"><span class="sub">Guarantee Owed</span><strong id="payOwedOut">185.00</strong></div>
+        <div class="kv"><span class="sub">Estimated Pay</span><strong id="payEstimateOut">$4,937.65</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="history" class="section">
+    <div class="card">
+      <h2>History</h2>
+      <div id="historyList" class="sub" style="margin-top:12px">No saved days yet.</div>
+    </div>
+  </section>
+</div>
+
+<div class="nav">
+  <div class="navin">
+    <div class="tab active" data-tab="home">Home</div>
+    <div class="tab" data-tab="builder">Builder</div>
+    <div class="tab" data-tab="reminder">Reminder</div>
+    <div class="tab" data-tab="pay">Pay</div>
+    <div class="tab" data-tab="history">History</div>
+  </div>
+</div>
+
+<script>
+const KEY="railcrew_v25_full_rebuild";
+const starter={
+  setup:{line:"NEC",positionKey:"811",pickupDay:"Thursday",cycleLength:7},
+  pay:{rate:26.69,guarantee:185,ot:186},
+  reminders:{start:false,end:false,time:"",note:""},
+  screenshot:"",
+  activeDay:0,
+  days:[
+    {status:"work",notes:"Continuous time",legs:[
+      {train:"153",origin:"NYP",destination:"PHL",schedDepart:"07:05",schedArrive:"08:34",report:"07:05",off:"11:32"},
+      {train:"140",origin:"PHL",destination:"NYP",schedDepart:"11:32",schedArrive:"13:12",report:"11:32",off:"15:51"}
+    ]},
+    {status:"work",notes:"Continuous time",legs:[
+      {train:"56",origin:"NYP",destination:"WAS",schedDepart:"10:33",schedArrive:"13:55",report:"10:33",off:"19:01"},
+      {train:"177",origin:"WAS",destination:"NYP",schedDepart:"19:01",schedArrive:"21:52",report:"19:01",off:"21:52"}
+    ]},
+    {status:"work",notes:"Continuous time",legs:[{train:"83",origin:"NYP",destination:"PHL",schedDepart:"14:30",schedArrive:"16:00",report:"14:30",off:"18:55"}]},
+    {status:"work",notes:"Continuous time",legs:[{train:"143",origin:"NYP",destination:"WAS",schedDepart:"08:47",schedArrive:"12:10",report:"08:47",off:"19:05"}]},
+    {status:"off",notes:"",legs:[]},
+    {status:"off",notes:"",legs:[]},
+    {status:"off",notes:"",legs:[]}
+  ],
+  history:[]
+};
+let app=JSON.parse(localStorage.getItem(KEY)||"null")||starter;
+function saveApp(){localStorage.setItem(KEY,JSON.stringify(app))}
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function fmt(v){return Number(v||0).toFixed(2)}
+function money(v){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(v||0)}
+function dayNames(){return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]}
+function toMins(t){if(!t)return 0;let p=t.split(":").map(Number);return p[0]*60+p[1]}
+function parseHours(a,b){if(!a||!b)return 0;let s=toMins(a),e=toMins(b);if(e<s)e+=1440;return (e-s)/60}
+function todayISO(){return new Date().toISOString().slice(0,10)}
+function ensureDaysLength(){const len=Number(app.setup.cycleLength||7);while(app.days.length<len)app.days.push({status:"off",notes:"",legs:[]});if(app.days.length>len)app.days=app.days.slice(0,len);if(app.activeDay>=len)app.activeDay=0}
+function cycleDayForDate(dateStr){const d=new Date(dateStr+"T00:00:00");const pickup=dayNames().indexOf(app.setup.pickupDay);const current=d.getDay();const diff=((current-pickup)%app.setup.cycleLength+app.setup.cycleLength)%app.setup.cycleLength;return diff+1}
+function dayForDate(dateStr){return app.days[cycleDayForDate(dateStr)-1]||{status:"off",notes:"",legs:[]}}
+function dayScheduledHours(day){return day.legs.reduce((s,l)=>s+parseHours(l.report,l.off),0)}
+function cycleScheduledHours(){return app.days.reduce((s,d)=>s+dayScheduledHours(d),0)}
+function totalActual(){return app.history.reduce((s,x)=>s+Number(x.hours||0),0)}
+
+function showTab(id){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".nav .tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelector('.nav .tab[data-tab="'+id+'"]').classList.add("active");
+}
+document.querySelectorAll(".nav .tab[data-tab]").forEach(tab=>tab.addEventListener("click",()=>showTab(tab.dataset.tab)));
+
+function renderLive(){
+  const box=document.getElementById("liveBox");
+  const main=document.getElementById("liveMain");
+  const sub=document.getElementById("liveSub");
+  const bar=document.getElementById("liveBar");
+  const date=document.getElementById("workDate").value||todayISO();
+  const day=dayForDate(date);
+  const delay=Number(document.getElementById("delay").value||0);
+  const trigger=Number(document.getElementById("delayTrigger").value||60);
+  const company=document.getElementById("companyProtected").checked;
+  const personal=document.getElementById("personalDayOff").checked;
+  box.className="live"; bar.style.width="0%";
+  if(company){box.classList.add("warn");main.textContent="Company Removed — No Work Today";sub.textContent="Guarantee remains intact.";return}
+  if(personal||day.status!=="work"||!day.legs.length){box.classList.add("off");main.textContent="Off Duty";sub.textContent=personal?"Personal day off selected.":"Today is an off day.";return}
+  if(delay>=trigger) box.classList.add("warn");
+  const now=new Date(); const nowMin=now.getHours()*60+now.getMinutes();
+  const start=toMins(day.legs[0].report), end=toMins(day.legs[day.legs.length-1].off);
+  if(nowMin<start){main.textContent="Before Shift — Train "+String(day.legs[0].train).padStart(4,"0");sub.textContent=day.legs[0].origin+" → "+day.legs[0].destination+" · Report "+day.legs[0].report;return}
+  if(nowMin<=end){
+    bar.style.width=Math.max(0,Math.min(100,((nowMin-start)/(end-start))*100))+"%";
+    let active=day.legs[0];
+    day.legs.forEach(leg=>{let rs=toMins(leg.report), oe=toMins(leg.off), nm=nowMin; if(oe<rs)oe+=1440; if(nm<rs&&oe>1440)nm+=1440; if(nm>=rs&&nm<=oe)active=leg;});
+    main.textContent="On Duty — Train "+String(active.train).padStart(4,"0");
+    sub.textContent=active.origin+" → "+active.destination+(delay?(" · Delay "+delay+" min"):" · On schedule");
+    return
+  }
+  bar.style.width="100%"; main.textContent="Completed"; sub.textContent="Scheduled day ended at "+day.legs[day.legs.length-1].off;
+}
+
+function actualLegRow(i,leg){
+  return "<div class='leg'><strong>Train "+String(leg.train).padStart(4,"0")+" · "+leg.origin+" → "+leg.destination+
+    "</strong><div class='grid4' style='margin-top:10px'><div><label>Scheduled Depart</label><input value='"+(leg.schedDepart||"")+"' disabled></div>"+
+    "<div><label>Scheduled Arrive</label><input value='"+(leg.schedArrive||"")+"' disabled></div>"+
+    "<div><label>Actual Depart</label><input class='actDepart' data-i='"+i+"' type='time'></div>"+
+    "<div><label>Actual Arrive</label><input class='actArrive' data-i='"+i+"' type='time'></div></div>"+
+    "<div class='grid2' style='margin-top:10px'><div><label>Scheduled Off</label><input value='"+(leg.off||"")+"' disabled></div>"+
+    "<div><label>Actual Off</label><input class='actOff' data-i='"+i+"' type='time'></div></div></div>";
+}
+
+function renderHome(){
+  const date=document.getElementById("workDate").value||todayISO();
+  const cday=cycleDayForDate(date);
+  const day=dayForDate(date);
+  const company=document.getElementById("companyProtected").checked;
+  const personal=document.getElementById("personalDayOff").checked;
+  document.getElementById("todayLine").textContent=app.setup.line;
+  document.getElementById("todayBadge").textContent=company?"Company":personal?"Day Off":day.status==="work"?"Work":"Off";
+  document.getElementById("todayBadge").className="pill "+(company?"p-warn":day.status==="work"?"p-work":"p-off");
+  document.getElementById("todayTitle").textContent=company?"Company Protected Day":"Day "+cday+" · "+(day.status==="work"?"Work":"Off");
+  document.getElementById("todaySummary").textContent="Position Key: "+app.setup.positionKey+(day.notes?" · "+day.notes:"");
+  document.getElementById("companyBanner").classList.toggle("hidden",!company);
+  const todayLegs=document.getElementById("todayLegs");
+  todayLegs.innerHTML="";
+  if(company){todayLegs.innerHTML="<div class='leg'>No work today because the company removed you, train was canceled, or you were held out.</div>"}
+  else if(personal||day.status!=="work"){todayLegs.innerHTML="<div class='leg'>Off day.</div>"}
+  else{
+    day.legs.forEach((leg,idx)=>{
+      todayLegs.innerHTML += "<div class='leg'><strong>Train "+String(leg.train).padStart(4,"0")+" · "+leg.origin+" → "+leg.destination+
+      "</strong><br><span class='sub'>Scheduled: "+(leg.schedDepart||"--:--")+" → "+(leg.schedArrive||"--:--")+" · Report "+leg.report+" · Off "+leg.off+
+      " · "+fmt(parseHours(leg.report,leg.off))+" hrs</span>"+(idx===day.legs.length-1?"<div class='sub' style='margin-top:6px'>Final scheduled off time for the day</div>":"")+"</div>";
+    });
+  }
+  const actualBox=document.getElementById("actualLegsBox");
+  actualBox.innerHTML = (day.status==="work"&&!company&&!personal) ? day.legs.map((leg,i)=>actualLegRow(i,leg)).join("") : "<div class='leg'>No station timing needed for this day.</div>";
+  actualBox.querySelectorAll(".actDepart,.actArrive,.actOff").forEach(inp=>inp.addEventListener("input", updateTodayTotals));
+  document.getElementById("todaySched").textContent=fmt(dayScheduledHours(day))+" hrs";
+  renderNextShift();
+  renderLive();
+}
+
+function renderNextShift(){
+  const d=new Date(); d.setDate(d.getDate()+1);
+  const iso=d.toISOString().slice(0,10), cday=cycleDayForDate(iso), day=dayForDate(iso);
+  document.getElementById("nextShiftMain").textContent=day.status==="work"?"Tomorrow: Work":"Tomorrow: Off";
+  document.getElementById("nextShiftSub").textContent=day.status==="work"
+    ? "Cycle Day "+cday+" · "+(day.legs[0]?.origin||"")+" → "+(day.legs[0]?.destination||"")+" · Train "+day.legs.map(x=>String(x.train).padStart(4,"0")).join(" / ")
+    : "Cycle Day "+cday+" · Off";
+}
+
+function updateTodayTotals(){
+  const date=document.getElementById("workDate").value||todayISO();
+  const day=dayForDate(date);
+  const company=document.getElementById("companyProtected").checked;
+  const personal=document.getElementById("personalDayOff").checked;
+  const delay=Number(document.getElementById("delay").value||0);
+  const trigger=Number(document.getElementById("delayTrigger").value||60);
+  document.getElementById("delayNotice").classList.toggle("hidden", !(delay>=trigger && !company && !personal));
+  let actual=0;
+  if(company||personal){actual=0}
+  else{
+    const actOffs=Array.from(document.querySelectorAll(".actOff"));
+    for(let i=0;i<day.legs.length;i++){
+      const leg=day.legs[i];
+      const off = actOffs[i]?.value || (i===day.legs.length-1 ? (document.getElementById("actualOff").value || leg.off) : leg.off);
+      actual += parseHours(leg.report, off);
+    }
+    actual += delay/60;
+  }
+  const sched=dayScheduledHours(day), variance=actual-sched;
+  document.getElementById("dayTotal").textContent=fmt(actual)+" hrs";
+  document.getElementById("todayActual").textContent=fmt(actual)+" hrs";
+  document.getElementById("todayVar").textContent=(variance>=0?"+":"")+fmt(variance)+" hrs";
+  renderLive();
+}
+
+function renderBuilder(){
+  ensureDaysLength();
+  document.getElementById("line").value=app.setup.line;
+  document.getElementById("positionKey").value=app.setup.positionKey;
+  document.getElementById("pickupDay").value=app.setup.pickupDay;
+  document.getElementById("cycleLength").value=app.setup.cycleLength;
+  document.getElementById("builderRate").value=app.pay.rate;
+  document.getElementById("builderGuarantee").value=app.pay.guarantee;
+  document.getElementById("builderOt").value=app.pay.ot;
+  document.getElementById("payRate").value=app.pay.rate;
+  document.getElementById("payGuarantee").value=app.pay.guarantee;
+  document.getElementById("payOt").value=app.pay.ot;
+  document.getElementById("cycleSchedOut").textContent=fmt(cycleScheduledHours())+" hrs";
+  document.getElementById("cycleActualOut").textContent=fmt(totalActual())+" hrs";
+
+  const img=document.getElementById("previewImg"), ph=document.getElementById("previewPlaceholder");
+  if(app.screenshot){img.src=app.screenshot; img.classList.remove("hidden"); ph.classList.add("hidden")}
+  else {img.classList.add("hidden"); ph.classList.remove("hidden")}
+
+  const tabs=document.getElementById("dayTabs");
+  tabs.innerHTML="";
+  app.days.forEach((d,i)=>{
+    const btn=document.createElement("button");
+    btn.className="daytab"+(app.activeDay===i?" active":"");
+    btn.textContent="Day "+(i+1);
+    btn.onclick=()=>{app.activeDay=i; saveApp(); renderBuilder();}
+    tabs.appendChild(btn);
+  });
+
+  const day=app.days[app.activeDay];
+  const editor=document.getElementById("dayEditor");
+  editor.innerHTML="<div class='card' style='padding:14px;margin-top:12px'>"+
+    "<div class='row'><h3>Cycle Day "+(app.activeDay+1)+"</h3>"+
+    "<select id='dayStatus'><option value='work' "+(day.status==='work'?'selected':'')+">Work</option><option value='off' "+(day.status==='off'?'selected':'')+">Off</option></select></div>"+
+    "<label style='margin-top:10px'>Day Notes</label><input id='dayNotes' value='"+(day.notes||"")+"' placeholder='Continuous time / off day / etc'>"+
+    "<div class='kv' style='margin-top:10px'><span class='sub'>Scheduled Hours For This Day</span><strong id='daySchedOut'>"+fmt(dayScheduledHours(day))+" hrs</strong></div>"+
+    "<div id='builderLegs'></div>"+
+    "<div class='row' style='margin-top:12px'><button id='addLegBtn' class='btn-red'>+ Add Train Leg</button></div></div>";
+
+  document.getElementById("dayStatus").onchange=e=>{
+    day.status=e.target.value;
+    if(day.status==="off") day.legs=[];
+    if(day.status==="work" && !day.legs.length) day.legs=[{train:"",origin:"",destination:"",schedDepart:"",schedArrive:"",report:"",off:""}];
+    saveApp(); renderBuilder(); renderHome();
+  };
+  document.getElementById("dayNotes").oninput=e=>{day.notes=e.target.value; saveApp(); renderHome();};
+
+  const legsBox=document.getElementById("builderLegs");
+  if(day.status==="off"){legsBox.innerHTML="<div class='leg'>Off day.</div>"}
+  else{
+    if(!day.legs.length) day.legs.push({train:"",origin:"",destination:"",schedDepart:"",schedArrive:"",report:"",off:""});
+    legsBox.innerHTML="";
+    day.legs.forEach((leg,i)=>{
+      const div=document.createElement("div");
+      div.className="leg";
+      div.innerHTML=
+        "<div class='grid4'><div><label>Train</label><input class='b-train' data-i='"+i+"' value='"+(leg.train||"")+"'></div>"+
+        "<div><label>Origin</label><input class='b-origin' data-i='"+i+"' value='"+(leg.origin||"")+"'></div>"+
+        "<div><label>Destination</label><input class='b-dest' data-i='"+i+"' value='"+(leg.destination||"")+"'></div>"+
+        "<div><label>Report Time</label><input class='b-report' data-i='"+i+"' type='time' value='"+(leg.report||"")+"'></div></div>"+
+        "<div class='grid4' style='margin-top:10px'><div><label>Scheduled Depart</label><input class='b-sdep' data-i='"+i+"' type='time' value='"+(leg.schedDepart||"")+"'></div>"+
+        "<div><label>Scheduled Arrive</label><input class='b-sarr' data-i='"+i+"' type='time' value='"+(leg.schedArrive||"")+"'></div>"+
+        "<div><label>Scheduled Off</label><input class='b-off' data-i='"+i+"' type='time' value='"+(leg.off||"")+"'></div>"+
+        "<div class='row' style='align-items:end'><button class='btn-dark remLeg' data-i='"+i+"'>Remove</button></div></div>";
+      legsBox.appendChild(div);
+    });
+
+    legsBox.querySelectorAll("input").forEach(inp=>{
+      inp.oninput=e=>{
+        const i=Number(e.target.dataset.i), c=e.target.className;
+        if(c.includes("b-train")) day.legs[i].train=e.target.value;
+        if(c.includes("b-origin")) day.legs[i].origin=e.target.value;
+        if(c.includes("b-dest")) day.legs[i].destination=e.target.value;
+        if(c.includes("b-report")) day.legs[i].report=e.target.value;
+        if(c.includes("b-sdep")) day.legs[i].schedDepart=e.target.value;
+        if(c.includes("b-sarr")) day.legs[i].schedArrive=e.target.value;
+        if(c.includes("b-off")) day.legs[i].off=e.target.value;
+        saveApp();
+        document.getElementById("daySchedOut").textContent=fmt(dayScheduledHours(day))+" hrs";
+        document.getElementById("cycleSchedOut").textContent=fmt(cycleScheduledHours())+" hrs";
+        renderHome();
+      };
+    });
+    legsBox.querySelectorAll(".remLeg").forEach(btn=>{
+      btn.onclick=()=>{
+        const i=Number(btn.dataset.i);
+        day.legs.splice(i,1);
+        if(!day.legs.length) day.status="off";
+        saveApp(); renderBuilder(); renderHome();
+      };
+    });
+  }
+
+  document.getElementById("addLegBtn").onclick=()=>{
+    if(day.status!=="work") day.status="work";
+    day.legs.push({train:"",origin:"",destination:"",schedDepart:"",schedArrive:"",report:"",off:""});
+    saveApp(); renderBuilder(); renderHome();
+  };
+}
+
+function renderReminder(){
+  document.getElementById("remStart").checked=app.reminders.start;
+  document.getElementById("remEnd").checked=app.reminders.end;
+  document.getElementById("remTime").value=app.reminders.time;
+  document.getElementById("remNote").value=app.reminders.note;
+  document.getElementById("remStartOut").textContent=app.reminders.start?"On":"Off";
+  document.getElementById("remEndOut").textContent=app.reminders.end?"On":"Off";
+  document.getElementById("remTimeOut").textContent=app.reminders.time||"--:--";
+}
+
+function renderPay(){
+  const actual=totalActual(), guarantee=Number(app.pay.guarantee||185), paid=Math.max(actual,guarantee), owed=Math.max(0,guarantee-actual), pay=paid*Number(app.pay.rate||26.69);
+  document.getElementById("statActual").textContent=fmt(actual);
+  document.getElementById("statPaid").textContent=fmt(paid);
+  document.getElementById("statOwed").textContent=fmt(owed);
+  document.getElementById("statPay").textContent=money(pay);
+  document.getElementById("payActualOut").textContent=fmt(actual);
+  document.getElementById("payPaidOut").textContent=fmt(paid);
+  document.getElementById("payOwedOut").textContent=fmt(owed);
+  document.getElementById("payEstimateOut").textContent=money(pay);
+}
+
+function renderHistory(){
+  const list=document.getElementById("historyList");
+  if(!app.history.length){list.textContent="No saved days yet."; return;}
+  list.innerHTML=app.history.map((item,i)=>
+    "<div class='leg'><strong>"+item.date+"</strong><br>"+
+    "Actual: "+fmt(item.hours)+" hrs<br>"+
+    "Scheduled: "+fmt(item.scheduled)+" hrs<br>"+
+    "Variance: "+(item.hours-item.scheduled>=0?"+":"")+fmt(item.hours-item.scheduled)+" hrs<br>"+
+    (item.company?"Company protected<br>":"")+
+    (item.personal?"Personal day off<br>":"")+
+    (item.notes?"Notes: "+item.notes+"<br>":"")+
+    "<button class='btn-dark' onclick='deleteHistory("+i+")'>Delete</button></div>"
+  ).join("");
+}
+window.deleteHistory=function(i){app.history.splice(i,1); saveApp(); renderHistory(); renderPay();};
+
+document.getElementById("saveSetupBtn").addEventListener("click", ()=>{
+  app.setup.line=document.getElementById("line").value;
+  app.setup.positionKey=document.getElementById("positionKey").value;
+  app.setup.pickupDay=document.getElementById("pickupDay").value;
+  app.setup.cycleLength=Number(document.getElementById("cycleLength").value||7);
+  app.pay.rate=Number(document.getElementById("builderRate").value||26.69);
+  app.pay.guarantee=Number(document.getElementById("builderGuarantee").value||185);
+  app.pay.ot=Number(document.getElementById("builderOt").value||186);
+  ensureDaysLength(); saveApp(); renderBuilder(); renderHome(); renderPay();
+  document.getElementById("builderMsg").textContent="Setup saved.";
+});
+
+function loadStarterNow(){
+  app=clone(starter);
+  saveApp();
+  hydrateAll();
+}
+document.getElementById("loadStarterBtn").addEventListener("click", loadStarterNow);
+document.getElementById("starterBtnTop").addEventListener("click", loadStarterNow);
+
+document.getElementById("saveDaysBtn").addEventListener("click", ()=>{
+  saveApp(); renderBuilder(); renderHome();
+  document.getElementById("daysMsg").textContent="Cycle days saved.";
+});
+
+document.getElementById("saveReminderBtn").addEventListener("click", ()=>{
+  app.reminders.start=document.getElementById("remStart").checked;
+  app.reminders.end=document.getElementById("remEnd").checked;
+  app.reminders.time=document.getElementById("remTime").value;
+  app.reminders.note=document.getElementById("remNote").value;
+  saveApp(); renderReminder();
+  document.getElementById("reminderMsg").textContent="Reminder settings saved.";
+});
+
+document.getElementById("savePayBtn").addEventListener("click", ()=>{
+  app.pay.rate=Number(document.getElementById("payRate").value||26.69);
+  app.pay.guarantee=Number(document.getElementById("payGuarantee").value||185);
+  app.pay.ot=Number(document.getElementById("payOt").value||186);
+  saveApp(); renderPay();
+  document.getElementById("payMsg").textContent="Pay settings saved.";
+});
+
+document.getElementById("saveTodayBtn").addEventListener("click", ()=>{
+  const date=document.getElementById("workDate").value||todayISO();
+  const day=dayForDate(date);
+  const sched=dayScheduledHours(day);
+  const company=document.getElementById("companyProtected").checked;
+  const personal=document.getElementById("personalDayOff").checked;
+  const hours=Number(document.getElementById("dayTotal").textContent.replace(" hrs",""))||0;
+  const item={date,scheduled:sched,hours,company,personal,notes:document.getElementById("notes").value};
+  const idx=app.history.findIndex(x=>x.date===date);
+  if(idx>=0) app.history[idx]=item; else app.history.unshift(item);
+  saveApp(); renderHistory(); renderPay();
+  document.getElementById("todayMsg").textContent="Today saved.";
+});
+
+document.getElementById("clearTodayBtn").addEventListener("click", ()=>{
+  document.getElementById("delay").value="0";
+  document.getElementById("actualOff").value="";
+  document.getElementById("companyProtected").checked=false;
+  document.getElementById("personalDayOff").checked=false;
+  document.getElementById("disruptionMode").checked=false;
+  document.getElementById("notes").value="";
+  document.getElementById("todayMsg").textContent="";
+  updateTodayTotals();
+});
+
+document.getElementById("reloadTodayBtn").addEventListener("click", ()=>{
+  renderHome();
+  updateTodayTotals();
+  document.getElementById("todayMsg").textContent="Reloaded.";
+});
+
+document.getElementById("copySchedBtn").addEventListener("click", ()=>{
+  const date=document.getElementById("workDate").value||todayISO();
+  const day=dayForDate(date);
+  document.querySelectorAll(".actDepart").forEach((el,i)=>el.value=day.legs[i]?.schedDepart||"");
+  document.querySelectorAll(".actArrive").forEach((el,i)=>el.value=day.legs[i]?.schedArrive||"");
+  document.querySelectorAll(".actOff").forEach((el,i)=>el.value=day.legs[i]?.off||"");
+  updateTodayTotals();
+});
+
+function addMinutes(t,mins){
+  const total=toMins(t)+Number(mins||0), mod=((total%1440)+1440)%1440;
+  return String(Math.floor(mod/60)).padStart(2,"0")+":"+String(mod%60).padStart(2,"0");
+}
+document.getElementById("applyDelayBtn").addEventListener("click", ()=>{
+  const delay=Number(document.getElementById("delay").value||0);
+  const date=document.getElementById("workDate").value||todayISO();
+  const day=dayForDate(date);
+  document.querySelectorAll(".actDepart").forEach((el,i)=>{const base=day.legs[i]?.schedDepart||""; if(base) el.value=addMinutes(base,delay);});
+  document.querySelectorAll(".actArrive").forEach((el,i)=>{const base=day.legs[i]?.schedArrive||""; if(base) el.value=addMinutes(base,delay);});
+  document.querySelectorAll(".actOff").forEach((el,i)=>{const base=day.legs[i]?.off||""; if(base) el.value=addMinutes(base,delay);});
+  updateTodayTotals();
+});
+
+["workDate","delay","actualOff","delayTrigger"].forEach(id=>document.getElementById(id).addEventListener("input", updateTodayTotals));
+["companyProtected","personalDayOff","disruptionMode"].forEach(id=>document.getElementById(id).addEventListener("change", updateTodayTotals));
+
+document.getElementById("imageInput").addEventListener("change", e=>{
+  const file=e.target.files && e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{app.screenshot=ev.target.result; saveApp(); renderBuilder();};
+  reader.readAsDataURL(file);
+});
+document.getElementById("clearImageBtn").addEventListener("click", ()=>{
+  app.screenshot="";
+  document.getElementById("imageInput").value="";
+  saveApp();
+  renderBuilder();
+});
+
+function hydrateAll(){
+  ensureDaysLength();
+  document.getElementById("workDate").value=todayISO();
+  document.getElementById("line").value=app.setup.line;
+  document.getElementById("positionKey").value=app.setup.positionKey;
+  document.getElementById("pickupDay").value=app.setup.pickupDay;
+  document.getElementById("cycleLength").value=app.setup.cycleLength;
+  document.getElementById("builderRate").value=app.pay.rate;
+  document.getElementById("builderGuarantee").value=app.pay.guarantee;
+  document.getElementById("builderOt").value=app.pay.ot;
+  document.getElementById("payRate").value=app.pay.rate;
+  document.getElementById("payGuarantee").value=app.pay.guarantee;
+  document.getElementById("payOt").value=app.pay.ot;
+  renderBuilder();
+  renderHome();
+  renderReminder();
+  renderPay();
+  renderHistory();
+  updateTodayTotals();
+}
+hydrateAll();
+</script>
+</body>
+</html>
