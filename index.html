@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RailCrew Pro v29.1</title>
+<title>RailCrew Pro v29.2</title>
 <style>
 body{font-family:Arial;background:#0b1220;color:white;margin:0;padding:15px}
 .card{background:#121a2b;padding:15px;border-radius:12px;margin-bottom:12px}
@@ -12,7 +12,7 @@ button{padding:12px 14px;border:none;border-radius:8px;margin:5px;font-weight:70
 .green{background:#16a34a;color:white}
 .gray{background:#e5e7eb;color:#111}
 label{display:block;margin:12px 0 6px;font-size:14px}
-input[type="time"], input[type="number"], input[type="text"]{width:100%;padding:10px;margin:5px 0;border-radius:8px;border:1px solid #475569;background:#eef2f7;color:#111;box-sizing:border-box}
+input[type="time"], input[type="number"]{width:100%;padding:10px;margin:5px 0;border-radius:8px;border:1px solid #475569;background:#eef2f7;color:#111;box-sizing:border-box}
 .checkrow{display:flex;align-items:center;gap:10px;margin:10px 0}
 .msg{margin-top:10px;color:#bbf7d0;font-size:14px;min-height:20px}
 .row{display:flex;gap:8px;flex-wrap:wrap}
@@ -21,7 +21,7 @@ input[type="time"], input[type="number"], input[type="text"]{width:100%;padding:
 </head>
 <body>
 
-<h2>RailCrew Pro v29.1</h2>
+<h2>RailCrew Pro v29.2</h2>
 
 <div class="card">
   <h3>Quick Check</h3>
@@ -42,9 +42,8 @@ input[type="time"], input[type="number"], input[type="text"]{width:100%;padding:
   <input type="time" id="off">
   <div class="row">
     <button class="green" id="endShiftBtn" type="button">End Shift Now</button>
-    <button class="gray" id="typeNowBtn" type="button">Type Current Time</button>
   </div>
-  <div class="small">If your browser blocks the time picker value, the second button also writes the current time directly.</div>
+  <div class="small">This fills the Off Time with your phone's current time.</div>
 
   <label for="delay">Delay (min)</label>
   <input type="number" id="delay" min="0" value="0">
@@ -68,36 +67,30 @@ input[type="time"], input[type="number"], input[type="text"]{width:100%;padding:
 </div>
 
 <script>
-const STORAGE_KEY = "railcrew_v29_fixed_2";
+const STORAGE_KEY = "railcrew_v29_2";
 
 function byId(id){ return document.getElementById(id); }
 
-function setMsg(id, text){
+function flash(id, text){
   byId(id).textContent = text;
   setTimeout(() => {
     if (byId(id).textContent === text) byId(id).textContent = "";
-  }, 2500);
+  }, 2200);
 }
 
-function currentTimeHHMM(){
-  const now = new Date();
-  const h = String(now.getHours()).padStart(2, "0");
-  const m = String(now.getMinutes()).padStart(2, "0");
-  return h + ":" + m;
+function nowHHMM(){
+  const d = new Date();
+  return String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
 }
 
-function applyNow(){
-  const v = currentTimeHHMM();
-  const off = byId("off");
-  off.value = v;
-  off.setAttribute("value", v);
-  off.dispatchEvent(new Event("input", {bubbles:true}));
-  off.dispatchEvent(new Event("change", {bubbles:true}));
-  setMsg("timeMsg", "Off time set to " + v);
+function setEndShiftNow(){
+  const t = nowHHMM();
+  byId("off").value = t;
+  flash("timeMsg", "Off time set to " + t);
 }
 
-function saveDay(){
-  const data = {
+function getFormData(){
+  return {
     report: byId("report").value || "",
     station: byId("station").value || "",
     off: byId("off").value || "",
@@ -109,49 +102,50 @@ function saveDay(){
       custom: byId("custom").checked
     }
   };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  setMsg("saveMsg", "Saved.");
+}
+
+function applyFormData(data){
+  byId("report").value = data.report || "";
+  byId("station").value = data.station || "";
+  byId("off").value = data.off || "";
+  byId("delay").value = data.delay || "0";
+  const meals = data.meals || {};
+  byId("breakfast").checked = !!meals.breakfast;
+  byId("lunch").checked = !!meals.lunch;
+  byId("dinner").checked = !!meals.dinner;
+  byId("custom").checked = !!meals.custom;
+}
+
+function saveDay(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(getFormData()));
+    flash("saveMsg", "Saved.");
+  }catch(e){
+    flash("saveMsg", "Save failed.");
+  }
 }
 
 function loadDay(){
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw){
-    setMsg("saveMsg", "Nothing saved yet.");
-    return;
-  }
-  try {
-    const data = JSON.parse(raw);
-    byId("report").value = data.report || "";
-    byId("station").value = data.station || "";
-    byId("off").value = data.off || "";
-    byId("delay").value = data.delay || "0";
-    const meals = data.meals || {};
-    byId("breakfast").checked = !!meals.breakfast;
-    byId("lunch").checked = !!meals.lunch;
-    byId("dinner").checked = !!meals.dinner;
-    byId("custom").checked = !!meals.custom;
-    setMsg("saveMsg", "Loaded.");
-  } catch (e) {
-    setMsg("saveMsg", "Saved data could not be loaded.");
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw){
+      flash("saveMsg", "Nothing saved yet.");
+      return;
+    }
+    applyFormData(JSON.parse(raw));
+    flash("saveMsg", "Loaded.");
+  }catch(e){
+    flash("saveMsg", "Load failed.");
   }
 }
 
-function bindPress(el, fn){
-  el.addEventListener("click", fn);
-  el.addEventListener("touchend", function(e){
-    e.preventDefault();
-    fn();
-  }, {passive:false});
-}
+byId("endShiftBtn").onclick = setEndShiftNow;
+byId("saveBtn").onclick = saveDay;
+byId("loadBtn").onclick = loadDay;
+byId("amtrakBtn").onclick = function(){ window.open("https://www.amtrak.com/track-your-train.html", "_blank"); };
+byId("transitBtn").onclick = function(){ window.open("https://asm.transitdocs.com/", "_blank"); };
 
-bindPress(byId("endShiftBtn"), applyNow);
-bindPress(byId("typeNowBtn"), applyNow);
-bindPress(byId("saveBtn"), saveDay);
-bindPress(byId("loadBtn"), loadDay);
-
-bindPress(byId("amtrakBtn"), () => window.open("https://www.amtrak.com/track-your-train.html", "_blank"));
-bindPress(byId("transitBtn"), () => window.open("https://asm.transitdocs.com/", "_blank"));
-
+// auto-load once on open
 loadDay();
 </script>
 
