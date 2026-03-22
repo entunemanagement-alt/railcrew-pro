@@ -3,77 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RailCrew Pro v25 FINAL</title>
+<title>RailCrew v25 FIXED</title>
 <style>
-body{margin:0;font-family:Arial;background:#0b1220;color:#fff}
-.wrap{padding:15px;padding-bottom:100px}
-.card{background:#121a2b;border-radius:12px;padding:15px;margin-bottom:12px}
-button{padding:10px;border:none;border-radius:8px;background:#ef4444;color:#fff;font-weight:bold}
-input,select{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:none}
+body{background:#0b1220;color:white;font-family:Arial;padding:15px}
+.card{background:#121a2b;padding:15px;border-radius:10px;margin-bottom:12px}
+button{padding:10px;border:none;border-radius:8px;background:red;color:white;margin:4px}
+input{width:100%;padding:8px;margin:5px 0}
 .tabs{display:flex;position:fixed;bottom:0;left:0;right:0}
 .tab{flex:1;padding:12px;text-align:center;background:#111;cursor:pointer}
 .active{background:#7f1d1d}
 .hidden{display:none}
-.daybtn{margin:3px;background:#2563eb}
-.leg{background:#0f172a;padding:10px;margin-top:8px;border-radius:8px}
 </style>
 </head>
 <body>
 
-<div class="wrap">
-
-<div id="home" class="card">
-<h2>Home</h2>
-<div id="todayInfo"></div>
-<div id="totals"></div>
-</div>
+<div id="home" class="card">Home working</div>
 
 <div id="builder" class="card hidden">
-<h2>Builder</h2>
-<label>Cycle Length</label>
-<input id="cycle" type="number" value="3">
+<h3>Day Tabs (FIXED)</h3>
 <div id="days"></div>
-<div id="dayEdit"></div>
-<button onclick="saveDays()">Save Schedule</button>
+<div id="dayContent"></div>
 </div>
 
 <div id="reminder" class="card hidden">
-<h2>Reminder</h2>
+<label>Reminder Time</label>
 <input id="remTime" type="time">
-<button onclick="saveReminder()">Save</button>
+<button onclick="saveReminder()">Save Reminder</button>
 <div id="remOut"></div>
-</div>
-
-<div id="pay" class="card hidden">
-<h2>Pay</h2>
-<label>Rate</label>
-<input id="rate" type="number" value="26.69">
-<label>Guarantee</label>
-<input id="guar" type="number" value="185">
-<div id="payOut"></div>
-</div>
-
 </div>
 
 <div class="tabs">
 <div class="tab active" onclick="show('home',this)">Home</div>
 <div class="tab" onclick="show('builder',this)">Builder</div>
 <div class="tab" onclick="show('reminder',this)">Reminder</div>
-<div class="tab" onclick="show('pay',this)">Pay</div>
 </div>
 
 <script>
-let app = JSON.parse(localStorage.getItem("rc_final")||"null") || {
-cycle:3,
-days:[{legs:[]},{legs:[]},{legs:[]}],
+let app = JSON.parse(localStorage.getItem("rc_fix")||"null") || {
+days:[{name:"Day 1"},{name:"Day 2"},{name:"Day 3"}],
 active:0,
-rem:"",
-rate:26.69,
-guar:185,
-history:[]
+rem:""
 };
 
-function save(){localStorage.setItem("rc_final",JSON.stringify(app));}
+function save(){localStorage.setItem("rc_fix",JSON.stringify(app));}
 
 function show(id,el){
 document.querySelectorAll(".card").forEach(x=>x.classList.add("hidden"))
@@ -85,91 +57,30 @@ el.classList.add("active")
 function renderDays(){
 let box=document.getElementById("days")
 box.innerHTML=""
-for(let i=0;i<app.cycle;i++){
-if(!app.days[i]) app.days[i]={legs:[]}
+app.days.forEach((d,i)=>{
 let b=document.createElement("button")
-b.innerText="Day "+(i+1)
-b.className="daybtn"
-b.onclick=()=>{app.active=i;renderDays();renderEdit()}
+b.innerText=d.name
+b.onclick=()=>{app.active=i;save();renderDays();renderDay()}
 box.appendChild(b)
-}
-}
-
-function renderEdit(){
-let d=app.days[app.active]
-let box=document.getElementById("dayEdit")
-box.innerHTML=""
-d.legs.forEach((l,i)=>{
-box.innerHTML+=`<div class="leg">
-Train <input value="${l.train||""}" onchange="updateLeg(${i},'train',this.value)">
-Report <input type="time" value="${l.report||""}" onchange="updateLeg(${i},'report',this.value)">
-Off <input type="time" value="${l.off||""}" onchange="updateLeg(${i},'off',this.value)">
-</div>`
 })
-box.innerHTML+=`<button onclick="addLeg()">+ Add Train</button>`
 }
 
-function updateLeg(i,k,v){
-app.days[app.active].legs[i][k]=v
-save()
-renderHome()
-}
-
-function addLeg(){
-app.days[app.active].legs.push({})
-save()
-renderEdit()
-}
-
-function saveDays(){
-app.cycle=Number(document.getElementById("cycle").value)
-save()
-renderDays()
-}
-
-function calc(a,b){
-if(!a||!b)return 0
-let [ah,am]=a.split(":").map(Number)
-let [bh,bm]=b.split(":").map(Number)
-let s=ah*60+am,e=bh*60+bm
-if(e<s)e+=1440
-return (e-s)/60
-}
-
-function renderHome(){
-let d=app.days[app.active]
-let html=""
-let total=0
-d.legs.forEach(l=>{
-let h=calc(l.report,l.off)
-total+=h
-html+=`<div class="leg">Train ${l.train||""} ${l.report||""}-${l.off||""} (${h.toFixed(2)}h)</div>`
-})
-document.getElementById("todayInfo").innerHTML=html||"No trains"
-document.getElementById("totals").innerHTML="Total: "+total.toFixed(2)+" hrs"
-renderPay()
+function renderDay(){
+document.getElementById("dayContent").innerText="Selected "+app.days[app.active].name
 }
 
 function saveReminder(){
 app.rem=document.getElementById("remTime").value
 save()
-document.getElementById("remOut").innerText="Saved "+app.rem
-}
-
-function renderPay(){
-app.rate=Number(document.getElementById("rate").value)
-app.guar=Number(document.getElementById("guar").value)
-let actual=0
-app.days.forEach(d=>d.legs.forEach(l=>actual+=calc(l.report,l.off)))
-let paid=Math.max(actual,app.guar)
-let pay=paid*app.rate
-document.getElementById("payOut").innerHTML=
-"Actual: "+actual.toFixed(2)+"<br>Paid: "+paid.toFixed(2)+"<br>$"+pay.toFixed(2)
+document.getElementById("remOut").innerText="Saved: "+app.rem
 }
 
 renderDays()
-renderEdit()
-renderHome()
+renderDay()
+if(app.rem){
+document.getElementById("remOut").innerText="Saved: "+app.rem
+document.getElementById("remTime").value=app.rem
+}
 </script>
 
 </body>
