@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<title>RailCrew Pro v23 Stable</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#0b1220;color:#fff}
+.wrap{max-width:900px;margin:0 auto;padding:16px 16px 100px}
+.card{background:#121a2b;border:1px solid #2a3550;border-radius:16px;padding:16px;margin-bottom:16px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+h1,h2,h3,p{margin:0}.sub{color:#9fb0c7;font-size:13px;margin-top:6px}
+input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #4b5878;background:#eef2f7;color:#111;box-sizing:border-box}
+textarea{min-height:80px}
+button{padding:12px 14px;border:none;border-radius:10px;font-weight:700;cursor:pointer}
+.red{background:#ef4444;color:#fff}.blue{background:#2563eb;color:#fff}.dark{background:#374151;color:#fff}
+.tabbar{position:fixed;left:0;right:0;bottom:0;background:#0b1220;border-top:1px solid #2a3550;padding:10px}
+.tabgrid{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tab{background:#182236;border:1px solid #2a3550;color:#fff;text-align:center;padding:12px;border-radius:10px;cursor:pointer}
+.tab.active{background:#7f1d1d}
+.section{display:none}.section.active{display:block}
+.pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#193252;color:#dbeafe;font-size:12px;font-weight:700}
+.leg{border:1px solid #2a3550;border-radius:12px;padding:12px;margin-top:10px;background:#0f1727}
+.msg{margin-top:10px;color:#cfe1ff;font-size:13px}
+</style>
+</head>
+<body>
+<div class='wrap'>
+  <div class='card'>
+    <div class='row'>
+      <div>
+        <h1>RailCrew Pro v23 Stable</h1>
+        <p class='sub'>This version is stripped down so every button works.</p>
+      </div>
+      <span class='pill'>Stable Build</span>
+    </div>
+  </div>
+
+  <section id='home' class='section active'>
+    <div class='card'>
+      <div class='row'>
+        <div>
+          <h2>Today</h2>
+          <p class='sub'>Loads from your saved builder schedule.</p>
+        </div>
+        <span id='todayBadge' class='pill'>Work</span>
+      </div>
+      <div style='font-size:28px;font-weight:700;margin-top:12px' id='todayTitle'>No schedule loaded</div>
+      <div class='sub' id='todaySummary'></div>
+      <div id='todayLegs'></div>
+    </div>
+
+    <div class='card'>
+      <h3>Daily Update</h3>
+      <div class='grid2' style='margin-top:12px'>
+        <div><label>Date</label><input id='workDate' type='date'></div>
+        <div><label>Delay Minutes</label><input id='delay' type='number' value='0'></div>
+      </div>
+      <div class='grid2'>
+        <div><label>Actual Final Off</label><input id='actualOff' type='time'></div>
+        <div><label>Notes</label><textarea id='notes' placeholder='Any notes'></textarea></div>
+      </div>
+      <div class='row' style='margin-top:12px'>
+        <button id='saveTodayBtn' class='red'>Save Today</button>
+        <button id='clearTodayBtn' class='dark'>Clear</button>
+        <button id='refreshHomeBtn' class='blue'>Reload Today</button>
+      </div>
+      <div class='msg' id='todayMsg'></div>
+    </div>
+  </section>
+
+  <section id='builder' class='section'>
+    <div class='card'>
+      <h2>Schedule Builder</h2>
+      <p class='sub'>Enter one simple work template for now.</p>
+      <div class='grid2' style='margin-top:12px'>
+        <div><label>Line</label><select id='line'><option>NEC</option><option>B</option></select></div>
+        <div><label>Position Key</label><input id='positionKey' value='811'></div>
+      </div>
+      <div class='grid2'>
+        <div><label>Train 1</label><input id='train1' value='153'></div>
+        <div><label>Train 2</label><input id='train2' value='140'></div>
+      </div>
+      <div class='grid2'>
+        <div><label>Report 1</label><input id='report1' type='time' value='07:05'></div>
+        <div><label>Off 1</label><input id='off1' type='time' value='11:32'></div>
+      </div>
+      <div class='grid2'>
+        <div><label>Report 2</label><input id='report2' type='time' value='11:32'></div>
+        <div><label>Off 2</label><input id='off2' type='time' value='15:51'></div>
+      </div>
+      <div class='row' style='margin-top:12px'>
+        <button id='saveBuilderBtn' class='red'>Save Schedule</button>
+        <button id='loadStarterBtn' class='dark'>Load Starter</button>
+      </div>
+      <div class='msg' id='builderMsg'></div>
+    </div>
+  </section>
+
+  <section id='pay' class='section'>
+    <div class='card'>
+      <h2>Pay</h2>
+      <div class='grid2' style='margin-top:12px'>
+        <div><label>Hourly Rate</label><input id='hourlyRate' type='number' step='0.01' value='26.69'></div>
+        <div><label>Guarantee Hours</label><input id='guaranteeHours' type='number' value='185'></div>
+      </div>
+      <div class='row' style='margin-top:12px'>
+        <button id='savePayBtn' class='red'>Save Pay Settings</button>
+      </div>
+      <div class='msg' id='payMsg'></div>
+      <div class='leg'>
+        <strong>Actual Hours:</strong> <span id='actualHours'>0.00</span><br>
+        <strong>Paid Hours:</strong> <span id='paidHours'>185.00</span><br>
+        <strong>Guarantee Owed:</strong> <span id='guaranteeOwed'>185.00</span><br>
+        <strong>Estimated Pay:</strong> <span id='estimatedPay'>$4,937.65</span>
+      </div>
+    </div>
+  </section>
+
+  <section id='history' class='section'>
+    <div class='card'>
+      <h2>History</h2>
+      <div id='historyList' class='sub' style='margin-top:12px'>No saved days yet.</div>
+    </div>
+  </section>
+</div>
+
+<div class='tabbar'>
+  <div class='tabgrid'>
+    <div class='tab active' data-tab='home'>Home</div>
+    <div class='tab' data-tab='builder'>Builder</div>
+    <div class='tab' data-tab='pay'>Pay</div>
+    <div class='tab' data-tab='history'>History</div>
+  </div>
+</div>
+
+<script>
+const KEY = "railcrew_v23_stable";
+const starter = {
+  schedule:{line:"NEC",positionKey:"811",train1:"153",report1:"07:05",off1:"11:32",train2:"140",report2:"11:32",off2:"15:51"},
+  pay:{hourlyRate:26.69,guaranteeHours:185},
+  history:[]
+};
+let app = JSON.parse(localStorage.getItem(KEY) || "null") || starter;
+function saveApp(){ localStorage.setItem(KEY, JSON.stringify(app)); }
+function parseHours(a,b){
+  if(!a || !b) return 0;
+  const ap=a.split(":").map(Number), bp=b.split(":").map(Number);
+  let start=ap[0]*60+ap[1], end=bp[0]*60+bp[1];
+  if(end<start) end += 1440;
+  return (end-start)/60;
+}
+function money(v){ return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(v||0); }
+function fmt(v){ return Number(v||0).toFixed(2); }
+function showTab(id){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelector('.tab[data-tab="'+id+'"]').classList.add("active");
+}
+document.querySelectorAll(".tab").forEach(tab=>tab.addEventListener("click", ()=>showTab(tab.dataset.tab)));
+
+function renderHome(){
+  const s = app.schedule;
+  document.getElementById("todayBadge").textContent = s.line;
+  document.getElementById("todayTitle").textContent = "Today's Trains";
+  document.getElementById("todaySummary").textContent = "Position Key: " + s.positionKey;
+  document.getElementById("todayLegs").innerHTML =
+    "<div class='leg'><strong>Train "+s.train1+"</strong><br>Report "+s.report1+" · Off "+s.off1+" · "+fmt(parseHours(s.report1,s.off1))+" hrs</div>" +
+    "<div class='leg'><strong>Train "+s.train2+"</strong><br>Report "+s.report2+" · Off "+s.off2+" · "+fmt(parseHours(s.report2,s.off2))+" hrs</div>";
+}
+function renderBuilder(){
+  const s = app.schedule;
+  document.getElementById("line").value = s.line;
+  document.getElementById("positionKey").value = s.positionKey;
+  document.getElementById("train1").value = s.train1;
+  document.getElementById("train2").value = s.train2;
+  document.getElementById("report1").value = s.report1;
+  document.getElementById("off1").value = s.off1;
+  document.getElementById("report2").value = s.report2;
+  document.getElementById("off2").value = s.off2;
+}
+function renderPay(){
+  const actual = app.history.reduce((sum,x)=>sum + Number(x.hours||0), 0);
+  const guarantee = Number(app.pay.guaranteeHours||185);
+  const paid = Math.max(actual, guarantee);
+  const owed = Math.max(0, guarantee-actual);
+  const pay = paid * Number(app.pay.hourlyRate||26.69);
+  document.getElementById("hourlyRate").value = app.pay.hourlyRate;
+  document.getElementById("guaranteeHours").value = app.pay.guaranteeHours;
+  document.getElementById("actualHours").textContent = fmt(actual);
+  document.getElementById("paidHours").textContent = fmt(paid);
+  document.getElementById("guaranteeOwed").textContent = fmt(owed);
+  document.getElementById("estimatedPay").textContent = money(pay);
+}
+function renderHistory(){
+  const list = document.getElementById("historyList");
+  if(!app.history.length){ list.textContent = "No saved days yet."; return; }
+  list.innerHTML = app.history.map((item, i)=>
+    "<div class='leg'><strong>"+item.date+"</strong><br>Hours: "+fmt(item.hours)+"<br>Delay: "+item.delay+" min<br>"+
+    (item.notes ? "Notes: "+item.notes+"<br>" : "")+
+    "<button class='dark' onclick='deleteHistory("+i+")'>Delete</button></div>"
+  ).join("");
+}
+window.deleteHistory = function(i){
+  app.history.splice(i,1);
+  saveApp();
+  renderHistory();
+  renderPay();
+};
+
+document.getElementById("saveBuilderBtn").addEventListener("click", ()=>{
+  app.schedule = {
+    line: document.getElementById("line").value,
+    positionKey: document.getElementById("positionKey").value,
+    train1: document.getElementById("train1").value,
+    train2: document.getElementById("train2").value,
+    report1: document.getElementById("report1").value,
+    off1: document.getElementById("off1").value,
+    report2: document.getElementById("report2").value,
+    off2: document.getElementById("off2").value
+  };
+  saveApp();
+  renderHome();
+  document.getElementById("builderMsg").textContent = "Schedule saved.";
+});
+document.getElementById("loadStarterBtn").addEventListener("click", ()=>{
+  app.schedule = JSON.parse(JSON.stringify(starter.schedule));
+  saveApp();
+  renderBuilder();
+  renderHome();
+  document.getElementById("builderMsg").textContent = "Starter loaded.";
+});
+document.getElementById("savePayBtn").addEventListener("click", ()=>{
+  app.pay.hourlyRate = Number(document.getElementById("hourlyRate").value || 26.69);
+  app.pay.guaranteeHours = Number(document.getElementById("guaranteeHours").value || 185);
+  saveApp();
+  renderPay();
+  document.getElementById("payMsg").textContent = "Pay settings saved.";
+});
+document.getElementById("saveTodayBtn").addEventListener("click", ()=>{
+  const delay = Number(document.getElementById("delay").value || 0);
+  const finalOff = document.getElementById("actualOff").value || app.schedule.off2;
+  const hours = parseHours(app.schedule.report1, app.schedule.off1) + parseHours(app.schedule.report2, finalOff) + (delay/60);
+  const item = {
+    date: document.getElementById("workDate").value || new Date().toISOString().slice(0,10),
+    delay: delay,
+    hours: hours,
+    notes: document.getElementById("notes").value
+  };
+  const existing = app.history.findIndex(x => x.date === item.date);
+  if(existing >= 0) app.history[existing] = item; else app.history.unshift(item);
+  saveApp();
+  renderHistory();
+  renderPay();
+  document.getElementById("todayMsg").textContent = "Today saved.";
+});
+document.getElementById("clearTodayBtn").addEventListener("click", ()=>{
+  document.getElementById("delay").value = "0";
+  document.getElementById("actualOff").value = "";
+  document.getElementById("notes").value = "";
+  document.getElementById("todayMsg").textContent = "";
+});
+document.getElementById("refreshHomeBtn").addEventListener("click", ()=>{
+  renderHome();
+  document.getElementById("todayMsg").textContent = "Reloaded.";
+});
+
+document.getElementById("workDate").value = new Date().toISOString().slice(0,10);
+renderHome();
+renderBuilder();
+renderPay();
+renderHistory();
+</script>
+</body>
+</html>
