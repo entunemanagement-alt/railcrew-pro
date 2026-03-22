@@ -2,666 +2,79 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>RailCrew Pro v26 Clean</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RailCrew Screenshot Fix</title>
 <style>
-:root{
-  --bg:#0b1220; --card:#121a2b; --line:#2a3550; --text:#fff; --muted:#9fb0c7;
-  --red:#ef4444; --blue:#2563eb; --green:#16a34a; --amber:#f59e0b;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#0b1220,#0f172a);color:var(--text)}
-.wrap{max-width:1050px;margin:0 auto;padding:16px 16px 110px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
-.row{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap}
-.grid2,.grid3{display:grid;gap:12px}
-.grid2{grid-template-columns:1fr 1fr}
-.grid3{grid-template-columns:1fr 1fr 1fr}
-@media(max-width:900px){.grid3{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
-@media(max-width:560px){.grid3,.grid2{grid-template-columns:1fr}}
-h1,h2,h3,p{margin:0}
-.sub{color:var(--muted);font-size:13px;line-height:1.35}
-label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
-input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #4b5878;background:#eef2f7;color:#111;box-sizing:border-box}
-textarea{min-height:82px;resize:vertical}
-button{padding:11px 14px;border:none;border-radius:10px;font-weight:700;cursor:pointer}
-.btn-red{background:var(--red);color:#fff}
-.btn-blue{background:var(--blue);color:#fff}
-.btn-dark{background:#374151;color:#fff}
-.pill{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
-.work{background:#17345f;color:#dbeafe}
-.off{background:#334155;color:#e2e8f0}
-.ok{background:#11492b;color:#bbf7d0}
-.warn{background:#5f4317;color:#fde68a}
-.leg{background:#0f172a;border:1px solid var(--line);padding:12px;border-radius:12px;margin-top:10px}
-.msg{margin-top:10px;color:#cfe1ff;font-size:13px}
-.notice{margin-top:10px;background:rgba(245,158,11,.12);border-left:4px solid var(--amber);padding:10px 12px;border-radius:10px;color:#fde68a}
-.tabs{position:fixed;left:0;right:0;bottom:0;background:#0b1220;border-top:1px solid var(--line);padding:10px}
-.tabgrid{max-width:1050px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
-.tab{background:#182236;border:1px solid var(--line);color:#fff;text-align:center;padding:12px;border-radius:10px;cursor:pointer}
-.tab.active{background:#7f1d1d}
-.section{display:none}
-.section.active{display:block}
-.daytabs{display:flex;gap:8px;overflow:auto;padding-bottom:4px}
-.daybtn{white-space:nowrap;background:#2563eb;color:#fff;border:none;border-radius:10px;padding:10px 12px;cursor:pointer}
-.daybtn.active{background:#1d4ed8;outline:2px solid #93c5fd}
-.preview{border:1px dashed #4b5878;border-radius:12px;padding:12px;text-align:center;background:rgba(255,255,255,.02)}
-.preview img{max-width:100%;max-height:320px;border-radius:10px;display:block;margin:0 auto}
-.kv{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid rgba(255,255,255,.08)}
-.kv:first-child{border-top:none}
-.smallcheck{display:flex;gap:8px;align-items:flex-start;margin-top:8px}
-.smallcheck input{width:auto;margin-top:3px}
-.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--green);color:white;padding:10px 18px;border-radius:999px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+body{margin:0;background:#0b1220;color:#fff;font-family:Arial,sans-serif;padding:16px}
+.card{background:#121a2b;border:1px solid #2a3550;border-radius:16px;padding:16px;max-width:900px;margin:0 auto}
+input{width:100%;padding:12px;border-radius:10px;border:1px solid #4b5878;background:#eef2f7;color:#111;box-sizing:border-box}
+.preview{margin-top:12px;border:1px dashed #4b5878;border-radius:12px;padding:12px;text-align:center;background:rgba(255,255,255,.02)}
+.preview img{max-width:100%;max-height:420px;border-radius:10px;display:none;margin:0 auto}
+button{margin-top:12px;padding:11px 14px;border:none;border-radius:10px;font-weight:700;cursor:pointer;background:#ef4444;color:#fff}
+.msg{margin-top:12px;color:#cfe1ff}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="card">
-    <div class="row">
-      <div>
-        <h1>RailCrew Pro v26 Clean</h1>
-        <p class="sub">Fixed save feedback, fixed screenshot preview, fixed reminder saving, working day tabs, builder, pay, and history.</p>
-      </div>
-      <span class="pill ok">Clean Build</span>
-    </div>
+<div class="card">
+  <h1>RailCrew Screenshot Fix Test</h1>
+  <p>This build only tests screenshot loading and saving.</p>
+  <input id="imageInput" type="file" accept="image/*">
+  <div class="preview">
+    <img id="previewImg" alt="Schedule preview">
+    <div id="previewPlaceholder">No screenshot loaded yet.</div>
   </div>
-
-  <section id="home" class="section active">
-    <div class="grid2">
-      <div class="card">
-        <div class="row">
-          <div>
-            <h2>Today</h2>
-            <p class="sub">Loads from your saved cycle schedule.</p>
-          </div>
-          <div><span id="todayBadge" class="pill work">Work</span></div>
-        </div>
-        <div id="companyBanner" class="notice" style="display:none">Company protected day selected. Guarantee stays intact.</div>
-        <div id="todayTitle" style="font-size:28px;font-weight:700;margin-top:12px">No schedule loaded</div>
-        <div id="todaySummary" class="sub" style="margin-top:6px"></div>
-        <div id="todayLegs"></div>
-      </div>
-
-      <div class="card">
-        <h2>Daily Update</h2>
-        <div class="grid2" style="margin-top:12px">
-          <div><label>Date</label><input id="workDate" type="date"></div>
-          <div><label>Delay Minutes</label><input id="delay" type="number" value="0"></div>
-        </div>
-        <div class="grid2">
-          <div><label>Actual Final Off</label><input id="actualOff" type="time"></div>
-          <div><label>Delay Trigger</label><input id="delayTrigger" type="number" value="60"></div>
-        </div>
-        <label>Notes</label>
-        <textarea id="notes" placeholder="Add notes"></textarea>
-        <label class="smallcheck"><input id="companyProtected" type="checkbox"><span>Company protected</span></label>
-        <label class="smallcheck"><input id="personalDayOff" type="checkbox"><span>Personal day off</span></label>
-        <div id="delayNotice" class="notice" style="display:none">Delay is high. Review actual off time before saving.</div>
-        <div class="row" style="margin-top:12px">
-          <button id="saveTodayBtn" class="btn-red">Save Today</button>
-          <button id="clearTodayBtn" class="btn-dark">Clear</button>
-          <button id="reloadTodayBtn" class="btn-blue">Reload</button>
-        </div>
-        <div class="msg" id="todayMsg"></div>
-      </div>
-    </div>
-
-    <div class="grid3">
-      <div class="card">
-        <h3>Totals</h3>
-        <div class="kv" style="margin-top:10px"><span class="sub">Scheduled Hours</span><strong id="todayScheduledOut">0.00 hrs</strong></div>
-        <div class="kv"><span class="sub">Actual Hours</span><strong id="todayActualOut" data-val="0">0.00 hrs</strong></div>
-        <div class="kv"><span class="sub">Variance</span><strong id="todayVarianceOut">0.00 hrs</strong></div>
-      </div>
-      <div class="card">
-        <h3>Next Shift</h3>
-        <div id="nextShiftMain" style="font-size:28px;font-weight:700;margin-top:10px;color:#86efac">Tomorrow: Off</div>
-        <div id="nextShiftSub" class="sub" style="margin-top:6px"></div>
-      </div>
-      <div class="card">
-        <h3>Reminder Status</h3>
-        <div class="kv" style="margin-top:10px"><span class="sub">Shift Reminder</span><strong id="remStartOut">Off</strong></div>
-        <div class="kv"><span class="sub">End Log Reminder</span><strong id="remEndOut">Off</strong></div>
-        <div class="kv"><span class="sub">Time</span><strong id="remTimeOut">--:--</strong></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="builder" class="section">
-    <div class="grid2">
-      <div class="card">
-        <h2>Schedule Setup</h2>
-        <div class="grid3" style="margin-top:12px">
-          <div><label>Line</label><select id="line"><option>NEC</option><option>B</option></select></div>
-          <div><label>Position Key</label><input id="positionKey"></div>
-          <div><label>Pickup Day</label><select id="pickupDay"><option>Sunday</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></div>
-        </div>
-        <div class="grid3">
-          <div><label>Cycle Length</label><input id="cycleLength" type="number" min="1" max="31"></div>
-          <div><label>Hourly Rate</label><input id="builderRate" type="number" step="0.01"></div>
-          <div><label>Guarantee</label><input id="builderGuarantee" type="number"></div>
-        </div>
-        <div class="row" style="margin-top:12px">
-          <button id="saveSetupBtn" class="btn-red">Save Setup</button>
-          <button id="loadStarterBtn" class="btn-dark">Load Starter</button>
-        </div>
-        <div class="msg" id="builderMsg"></div>
-      </div>
-
-      <div class="card">
-        <h2>Screenshot Helper</h2>
-        <p class="sub">Upload a screenshot and keep it visible while switching day tabs.</p>
-        <input id="imageInput" type="file" accept="image/*" style="margin-top:12px">
-        <div class="preview" style="margin-top:12px">
-          <img id="previewImg" alt="Schedule preview" style="display:none">
-          <div id="previewPlaceholder" class="sub">No screenshot loaded yet.</div>
-        </div>
-        <div class="row" style="margin-top:12px">
-          <button id="clearImageBtn" class="btn-dark">Clear Image</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="row">
-        <div>
-          <h2>Cycle Day Builder</h2>
-          <p class="sub">Working day tabs. Multiple trains per day.</p>
-        </div>
-        <button id="saveDaysBtn" class="btn-red">Save Cycle Days</button>
-      </div>
-
-      <div class="card" style="padding:14px;margin-top:12px">
-        <div class="kv"><span class="sub">Cycle Scheduled Hours</span><strong id="cycleScheduledOut">0.00 hrs</strong></div>
-        <div class="kv"><span class="sub">Current Month Actual Hours</span><strong id="cycleActualOut">0.00 hrs</strong></div>
-      </div>
-
-      <div id="dayTabs" class="daytabs" style="margin-top:12px"></div>
-      <div id="dayEditor"></div>
-      <div class="msg" id="daysMsg"></div>
-    </div>
-  </section>
-
-  <section id="reminder" class="section">
-    <div class="card">
-      <h2>Reminder</h2>
-      <label class="smallcheck"><input id="remStart" type="checkbox"><span>Remind before next shift</span></label>
-      <label class="smallcheck"><input id="remEnd" type="checkbox"><span>Remind to log actual time at end of day</span></label>
-      <div class="grid2" style="margin-top:12px">
-        <div><label>Reminder Time</label><input id="remTime" type="time"></div>
-        <div><label>Reminder Note</label><input id="remNote" placeholder="Tomorrow you start work at..."></div>
-      </div>
-      <div class="row" style="margin-top:12px">
-        <button id="saveReminderBtn" class="btn-red">Save Reminder</button>
-      </div>
-      <div class="msg" id="reminderMsg"></div>
-    </div>
-  </section>
-
-  <section id="pay" class="section">
-    <div class="card">
-      <h2>Pay</h2>
-      <div class="grid3" style="margin-top:12px">
-        <div><label>Hourly Rate</label><input id="payRate" type="number" step="0.01"></div>
-        <div><label>Guarantee Hours</label><input id="payGuarantee" type="number"></div>
-        <div><label>OT Starts After</label><input id="payOt" type="number"></div>
-      </div>
-      <div class="row" style="margin-top:12px">
-        <button id="savePayBtn" class="btn-red">Save Pay Settings</button>
-      </div>
-      <div class="msg" id="payMsg"></div>
-      <div class="leg">
-        <strong>Actual Hours:</strong> <span id="payActual">0.00</span><br>
-        <strong>Paid Hours:</strong> <span id="payPaid">185.00</span><br>
-        <strong>Guarantee Owed:</strong> <span id="payOwed">185.00</span><br>
-        <strong>Estimated Pay:</strong> <span id="payEstimate">$4,937.65</span>
-      </div>
-    </div>
-  </section>
-
-  <section id="history" class="section">
-    <div class="card">
-      <h2>History</h2>
-      <div id="historyList" class="sub" style="margin-top:12px">No saved days yet.</div>
-    </div>
-  </section>
-</div>
-
-<div class="tabs">
-  <div class="tabgrid">
-    <div class="tab active" data-tab="home">Home</div>
-    <div class="tab" data-tab="builder">Builder</div>
-    <div class="tab" data-tab="reminder">Reminder</div>
-    <div class="tab" data-tab="pay">Pay</div>
-    <div class="tab" data-tab="history">History</div>
-  </div>
+  <button id="clearBtn">Clear Image</button>
+  <div class="msg" id="msg"></div>
 </div>
 
 <script>
-const KEY = "rc_v26_clean";
-const starter = {
-  setup:{line:"NEC",positionKey:"811",pickupDay:"Wednesday",cycleLength:7},
-  pay:{rate:26.69,guarantee:185,ot:186},
-  reminders:{start:false,end:false,time:"",note:""},
-  screenshot:"",
-  activeDay:0,
-  days:[
-    {status:"work",notes:"Continuous time",legs:[
-      {train:"153",origin:"NYP",destination:"PHL",report:"07:05",off:"11:32"},
-      {train:"140",origin:"PHL",destination:"NYP",report:"11:32",off:"15:51"}
-    ]},
-    {status:"work",notes:"Continuous time",legs:[
-      {train:"56",origin:"NYP",destination:"WAS",report:"10:33",off:"19:01"},
-      {train:"177",origin:"WAS",destination:"NYP",report:"19:01",off:"21:52"}
-    ]},
-    {status:"work",notes:"Continuous time",legs:[{train:"83",origin:"NYP",destination:"PHL",report:"14:30",off:"18:55"}]},
-    {status:"work",notes:"Continuous time",legs:[{train:"143",origin:"NYP",destination:"WAS",report:"08:47",off:"19:05"}]},
-    {status:"off",notes:"",legs:[]},
-    {status:"off",notes:"",legs:[]},
-    {status:"off",notes:"",legs:[]}
-  ],
-  history:[]
-};
-let app = JSON.parse(localStorage.getItem(KEY) || "null") || starter;
+const KEY = "railcrew_screenshot_fix_only";
 
-function save(){ localStorage.setItem(KEY, JSON.stringify(app)); }
-function clone(x){ return JSON.parse(JSON.stringify(x)); }
-function fmt(v){ return Number(v||0).toFixed(2); }
-function money(v){ return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(v||0); }
-function dayNames(){ return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]; }
-function toMins(t){ if(!t) return 0; let p=t.split(":").map(Number); return p[0]*60+p[1]; }
-function parseHours(a,b){ if(!a||!b) return 0; let s=toMins(a), e=toMins(b); if(e<s) e+=1440; return (e-s)/60; }
-function todayISO(){ return new Date().toISOString().slice(0,10); }
-function ensureDays(){
-  let len = Number(app.setup.cycleLength || 7);
-  while(app.days.length < len) app.days.push({status:"off",notes:"",legs:[]});
-  if(app.days.length > len) app.days = app.days.slice(0,len);
-  if(app.activeDay >= len) app.activeDay = 0;
-}
-function cycleDayForDate(dateStr){
-  let d = new Date(dateStr + "T00:00:00");
-  let pickup = dayNames().indexOf(app.setup.pickupDay);
-  let current = d.getDay();
-  let diff = ((current-pickup)%app.setup.cycleLength + app.setup.cycleLength)%app.setup.cycleLength;
-  return diff + 1;
-}
-function dayForDate(dateStr){ return app.days[cycleDayForDate(dateStr)-1] || {status:"off",notes:"",legs:[]}; }
-function dayHours(day){ return day.legs.reduce((s,l)=>s+parseHours(l.report,l.off),0); }
-function cycleHours(){ return app.days.reduce((s,d)=>s+dayHours(d),0); }
-function totalActual(){ return app.history.reduce((s,x)=>s+Number(x.hours||0),0); }
+function setMessage(t){ document.getElementById("msg").textContent = t; }
 
-function showToast(msg){
-  const old = document.querySelector(".toast");
-  if(old) old.remove();
-  const t = document.createElement("div");
-  t.className = "toast";
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(()=>{ if(t.parentNode) t.remove(); }, 1800);
-}
-
-function showTab(id){
-  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  document.querySelector('.tab[data-tab="'+id+'"]').classList.add("active");
-}
-document.querySelectorAll(".tab").forEach(tab=>tab.addEventListener("click", ()=>showTab(tab.dataset.tab)));
-
-function renderHome(){
-  let date = document.getElementById("workDate").value || todayISO();
-  let cday = cycleDayForDate(date);
-  let day = dayForDate(date);
-  let company = document.getElementById("companyProtected").checked;
-  let personal = document.getElementById("personalDayOff").checked;
-
-  document.getElementById("todayBadge").textContent = company ? "Company" : personal ? "Day Off" : day.status==="work" ? "Work" : "Off";
-  document.getElementById("todayBadge").className = "pill " + (company ? "warn" : day.status==="work" ? "work" : "off");
-  document.getElementById("todayTitle").textContent = company ? "Company Protected Day" : "Day " + cday + " · " + (day.status==="work" ? "Work" : "Off");
-  document.getElementById("todaySummary").textContent = "Line: " + app.setup.line + " · Position Key: " + app.setup.positionKey + (day.notes ? " · " + day.notes : "");
-  document.getElementById("companyBanner").style.display = company ? "block" : "none";
-
-  let box = document.getElementById("todayLegs");
-  box.innerHTML = "";
-  if(company){
-    box.innerHTML = "<div class='leg'>No work today because the company removed you, train was canceled, or you were held out.</div>";
-  } else if(personal || day.status !== "work"){
-    box.innerHTML = "<div class='leg'>Off day.</div>";
-  } else {
-    day.legs.forEach((l, i) => {
-      box.innerHTML += "<div class='leg'><strong>Train " + (l.train||"") + " · " + (l.origin||"") + " → " + (l.destination||"") + "</strong><br>" +
-        "<span class='sub'>Report " + (l.report||"") + " · Off " + (l.off||"") + " · " + fmt(parseHours(l.report,l.off)) + " hrs</span>" +
-        (i===day.legs.length-1 ? "<div class='sub' style='margin-top:6px'>Final scheduled off time for the day</div>" : "") +
-        "</div>";
-    });
-  }
-
-  let sched = dayHours(day);
-  let actual = Number(document.getElementById("todayActualOut").dataset.val || 0);
-  let variance = actual - sched;
-  document.getElementById("todayScheduledOut").textContent = fmt(sched) + " hrs";
-  document.getElementById("todayVarianceOut").textContent = (variance>=0?"+":"") + fmt(variance) + " hrs";
-
-  renderNextShift();
-}
-
-function renderNextShift(){
-  let d = new Date();
-  d.setDate(d.getDate()+1);
-  let iso = d.toISOString().slice(0,10);
-  let cday = cycleDayForDate(iso);
-  let day = dayForDate(iso);
-  document.getElementById("nextShiftMain").textContent = day.status==="work" ? "Tomorrow: Work" : "Tomorrow: Off";
-  document.getElementById("nextShiftSub").textContent = day.status==="work"
-    ? "Cycle Day " + cday + " · Train " + day.legs.map(x=>x.train||"").join(" / ")
-    : "Cycle Day " + cday + " · Off";
-}
-
-function updateTodayTotals(){
-  let date = document.getElementById("workDate").value || todayISO();
-  let day = dayForDate(date);
-  let company = document.getElementById("companyProtected").checked;
-  let personal = document.getElementById("personalDayOff").checked;
-  let delay = Number(document.getElementById("delay").value || 0);
-  let finalOff = document.getElementById("actualOff").value || (day.legs[day.legs.length-1]?.off || "");
-  let sched = dayHours(day);
-  let actual = 0;
-
-  if(company || personal){
-    actual = 0;
-  } else if(day.legs.length){
-    for(let i=0;i<day.legs.length-1;i++) actual += parseHours(day.legs[i].report, day.legs[i].off);
-    actual += parseHours(day.legs[day.legs.length-1].report, finalOff);
-    actual += delay/60;
-  }
-
-  document.getElementById("todayActualOut").dataset.val = actual;
-  document.getElementById("todayActualOut").textContent = fmt(actual) + " hrs";
-  document.getElementById("todayVarianceOut").textContent = (actual-sched>=0?"+":"") + fmt(actual-sched) + " hrs";
-  document.getElementById("delayNotice").style.display = delay >= Number(document.getElementById("delayTrigger").value || 60) ? "block" : "none";
-  renderHome();
-}
-
-function renderBuilder(){
-  ensureDays();
-  document.getElementById("line").value = app.setup.line;
-  document.getElementById("positionKey").value = app.setup.positionKey;
-  document.getElementById("pickupDay").value = app.setup.pickupDay;
-  document.getElementById("cycleLength").value = app.setup.cycleLength;
-  document.getElementById("builderRate").value = app.pay.rate;
-  document.getElementById("builderGuarantee").value = app.pay.guarantee;
-  document.getElementById("payRate").value = app.pay.rate;
-  document.getElementById("payGuarantee").value = app.pay.guarantee;
-  document.getElementById("payOt").value = app.pay.ot;
-  document.getElementById("cycleScheduledOut").textContent = fmt(cycleHours()) + " hrs";
-  document.getElementById("cycleActualOut").textContent = fmt(totalActual()) + " hrs";
-
-  let img = document.getElementById("previewImg");
-  let ph = document.getElementById("previewPlaceholder");
-  if(app.screenshot){
-    img.src = app.screenshot;
+function showImage(src){
+  const img = document.getElementById("previewImg");
+  const ph = document.getElementById("previewPlaceholder");
+  img.onload = function(){
     img.style.display = "block";
     ph.style.display = "none";
-  } else {
-    img.removeAttribute("src");
+    setMessage("Screenshot loaded.");
+  };
+  img.onerror = function(){
     img.style.display = "none";
     ph.style.display = "block";
-  }
-
-  let tabs = document.getElementById("dayTabs");
-  tabs.innerHTML = "";
-  app.days.forEach((d,i)=>{
-    let b = document.createElement("button");
-    b.className = "daybtn" + (app.activeDay===i ? " active" : "");
-    b.textContent = "Day " + (i+1);
-    b.onclick = ()=>{ app.activeDay=i; save(); renderBuilder(); showToast("Day "+(i+1)+" loaded"); };
-    tabs.appendChild(b);
-  });
-
-  let day = app.days[app.activeDay];
-  let editor = document.getElementById("dayEditor");
-  editor.innerHTML =
-    "<div class='card' style='padding:14px;margin-top:12px'>" +
-    "<div class='row'><h3>Cycle Day " + (app.activeDay+1) + "</h3>" +
-    "<select id='dayStatus'><option value='work'" + (day.status==="work"?" selected":"") + ">Work</option><option value='off'" + (day.status==="off"?" selected":"") + ">Off</option></select></div>" +
-    "<label style='margin-top:10px'>Day Notes</label><input id='dayNotes' value='" + String(day.notes||"").replace(/'/g,"&#39;") + "' placeholder='Continuous time / off day / etc'>" +
-    "<div class='kv' style='margin-top:10px'><span class='sub'>Scheduled Hours For This Day</span><strong id='dayHoursOut'>" + fmt(dayHours(day)) + " hrs</strong></div>" +
-    "<div id='builderLegs'></div>" +
-    "<div class='row' style='margin-top:12px'><button id='addLegBtn' class='btn-red'>+ Add Train Leg</button></div>" +
-    "</div>";
-
-  document.getElementById("dayStatus").onchange = e=>{
-    day.status = e.target.value;
-    if(day.status==="off") day.legs = [];
-    if(day.status==="work" && !day.legs.length) day.legs = [{train:"",origin:"",destination:"",report:"",off:""}];
-    save(); renderBuilder(); renderHome();
+    setMessage("Image could not be displayed.");
   };
-  document.getElementById("dayNotes").oninput = e=>{ day.notes = e.target.value; save(); renderHome(); };
-
-  let legsBox = document.getElementById("builderLegs");
-  if(day.status==="off"){
-    legsBox.innerHTML = "<div class='leg'>Off day.</div>";
-  } else {
-    if(!day.legs.length) day.legs.push({train:"",origin:"",destination:"",report:"",off:""});
-    legsBox.innerHTML = "";
-    day.legs.forEach((leg, i)=>{
-      let div = document.createElement("div");
-      div.className = "leg";
-      div.innerHTML =
-        "<div class='grid3'>" +
-        "<div><label>Train</label><input class='l-train' data-i='"+i+"' value='"+String(leg.train||"").replace(/'/g,"&#39;")+"'></div>" +
-        "<div><label>Origin</label><input class='l-origin' data-i='"+i+"' value='"+String(leg.origin||"").replace(/'/g,"&#39;")+"'></div>" +
-        "<div><label>Destination</label><input class='l-dest' data-i='"+i+"' value='"+String(leg.destination||"").replace(/'/g,"&#39;")+"'></div>" +
-        "</div>" +
-        "<div class='grid2' style='margin-top:10px'>" +
-        "<div><label>Report</label><input class='l-report' data-i='"+i+"' type='time' value='"+(leg.report||"")+"'></div>" +
-        "<div><label>Off</label><input class='l-off' data-i='"+i+"' type='time' value='"+(leg.off||"")+"'></div>" +
-        "</div>" +
-        "<div class='row' style='margin-top:10px'><button class='btn-dark remLeg' data-i='"+i+"'>Remove</button></div>";
-      legsBox.appendChild(div);
-    });
-
-    legsBox.querySelectorAll("input").forEach(inp=>{
-      inp.oninput = e=>{
-        let i = Number(e.target.dataset.i);
-        let c = e.target.className;
-        if(c.includes("l-train")) day.legs[i].train = e.target.value;
-        if(c.includes("l-origin")) day.legs[i].origin = e.target.value;
-        if(c.includes("l-dest")) day.legs[i].destination = e.target.value;
-        if(c.includes("l-report")) day.legs[i].report = e.target.value;
-        if(c.includes("l-off")) day.legs[i].off = e.target.value;
-        save();
-        document.getElementById("dayHoursOut").textContent = fmt(dayHours(day)) + " hrs";
-        document.getElementById("cycleScheduledOut").textContent = fmt(cycleHours()) + " hrs";
-        renderHome();
-      };
-    });
-
-    legsBox.querySelectorAll(".remLeg").forEach(btn=>{
-      btn.onclick = ()=>{
-        let i = Number(btn.dataset.i);
-        day.legs.splice(i,1);
-        if(!day.legs.length) day.status = "off";
-        save(); renderBuilder(); renderHome();
-      };
-    });
-  }
-
-  document.getElementById("addLegBtn").onclick = ()=>{
-    if(day.status!=="work") day.status = "work";
-    day.legs.push({train:"",origin:"",destination:"",report:"",off:""});
-    save(); renderBuilder(); renderHome();
-  };
+  img.src = src;
 }
 
-function renderReminder(){
-  document.getElementById("remStart").checked = app.reminders.start;
-  document.getElementById("remEnd").checked = app.reminders.end;
-  document.getElementById("remTime").value = app.reminders.time;
-  document.getElementById("remNote").value = app.reminders.note;
-  document.getElementById("remStartOut").textContent = app.reminders.start ? "On" : "Off";
-  document.getElementById("remEndOut").textContent = app.reminders.end ? "On" : "Off";
-  document.getElementById("remTimeOut").textContent = app.reminders.time || "--:--";
+function loadSaved(){
+  const saved = localStorage.getItem(KEY);
+  if(saved){ showImage(saved); }
 }
 
-function renderPay(){
-  let actual = totalActual();
-  let guarantee = Number(app.pay.guarantee || 185);
-  let paid = Math.max(actual, guarantee);
-  let owed = Math.max(0, guarantee-actual);
-  let pay = paid * Number(app.pay.rate || 26.69);
-  document.getElementById("payActual").textContent = fmt(actual);
-  document.getElementById("payPaid").textContent = fmt(paid);
-  document.getElementById("payOwed").textContent = fmt(owed);
-  document.getElementById("payEstimate").textContent = money(pay);
-}
-
-function renderHistory(){
-  let list = document.getElementById("historyList");
-  if(!app.history.length){ list.textContent = "No saved days yet."; return; }
-  list.innerHTML = app.history.map((item, i)=>
-    "<div class='leg'><strong>"+item.date+"</strong><br>" +
-    "Scheduled: "+fmt(item.scheduled)+" hrs<br>" +
-    "Actual: "+fmt(item.hours)+" hrs<br>" +
-    "Variance: "+(item.hours-item.scheduled>=0?"+":"")+fmt(item.hours-item.scheduled)+" hrs<br>" +
-    (item.company ? "Company protected<br>" : "") +
-    (item.personal ? "Personal day off<br>" : "") +
-    (item.notes ? "Notes: "+item.notes+"<br>" : "") +
-    "<button class='btn-dark' onclick='deleteHistory("+i+")'>Delete</button></div>"
-  ).join("");
-}
-window.deleteHistory = function(i){
-  app.history.splice(i,1);
-  save();
-  renderHistory();
-  renderPay();
-};
-
-document.getElementById("saveSetupBtn").addEventListener("click", ()=>{
-  app.setup.line = document.getElementById("line").value;
-  app.setup.positionKey = document.getElementById("positionKey").value;
-  app.setup.pickupDay = document.getElementById("pickupDay").value;
-  app.setup.cycleLength = Number(document.getElementById("cycleLength").value || 7);
-  app.pay.rate = Number(document.getElementById("builderRate").value || 26.69);
-  app.pay.guarantee = Number(document.getElementById("builderGuarantee").value || 185);
-  ensureDays();
-  save();
-  renderBuilder();
-  renderHome();
-  renderPay();
-  document.getElementById("builderMsg").textContent = "Setup saved.";
-  showToast("Setup Saved ✅");
-});
-
-function loadStarter(){
-  app = clone(starter);
-  save();
-  hydrate();
-  showToast("Starter Loaded");
-}
-document.getElementById("loadStarterBtn").addEventListener("click", loadStarter);
-
-document.getElementById("saveDaysBtn").addEventListener("click", ()=>{
-  save();
-  renderBuilder();
-  renderHome();
-  document.getElementById("daysMsg").textContent = "Cycle days saved.";
-  showToast("Cycle Days Saved ✅");
-});
-
-document.getElementById("saveReminderBtn").addEventListener("click", ()=>{
-  app.reminders.start = document.getElementById("remStart").checked;
-  app.reminders.end = document.getElementById("remEnd").checked;
-  app.reminders.time = document.getElementById("remTime").value;
-  app.reminders.note = document.getElementById("remNote").value;
-  save();
-  renderReminder();
-  document.getElementById("reminderMsg").textContent = "Reminder saved.";
-  showToast("Reminder Saved ✅");
-});
-
-document.getElementById("savePayBtn").addEventListener("click", ()=>{
-  app.pay.rate = Number(document.getElementById("payRate").value || 26.69);
-  app.pay.guarantee = Number(document.getElementById("payGuarantee").value || 185);
-  app.pay.ot = Number(document.getElementById("payOt").value || 186);
-  save();
-  renderPay();
-  document.getElementById("payMsg").textContent = "Pay settings saved.";
-  showToast("Pay Saved ✅");
-});
-
-document.getElementById("saveTodayBtn").addEventListener("click", ()=>{
-  let date = document.getElementById("workDate").value || todayISO();
-  let day = dayForDate(date);
-  let scheduled = dayHours(day);
-  let hours = Number(document.getElementById("todayActualOut").dataset.val || 0);
-  let item = {
-    date: date,
-    scheduled: scheduled,
-    hours: hours,
-    company: document.getElementById("companyProtected").checked,
-    personal: document.getElementById("personalDayOff").checked,
-    notes: document.getElementById("notes").value
-  };
-  let existing = app.history.findIndex(x=>x.date===item.date);
-  if(existing >= 0) app.history[existing] = item; else app.history.unshift(item);
-  save();
-  renderHistory();
-  renderPay();
-  document.getElementById("todayMsg").textContent = "Today saved.";
-  showToast("Today Saved ✅");
-});
-
-document.getElementById("clearTodayBtn").addEventListener("click", ()=>{
-  document.getElementById("delay").value = "0";
-  document.getElementById("actualOff").value = "";
-  document.getElementById("notes").value = "";
-  document.getElementById("companyProtected").checked = false;
-  document.getElementById("personalDayOff").checked = false;
-  document.getElementById("todayMsg").textContent = "";
-  updateTodayTotals();
-});
-
-document.getElementById("reloadTodayBtn").addEventListener("click", ()=>{
-  renderHome();
-  updateTodayTotals();
-  document.getElementById("todayMsg").textContent = "Reloaded.";
-});
-
-["workDate","delay","actualOff","delayTrigger"].forEach(id=>document.getElementById(id).addEventListener("input", updateTodayTotals));
-["companyProtected","personalDayOff"].forEach(id=>document.getElementById(id).addEventListener("change", updateTodayTotals));
-
-document.getElementById("imageInput").addEventListener("change", e=>{
-  let file = e.target.files && e.target.files[0];
-  if(!file) return;
-  let reader = new FileReader();
-  reader.onload = ev=>{
-    app.screenshot = ev.target.result;
-    save();
-    renderBuilder();
-    showToast("Screenshot Loaded 📸");
+document.getElementById("imageInput").addEventListener("change", function(e){
+  const file = e.target.files && e.target.files[0];
+  if(!file){ return; }
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    const src = ev.target.result;
+    localStorage.setItem(KEY, src);
+    showImage(src);
   };
   reader.readAsDataURL(file);
 });
-document.getElementById("clearImageBtn").addEventListener("click", ()=>{
-  app.screenshot = "";
+
+document.getElementById("clearBtn").addEventListener("click", function(){
+  localStorage.removeItem(KEY);
+  document.getElementById("previewImg").removeAttribute("src");
+  document.getElementById("previewImg").style.display = "none";
+  document.getElementById("previewPlaceholder").style.display = "block";
   document.getElementById("imageInput").value = "";
-  save();
-  renderBuilder();
-  showToast("Image Cleared");
+  setMessage("Image cleared.");
 });
 
-function hydrate(){
-  ensureDays();
-  document.getElementById("workDate").value = todayISO();
-  renderBuilder();
-  renderHome();
-  renderReminder();
-  renderPay();
-  renderHistory();
-  updateTodayTotals();
-}
-hydrate();
+loadSaved();
 </script>
 </body>
 </html>
