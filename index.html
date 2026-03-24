@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RailCrew Pro v39</title>
+<title>RailCrew Pro v40</title>
 <style>
-:root{--bg:#0a1020;--card:#111827;--line:#293548;--text:#f8fafc;--muted:#9fb0c7;--red:#ef4444;--blue:#2563eb;--green:#16a34a;--amber:#f59e0b}
+:root{--bg:#0a1020;--card:#111827;--line:#293548;--text:#f8fafc;--muted:#9fb0c7;--red:#ef4444;--blue:#2563eb;--green:#16a34a;--amber:#f59e0b;--panel:#0f172a}
 *{box-sizing:border-box} html,body{margin:0;padding:0;background:#0a1020;color:var(--text);font-family:Arial,sans-serif} body{min-height:100vh}
 .wrap{max-width:1100px;margin:0 auto;padding:16px 16px 100px}
 .card{background:#111827;border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
 .row{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap}
-.grid2,.grid3{display:grid;gap:12px} .grid2{grid-template-columns:1fr 1fr} .grid3{grid-template-columns:1fr 1fr 1fr}
-@media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}
+.grid2,.grid3,.grid4{display:grid;gap:12px} .grid2{grid-template-columns:1fr 1fr} .grid3{grid-template-columns:1fr 1fr 1fr} .grid4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:860px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
 h1,h2,h3,p{margin:0} .sub{color:var(--muted);font-size:13px;line-height:1.35}
 label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
 input,select,textarea{width:100%;padding:12px;border-radius:12px;border:1px solid #4b5878;background:#eef2f7;color:#111827;font-size:16px}
@@ -21,11 +21,11 @@ button{padding:12px 14px;border:none;border-radius:12px;font-weight:700;cursor:p
 .brand{display:flex;align-items:center;gap:14px} .pill{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700;background:#124a2c;color:#bbf7d0}
 .section{display:none} .section.active{display:block} .tabs{position:fixed;left:0;right:0;bottom:0;padding:10px;background:#0a1020;border-top:1px solid var(--line)} .tabgrid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:10px} .tab{background:#152033;border:1px solid var(--line);text-align:center;padding:12px;border-radius:12px;color:#fff;cursor:pointer} .tab.active{background:#7f1d1d}
 @media(max-width:620px){.tabgrid{grid-template-columns:repeat(3,1fr)}}
-.leg{background:#0f172a;border:1px solid var(--line);padding:12px;border-radius:12px;margin-top:10px}
-.leg.current{outline:2px solid #93c5fd;background:#122033}
+.leg{background:var(--panel);border:1px solid var(--line);padding:12px;border-radius:14px;margin-top:10px}
+.leg.current{outline:2px solid #93c5fd;background:#122033} .leg.next{outline:2px solid rgba(245,158,11,.45)}
 .msg{margin-top:10px;color:#bbf7d0;font-size:14px;min-height:20px}
 .toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:#15803d;color:#fff;padding:10px 18px;border-radius:999px;z-index:9999}
-.countdown{padding:14px;border-radius:16px;border:1px solid var(--line);background:#0f172a} .good{background:rgba(22,163,74,.12)} .warn{background:rgba(245,158,11,.12)} .danger{background:rgba(239,68,68,.12)}
+.countdown{padding:14px;border-radius:16px;border:1px solid var(--line);background:var(--panel)} .good{background:rgba(22,163,74,.12)} .warn{background:rgba(245,158,11,.12)} .danger{background:rgba(239,68,68,.12)}
 .big{font-size:40px;font-weight:800} .kv{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid rgba(255,255,255,.08)} .kv:first-child{border-top:none}
 .daynav{display:flex;gap:8px;overflow:auto;margin-top:10px} .daybtn{background:#2563eb;color:#fff;border:none;border-radius:10px;padding:10px 12px;white-space:nowrap} .daybtn.active{outline:2px solid #93c5fd}
 .crew{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px} .delaybar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
@@ -33,19 +33,32 @@ button{padding:12px 14px;border:none;border-radius:12px;font-weight:700;cursor:p
 .small{font-size:12px;color:var(--muted)}
 .alertbox{padding:12px;border-radius:14px;border:1px solid var(--line);margin-top:12px}
 .alertbox.good{background:rgba(22,163,74,.12)} .alertbox.warn{background:rgba(245,158,11,.12)} .alertbox.danger{background:rgba(239,68,68,.12)}
+.badge{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.badge.green{background:#124a2c;color:#bbf7d0} .badge.blue{background:#173760;color:#dbeafe} .badge.amber{background:#5f4317;color:#fde68a} .badge.gray{background:#334155;color:#e2e8f0}
+.live-hours{font-size:28px;font-weight:800}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="card"><div class="row"><div class="brand"><div class="logo">RC</div><div><h1>RailCrew Pro v39</h1><p class="sub">Quick delay mode, stronger alerts, and current-leg highlight.</p></div></div><span class="pill">Quick Delay</span></div></div>
+  <div class="card"><div class="row"><div class="brand"><div class="logo">RC</div><div><h1>RailCrew Pro v40</h1><p class="sub">Full command center with home controls, current/next leg, live status, and smarter day board.</p></div></div><span class="pill">Command Center</span></div></div>
 
   <section id="home" class="section active">
+    <div class="grid4">
+      <div class="card"><div class="sub">Status</div><div id="statusBadgeWrap" style="margin-top:10px"><span class="badge gray">Off Duty</span></div></div>
+      <div class="card"><div class="sub">Planned Hours</div><div class="live-hours" id="homePlanned">0.00</div></div>
+      <div class="card"><div class="sub">Live Actual Hours</div><div class="live-hours" id="homeActualLive">0.00</div></div>
+      <div class="card"><div class="sub">Meals Triggered</div><div class="live-hours" id="homeMeals">0</div></div>
+    </div>
+
     <div class="grid2">
       <div class="card">
-        <div class="row"><div><h2>Today Board</h2><p class="sub">Current leg is highlighted.</p></div><span id="todayBadge" class="pill">Work</span></div>
+        <div class="row"><div><h2>Today Control Center</h2><p class="sub">Run your day from here.</p></div><span id="todayBadge" class="pill">Work</span></div>
         <div id="todayTitle" style="font-size:28px;font-weight:700;margin-top:12px">No schedule loaded</div>
+        <div class="kv" style="margin-top:12px"><span class="sub">Current Leg</span><strong id="currentLegLabel">—</strong></div>
+        <div class="kv"><span class="sub">Next Leg</span><strong id="nextLegLabel">—</strong></div>
         <div id="todayLegs" class="sub" style="margin-top:10px"></div>
       </div>
+
       <div class="card">
         <h2>Track Countdown</h2>
         <div id="countdownBox" class="countdown good" style="margin-top:12px">
@@ -151,7 +164,7 @@ button{padding:12px 14px;border:none;border-radius:12px;font-weight:700;cursor:p
 
 <script>
 const CATEGORIES = {"Northeast Corridor": {"Acela": ["2150", "2151", "2152", "2153", "2254"], "Northeast Regional": ["65", "66", "67", "140", "143", "153", "177", "178", "186", "196"], "Keystone Service": ["600", "601", "640", "641", "650", "651", "660", "661"]}, "Long Distance": {"Crescent": ["19", "20"], "Cardinal": ["50", "51"], "Silver Meteor": ["97", "98"], "Silver Star": ["91", "92"], "Palmetto": ["89", "90"]}, "Regional / State Supported": {"Carolinian": ["79", "80"], "Vermonter": ["54", "55", "56", "57"], "Pennsylvanian": ["42", "43"]}};
-const KEY = "railcrew_v39_quick_delay";
+const KEY = "railcrew_v40_command_center";
 const starter = {
   setup: {line:"NEC", positionKey:"811", pickupDay:"Wednesday", cycleLength:7},
   pay: {rate:26.69, guarantee:185},
@@ -263,6 +276,7 @@ function loadTodayFromSchedule(showMessage) {
   renderHome();
   if (showMessage) showToast("Today Loaded ✅");
 }
+
 function getAlertState() {
   const station = toMins(app.smartDay.station);
   const delay = Number(app.smartDay.delay || 0);
@@ -307,29 +321,96 @@ function currentLegIndex(day) {
   if (!day || day.status !== "work" || !day.legs.length) return -1;
   const now = new Date(), current = now.getHours()*60 + now.getMinutes();
   for (let i=0;i<day.legs.length;i++) {
-    const st = toMins(day.legs[i].station);
-    if (st === null) continue;
+    const r = toMins(day.legs[i].report), o = toMins(day.legs[i].off);
+    if (r===null || o===null) continue;
+    let end = o; if (end < r) end += 1440;
+    let nowAdj = current; if (nowAdj < r) nowAdj += 1440;
+    if (nowAdj >= r && nowAdj <= end) return i;
+  }
+  const stationFocused = day.legs.findIndex(l => {
+    const st = toMins(l.station);
+    if (st===null) return false;
     let diff = st - current;
     if (diff < -720) diff += 1440;
     if (diff > 720) diff -= 1440;
-    if (diff >= -30 && diff <= 120) return i;
+    return diff >= -30 && diff <= 120;
+  });
+  return stationFocused >= 0 ? stationFocused : 0;
+}
+function renderStatus(day, currentIdx) {
+  let html = '<span class="badge gray">Off Duty</span>';
+  if (day.status === "work" && currentIdx >= 0) {
+    const leg = day.legs[currentIdx];
+    const now = new Date(), current = now.getHours()*60 + now.getMinutes();
+    const r = toMins(leg.report), s = toMins(leg.station), o = toMins(leg.off);
+    if (s !== null) {
+      let diff = (s + Number(app.smartDay.delay||0)) - current;
+      if (diff < -720) diff += 1440;
+      if (diff > 720) diff -= 1440;
+      if (diff >= -15 && diff <= 10) html = '<span class="badge amber">At Station</span>';
+      else if (r !== null && o !== null) {
+        let end = o; if (end < r) end += 1440;
+        let nowAdj = current; if (nowAdj < r) nowAdj += 1440;
+        html = (nowAdj >= r && nowAdj <= end) ? '<span class="badge green">On Duty</span>' : '<span class="badge blue">Ready</span>';
+      } else html = '<span class="badge blue">Ready</span>';
+    }
   }
-  return 0;
+  byId("statusBadgeWrap").innerHTML = html;
 }
 function renderHome() {
   const day = todayDay();
   byId("todayBadge").textContent = day.status === "work" ? "Work" : "Off";
   byId("todayTitle").textContent = "Day " + cycleDayForToday() + " · " + (day.status === "work" ? "Work" : "Off");
+  byId("homePlanned").textContent = fmt(diffHours(app.smartDay.report, app.smartDay.off));
+  byId("homeActualLive").textContent = fmt(getActualHours());
+  byId("homeMeals").textContent = String(countedMeals());
   const box = byId("todayLegs");
   box.innerHTML = "";
-  if (day.status !== "work" || !day.legs.length) box.innerHTML = "<div class='leg'>Off day.</div>";
-  else {
+  if (day.status !== "work" || !day.legs.length) {
+    box.innerHTML = "<div class='leg'>Off day.</div>";
+    byId("currentLegLabel").textContent = "—";
+    byId("nextLegLabel").textContent = "—";
+    renderStatus(day, -1);
+  } else {
     const current = currentLegIndex(day);
+    const next = current >= 0 && current < day.legs.length - 1 ? current + 1 : -1;
+    byId("currentLegLabel").textContent = current >= 0 ? ("Leg " + (current+1) + " · Train " + day.legs[current].train) : "—";
+    byId("nextLegLabel").textContent = next >= 0 ? ("Leg " + (next+1) + " · Train " + day.legs[next].train) : "—";
+    renderStatus(day, current);
     day.legs.forEach((l, idx) => {
-      box.innerHTML += "<div class='leg" + (idx===current ? " current" : "") + "'><strong>Leg " + (idx+1) + " · " + (l.service||"") + " · Train " + (l.train||"") + "</strong><br><span class='sub'>" + (l.origin||"") + " → " + (l.destination||"") + " · Report " + (l.report||"") + " · Station " + (l.station||"") + " · Off " + (l.off||"") + "</span></div>";
+      box.innerHTML += `
+        <div class="leg ${idx===current ? 'current' : ''} ${idx===next ? 'next' : ''}">
+          <div class="row">
+            <div>
+              <strong>Leg ${idx+1} · ${l.service||""} · Train ${l.train||""}</strong><br>
+              <span class="sub">${l.origin||""} → ${l.destination||""} · Report ${l.report||""} · Station ${l.station||""} · Off ${l.off||""}</span>
+            </div>
+            <div>
+              ${idx===current ? '<span class="badge blue">Current</span>' : idx===next ? '<span class="badge amber">Next</span>' : ''}
+            </div>
+          </div>
+          <div class="crew">
+            <button class="btn-green home-start" data-i="${idx}">Start Shift</button>
+            <button class="btn-blue home-station" data-i="${idx}">At Station</button>
+            <button class="btn-red home-end" data-i="${idx}">End Leg</button>
+          </div>
+        </div>`;
     });
+    document.querySelectorAll(".home-start").forEach(btn => btn.onclick = e => homeLegAction(Number(e.target.dataset.i), "report"));
+    document.querySelectorAll(".home-station").forEach(btn => btn.onclick = e => homeLegAction(Number(e.target.dataset.i), "station"));
+    document.querySelectorAll(".home-end").forEach(btn => btn.onclick = e => homeLegAction(Number(e.target.dataset.i), "off"));
   }
   updateCountdown();
+}
+function homeLegAction(idx, field) {
+  const day = todayDay();
+  if (!day || day.status !== "work" || !day.legs[idx]) return;
+  day.legs[idx][field] = nowHHMM();
+  saveApp();
+  loadTodayFromSchedule(false);
+  renderBuilder();
+  renderHome();
+  showToast(field === "report" ? "Shift started" : field === "station" ? "Station time set" : "Leg ended");
 }
 
 function fillSelect(select, values, selected) {
@@ -448,7 +529,16 @@ function renderBuilder() {
 
     document.querySelectorAll(".crew-start").forEach(btn => btn.onclick = e => { day.legs[Number(e.target.dataset.i)].report = nowHHMM(); saveApp(); renderBuilder(); renderHome(); showToast("Report set"); });
     document.querySelectorAll(".crew-station").forEach(btn => btn.onclick = e => { day.legs[Number(e.target.dataset.i)].station = nowHHMM(); saveApp(); renderBuilder(); renderHome(); showToast("Station set"); });
-    document.querySelectorAll(".crew-end").forEach(btn => btn.onclick = e => { day.legs[Number(e.target.dataset.i)].off = nowHHMM(); saveApp(); renderBuilder(); renderHome(); showToast("Off set"); });
+    document.querySelectorAll(".crew-end").forEach(btn => btn.onclick = e => {
+      const idx = Number(e.target.dataset.i);
+      day.legs[idx].off = nowHHMM();
+      saveApp(); renderBuilder(); renderHome(); showToast("Leg ended");
+      if (idx < day.legs.length - 1) {
+        app.smartDay.report = day.legs[idx+1].report || app.smartDay.report;
+        app.smartDay.station = day.legs[idx+1].station || app.smartDay.station;
+        saveApp(); renderSmart(); renderHome();
+      }
+    });
     document.querySelectorAll(".remLeg").forEach(btn => btn.onclick = e => {
       day.legs.splice(Number(e.target.dataset.i),1);
       if (!day.legs.length) day.status = "off";
@@ -605,7 +695,7 @@ function hydrate() {
   renderPay();
   renderHistory();
   if (countdownTimer) clearInterval(countdownTimer);
-  countdownTimer = setInterval(() => { updateCountdown(); renderHome(); }, 30000);
+  countdownTimer = setInterval(() => { renderSmart(); renderHome(); }, 30000);
 }
 
 bindButtons();
