@@ -2,78 +2,140 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RailCrew Pro v41</title>
+<title>RailCrew Pro v41.1</title>
 <style>
 body{font-family:Arial;background:#0b1830;color:white;margin:0;padding:15px}
 .card{background:#13233d;padding:15px;border-radius:15px;margin-bottom:15px}
 h2{margin:0 0 10px}
-button{padding:10px;border:none;border-radius:10px;margin:5px}
+button{padding:10px;border:none;border-radius:10px;margin:5px;font-weight:700}
 .green{background:#16a34a;color:white}
 .blue{background:#2563eb;color:white}
 .red{background:#dc2626;color:white}
+.dark{background:#374151;color:white}
 input{width:100%;padding:10px;margin:5px 0;border-radius:10px;border:none}
+.label{font-size:12px;color:#cbd5e1;margin-top:8px}
+.leg{background:#0f172a;padding:12px;border-radius:12px;margin-top:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.col{flex:1 1 220px}
+.small{font-size:13px;color:#cbd5e1}
 </style>
 </head>
 <body>
 
 <div class="card">
-<h2>Today's Schedule</h2>
-<div id="schedule"></div>
+  <h2>Today's Schedule</h2>
+  <div class="small">Each leg now shows and saves report time, station arrival time, and end/off time.</div>
+  <div id="schedule"></div>
+  <button class="dark" onclick="addLeg()">+ Add Leg</button>
 </div>
 
 <div class="card">
-<h2>Controls</h2>
-<button class="green" onclick="setTime('report')">Start Shift</button>
-<button class="blue" onclick="setTime('station')">At Station</button>
-<button class="red" onclick="setTime('off')">End Shift</button>
+  <h2>Quick Controls</h2>
+  <div class="small">Use these to stamp the selected leg fast.</div>
+  <label class="label">Selected Leg</label>
+  <input id="selectedLeg" type="number" min="1" value="1">
+  <button class="green" onclick="setTime('report')">Start Shift</button>
+  <button class="blue" onclick="setTime('arrival')">At Station</button>
+  <button class="red" onclick="setTime('off')">End Shift</button>
 </div>
 
 <div class="card">
-<h2>Edit Today</h2>
-<label>Report</label><input id="report">
-<label>Station</label><input id="station">
-<label>Off</label><input id="off">
-</div>
-
-<div class="card">
-<h2>Meals</h2>
-<label><input type="checkbox" id="meal1"> Breakfast</label>
-<label><input type="checkbox" id="meal2"> Lunch</label>
-<label><input type="checkbox" id="meal3"> Dinner</label>
+  <h2>Meals</h2>
+  <label><input type="checkbox" id="meal1"> Breakfast</label>
+  <label><input type="checkbox" id="meal2"> Lunch</label>
+  <label><input type="checkbox" id="meal3"> Dinner</label>
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem("railcrew")) || {
- legs:[
-  {train:"153",route:"NYP→PHL"},
-  {train:"140",route:"PHL→NYP"}
- ]
+let data = JSON.parse(localStorage.getItem("railcrew_v41_1")) || {
+  legs:[
+    {train:"153",route:"NYP→PHL",report:"07:05",arrival:"07:20",off:"11:32"},
+    {train:"140",route:"PHL→NYP",report:"11:32",arrival:"11:50",off:"15:51"}
+  ],
+  meals:{breakfast:false,lunch:false,dinner:false}
 };
 
-function render(){
- let html="";
- data.legs.forEach((l,i)=>{
-  html+=`<div>Leg ${i+1}: Train ${l.train} (${l.route})</div>`;
- });
- document.getElementById("schedule").innerHTML=html;
-}
-
 function now(){
- let d=new Date();
- return d.getHours()+":"+String(d.getMinutes()).padStart(2,"0");
-}
-
-function setTime(type){
- document.getElementById(type).value=now();
- save();
+  let d=new Date();
+  return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");
 }
 
 function save(){
- data.report=document.getElementById("report").value;
- data.station=document.getElementById("station").value;
- data.off=document.getElementById("off").value;
- localStorage.setItem("railcrew",JSON.stringify(data));
+  localStorage.setItem("railcrew_v41_1",JSON.stringify(data));
 }
+
+function render(){
+  let html="";
+  data.legs.forEach((l,i)=>{
+    html += `
+      <div class="leg">
+        <div><strong>Leg ${i+1}</strong></div>
+        <div class="row">
+          <div class="col">
+            <div class="label">Train</div>
+            <input value="${l.train||""}" onchange="updateField(${i},'train',this.value)">
+          </div>
+          <div class="col">
+            <div class="label">Route</div>
+            <input value="${l.route||""}" onchange="updateField(${i},'route',this.value)">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="label">Report Time</div>
+            <input type="time" value="${l.report||""}" onchange="updateField(${i},'report',this.value)">
+          </div>
+          <div class="col">
+            <div class="label">Train Arrival / Station Time</div>
+            <input type="time" value="${l.arrival||""}" onchange="updateField(${i},'arrival',this.value)">
+          </div>
+          <div class="col">
+            <div class="label">End / Off Time</div>
+            <input type="time" value="${l.off||""}" onchange="updateField(${i},'off',this.value)">
+          </div>
+        </div>
+        <button class="red" onclick="removeLeg(${i})">Remove Leg</button>
+      </div>
+    `;
+  });
+  document.getElementById("schedule").innerHTML = html;
+
+  document.getElementById("meal1").checked = !!data.meals.breakfast;
+  document.getElementById("meal2").checked = !!data.meals.lunch;
+  document.getElementById("meal3").checked = !!data.meals.dinner;
+}
+
+function updateField(i, field, value){
+  data.legs[i][field] = value;
+  save();
+}
+
+function addLeg(){
+  data.legs.push({train:"",route:"",report:"",arrival:"",off:""});
+  save();
+  render();
+}
+
+function removeLeg(i){
+  data.legs.splice(i,1);
+  if(data.legs.length===0){
+    data.legs.push({train:"",route:"",report:"",arrival:"",off:""});
+  }
+  save();
+  render();
+}
+
+function setTime(field){
+  let idx = Math.max(0, Number(document.getElementById("selectedLeg").value || 1)-1);
+  if(!data.legs[idx]) return;
+  data.legs[idx][field] = now();
+  save();
+  render();
+}
+
+document.getElementById("meal1").addEventListener("change", e => {data.meals.breakfast=e.target.checked; save();});
+document.getElementById("meal2").addEventListener("change", e => {data.meals.lunch=e.target.checked; save();});
+document.getElementById("meal3").addEventListener("change", e => {data.meals.dinner=e.target.checked; save();});
 
 render();
 </script>
