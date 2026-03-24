@@ -1,706 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RailCrew Pro v40</title>
+<title>RailCrew Pro v41</title>
 <style>
-:root{--bg:#0a1020;--card:#111827;--line:#293548;--text:#f8fafc;--muted:#9fb0c7;--red:#ef4444;--blue:#2563eb;--green:#16a34a;--amber:#f59e0b;--panel:#0f172a}
-*{box-sizing:border-box} html,body{margin:0;padding:0;background:#0a1020;color:var(--text);font-family:Arial,sans-serif} body{min-height:100vh}
-.wrap{max-width:1100px;margin:0 auto;padding:16px 16px 100px}
-.card{background:#111827;border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
-.row{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap}
-.grid2,.grid3,.grid4{display:grid;gap:12px} .grid2{grid-template-columns:1fr 1fr} .grid3{grid-template-columns:1fr 1fr 1fr} .grid4{grid-template-columns:repeat(4,1fr)}
-@media(max-width:860px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
-h1,h2,h3,p{margin:0} .sub{color:var(--muted);font-size:13px;line-height:1.35}
-label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
-input,select,textarea{width:100%;padding:12px;border-radius:12px;border:1px solid #4b5878;background:#eef2f7;color:#111827;font-size:16px}
-button{padding:12px 14px;border:none;border-radius:12px;font-weight:700;cursor:pointer}
-.btn-red{background:#d12626;color:#fff} .btn-blue{background:#2563eb;color:#fff} .btn-green{background:#15803d;color:#fff} .btn-dark{background:#374151;color:#fff} .btn-amber{background:#b45309;color:#fff} .btn-soft{background:#e5e7eb;color:#111827}
-.logo{width:58px;height:58px;border-radius:18px;background:#bf2020;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800}
-.brand{display:flex;align-items:center;gap:14px} .pill{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700;background:#124a2c;color:#bbf7d0}
-.section{display:none} .section.active{display:block} .tabs{position:fixed;left:0;right:0;bottom:0;padding:10px;background:#0a1020;border-top:1px solid var(--line)} .tabgrid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:10px} .tab{background:#152033;border:1px solid var(--line);text-align:center;padding:12px;border-radius:12px;color:#fff;cursor:pointer} .tab.active{background:#7f1d1d}
-@media(max-width:620px){.tabgrid{grid-template-columns:repeat(3,1fr)}}
-.leg{background:var(--panel);border:1px solid var(--line);padding:12px;border-radius:14px;margin-top:10px}
-.leg.current{outline:2px solid #93c5fd;background:#122033} .leg.next{outline:2px solid rgba(245,158,11,.45)}
-.msg{margin-top:10px;color:#bbf7d0;font-size:14px;min-height:20px}
-.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:#15803d;color:#fff;padding:10px 18px;border-radius:999px;z-index:9999}
-.countdown{padding:14px;border-radius:16px;border:1px solid var(--line);background:var(--panel)} .good{background:rgba(22,163,74,.12)} .warn{background:rgba(245,158,11,.12)} .danger{background:rgba(239,68,68,.12)}
-.big{font-size:40px;font-weight:800} .kv{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid rgba(255,255,255,.08)} .kv:first-child{border-top:none}
-.daynav{display:flex;gap:8px;overflow:auto;margin-top:10px} .daybtn{background:#2563eb;color:#fff;border:none;border-radius:10px;padding:10px 12px;white-space:nowrap} .daybtn.active{outline:2px solid #93c5fd}
-.crew{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px} .delaybar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
-@media(max-width:560px){.crew,.delaybar{grid-template-columns:1fr 1fr}}
-.small{font-size:12px;color:var(--muted)}
-.alertbox{padding:12px;border-radius:14px;border:1px solid var(--line);margin-top:12px}
-.alertbox.good{background:rgba(22,163,74,.12)} .alertbox.warn{background:rgba(245,158,11,.12)} .alertbox.danger{background:rgba(239,68,68,.12)}
-.badge{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
-.badge.green{background:#124a2c;color:#bbf7d0} .badge.blue{background:#173760;color:#dbeafe} .badge.amber{background:#5f4317;color:#fde68a} .badge.gray{background:#334155;color:#e2e8f0}
-.live-hours{font-size:28px;font-weight:800}
+body{font-family:Arial;background:#0b1830;color:white;margin:0;padding:15px}
+.card{background:#13233d;padding:15px;border-radius:15px;margin-bottom:15px}
+h2{margin:0 0 10px}
+button{padding:10px;border:none;border-radius:10px;margin:5px}
+.green{background:#16a34a;color:white}
+.blue{background:#2563eb;color:white}
+.red{background:#dc2626;color:white}
+input{width:100%;padding:10px;margin:5px 0;border-radius:10px;border:none}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="card"><div class="row"><div class="brand"><div class="logo">RC</div><div><h1>RailCrew Pro v40</h1><p class="sub">Full command center with home controls, current/next leg, live status, and smarter day board.</p></div></div><span class="pill">Command Center</span></div></div>
 
-  <section id="home" class="section active">
-    <div class="grid4">
-      <div class="card"><div class="sub">Status</div><div id="statusBadgeWrap" style="margin-top:10px"><span class="badge gray">Off Duty</span></div></div>
-      <div class="card"><div class="sub">Planned Hours</div><div class="live-hours" id="homePlanned">0.00</div></div>
-      <div class="card"><div class="sub">Live Actual Hours</div><div class="live-hours" id="homeActualLive">0.00</div></div>
-      <div class="card"><div class="sub">Meals Triggered</div><div class="live-hours" id="homeMeals">0</div></div>
-    </div>
-
-    <div class="grid2">
-      <div class="card">
-        <div class="row"><div><h2>Today Control Center</h2><p class="sub">Run your day from here.</p></div><span id="todayBadge" class="pill">Work</span></div>
-        <div id="todayTitle" style="font-size:28px;font-weight:700;margin-top:12px">No schedule loaded</div>
-        <div class="kv" style="margin-top:12px"><span class="sub">Current Leg</span><strong id="currentLegLabel">—</strong></div>
-        <div class="kv"><span class="sub">Next Leg</span><strong id="nextLegLabel">—</strong></div>
-        <div id="todayLegs" class="sub" style="margin-top:10px"></div>
-      </div>
-
-      <div class="card">
-        <h2>Track Countdown</h2>
-        <div id="countdownBox" class="countdown good" style="margin-top:12px">
-          <div class="sub">Next track event</div>
-          <div class="big" id="countdownMain">--:--</div>
-          <div class="sub" id="countdownSub">Set station time to start countdown.</div>
-        </div>
-        <div id="alertBox" class="alertbox good">
-          <strong id="alertTitle">Standing by</strong>
-          <div class="sub" id="alertText">No immediate track alert.</div>
-        </div>
-        <div class="delaybar">
-          <button class="btn-amber" id="delay5">+5 min</button>
-          <button class="btn-amber" id="delay10">+10 min</button>
-          <button class="btn-amber" id="delay15">+15 min</button>
-          <button class="btn-soft" id="delayClear">Clear Delay</button>
-        </div>
-        <div class="row" style="margin-top:12px"><button class="btn-blue" id="reloadTodayBtn" type="button">Reload Today From Schedule</button></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="builder" class="section">
-    <div class="card">
-      <h2>Schedule Setup</h2>
-      <div class="grid3" style="margin-top:12px">
-        <div><label>Line</label><select id="line"><option>NEC</option><option>B</option></select></div>
-        <div><label>Position Key</label><input id="positionKey"></div>
-        <div><label>Pickup Day</label><select id="pickupDay"><option>Sunday</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></div>
-      </div>
-      <div class="grid3">
-        <div><label>Cycle Length</label><input id="cycleLength" type="number" min="1" max="31"></div>
-        <div><label>Hourly Rate</label><input id="payRate"></div>
-        <div><label>Guarantee Hours</label><input id="payGuarantee"></div>
-      </div>
-      <div class="row" style="margin-top:12px"><button id="saveSetupBtn" class="btn-red">Save Setup</button><button id="loadStarterBtn" class="btn-dark">Load Starter</button></div>
-      <div class="msg" id="builderMsg"></div>
-    </div>
-    <div class="card">
-      <div class="row"><div><h2>Cycle Day Builder</h2><p class="sub">Per-leg picker and crew buttons.</p></div><button id="saveDaysBtn" class="btn-red">Save Cycle Days</button></div>
-      <div id="dayTabs" class="daynav"></div>
-      <div id="dayEditor"></div>
-      <div class="msg" id="daysMsg"></div>
-    </div>
-  </section>
-
-  <section id="smart" class="section">
-    <div class="grid2">
-      <div class="card">
-        <h2>Smart Day</h2>
-        <div class="sub" id="autoloadMsg" style="margin-bottom:10px"></div>
-        <label>Report Time</label><input type="time" id="report">
-        <label>Station / Track Time</label><input type="time" id="station">
-        <label>Off Time</label><input type="time" id="off">
-        <div class="row"><button class="btn-green" id="endShiftBtn">End Shift Now</button><button class="btn-dark" id="autoMealsBtn">Auto Meals</button></div>
-        <label>Delay (min)</label><input type="number" id="delay" min="0" value="0">
-        <div class="delaybar">
-          <button class="btn-amber" id="sdelay5">+5 min</button>
-          <button class="btn-amber" id="sdelay10">+10 min</button>
-          <button class="btn-amber" id="sdelay15">+15 min</button>
-          <button class="btn-soft" id="sdelayClear">Clear Delay</button>
-        </div>
-        <label>Meal Trigger Minutes</label><input type="number" id="mealMinutes" min="1" value="360">
-        <label>Notes</label><textarea id="notes"></textarea>
-        <label><input type="checkbox" id="companyProtected"> Company protected</label>
-        <label><input type="checkbox" id="personalDayOff"> Personal day off</label>
-      </div>
-      <div class="card">
-        <h2>Today Summary</h2>
-        <div class="kv"><span class="sub">Planned Hours</span><strong id="plannedHours">0.00 hrs</strong></div>
-        <div class="kv"><span class="sub">Actual Hours</span><strong id="actualHours">0.00 hrs</strong></div>
-        <div class="kv"><span class="sub">Delay</span><strong id="delayOut">0 min</strong></div>
-        <div class="kv"><span class="sub">Meal Count</span><strong id="mealCount">0</strong></div>
-        <div class="kv"><span class="sub">Meal Pay Today</span><strong id="mealPayToday">$0</strong></div>
-        <div class="kv"><span class="sub">Track Alert</span><strong id="stationAlert">No alert</strong></div>
-        <label><input type="checkbox" id="breakfast"> Breakfast</label>
-        <label><input type="checkbox" id="lunch"> Lunch</label>
-        <label><input type="checkbox" id="dinner"> Dinner</label>
-        <label><input type="checkbox" id="custom"> Custom Meal</label>
-        <div class="row" style="margin-top:12px"><button class="btn-red" id="saveDayBtn">Save Day</button></div>
-        <div class="msg" id="saveMsg"></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="pay" class="section">
-    <div class="card">
-      <h2>Pay / Weekly</h2>
-      <div class="kv"><span class="sub">Actual Hours</span><strong id="payActual">0.00</strong></div>
-      <div class="kv"><span class="sub">Total Meal Pay</span><strong id="payMealTotal">$0</strong></div>
-      <div class="kv"><span class="sub">Projected Base Pay</span><strong id="payEstimate">$0</strong></div>
-      <div class="kv"><span class="sub">Projected Pay + Meals</span><strong id="payEstimateMeals">$0</strong></div>
-      <div class="kv"><span class="sub">Hours Short To Guarantee</span><strong id="weekShort">0.00 hrs</strong></div>
-    </div>
-  </section>
-
-  <section id="history" class="section">
-    <div class="card"><h2>History</h2><div id="historyList" class="sub" style="margin-top:12px">No saved days yet.</div></div>
-  </section>
+<div class="card">
+<h2>Today's Schedule</h2>
+<div id="schedule"></div>
 </div>
 
-<div class="tabs"><div class="tabgrid"><div class="tab active" data-tab="home">Home</div><div class="tab" data-tab="builder">Builder</div><div class="tab" data-tab="smart">Smart</div><div class="tab" data-tab="pay">Pay</div><div class="tab" data-tab="history">History</div></div></div>
+<div class="card">
+<h2>Controls</h2>
+<button class="green" onclick="setTime('report')">Start Shift</button>
+<button class="blue" onclick="setTime('station')">At Station</button>
+<button class="red" onclick="setTime('off')">End Shift</button>
+</div>
+
+<div class="card">
+<h2>Edit Today</h2>
+<label>Report</label><input id="report">
+<label>Station</label><input id="station">
+<label>Off</label><input id="off">
+</div>
+
+<div class="card">
+<h2>Meals</h2>
+<label><input type="checkbox" id="meal1"> Breakfast</label>
+<label><input type="checkbox" id="meal2"> Lunch</label>
+<label><input type="checkbox" id="meal3"> Dinner</label>
+</div>
 
 <script>
-const CATEGORIES = {"Northeast Corridor": {"Acela": ["2150", "2151", "2152", "2153", "2254"], "Northeast Regional": ["65", "66", "67", "140", "143", "153", "177", "178", "186", "196"], "Keystone Service": ["600", "601", "640", "641", "650", "651", "660", "661"]}, "Long Distance": {"Crescent": ["19", "20"], "Cardinal": ["50", "51"], "Silver Meteor": ["97", "98"], "Silver Star": ["91", "92"], "Palmetto": ["89", "90"]}, "Regional / State Supported": {"Carolinian": ["79", "80"], "Vermonter": ["54", "55", "56", "57"], "Pennsylvanian": ["42", "43"]}};
-const KEY = "railcrew_v40_command_center";
-const starter = {
-  setup: {line:"NEC", positionKey:"811", pickupDay:"Wednesday", cycleLength:7},
-  pay: {rate:26.69, guarantee:185},
-  activeDay: 0,
-  days: [
-    {status:"work", notes:"Continuous time", legs:[
-      {category:"Northeast Corridor",service:"Northeast Regional",train:"153",origin:"NYP",destination:"PHL",report:"07:05",station:"07:20",off:"11:32"},
-      {category:"Northeast Corridor",service:"Northeast Regional",train:"140",origin:"PHL",destination:"NYP",report:"11:32",station:"11:50",off:"15:51"}
-    ]},
-    {status:"work", notes:"Continuous time", legs:[
-      {category:"Long Distance",service:"Cardinal",train:"50",origin:"NYP",destination:"WAS",report:"10:33",station:"10:50",off:"19:01"},
-      {category:"Northeast Corridor",service:"Northeast Regional",train:"177",origin:"WAS",destination:"NYP",report:"19:01",station:"19:20",off:"21:52"}
-    ]},
-    {status:"off",notes:"",legs:[]},{status:"off",notes:"",legs:[]},{status:"off",notes:"",legs:[]},{status:"off",notes:"",legs:[]},{status:"off",notes:"",legs:[]}
-  ],
-  smartDay: {report:"",station:"",off:"",delay:"0",mealMinutes:"360",notes:"",companyProtected:false,personalDayOff:false,meals:{breakfast:false,lunch:false,dinner:false,custom:false},loadedFromToday:false},
-  history:[]
-};
-let app = JSON.parse(localStorage.getItem(KEY) || "null") || starter;
-let countdownTimer = null;
-
-const byId = id => document.getElementById(id);
-const saveApp = () => localStorage.setItem(KEY, JSON.stringify(app));
-const clone = x => JSON.parse(JSON.stringify(x));
-const fmt = v => Number(v || 0).toFixed(2);
-const money = v => new Intl.NumberFormat('en-US', {style:'currency', currency:'USD'}).format(v || 0);
-
-function showToast(msg) {
-  const old = document.querySelector(".toast");
-  if (old) old.remove();
-  const t = document.createElement("div");
-  t.className = "toast";
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 1800);
-}
-function flash(id, text) {
-  byId(id).textContent = text;
-  setTimeout(() => { if (byId(id).textContent === text) byId(id).textContent = ""; }, 2200);
-}
-function nowHHMM() {
-  const d = new Date();
-  return String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
-}
-function dayNames() { return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]; }
-function toMins(v) {
-  if (!v) return null;
-  const p = v.split(":");
-  if (p.length !== 2) return null;
-  return Number(p[0])*60 + Number(p[1]);
-}
-function diffHours(start, end) {
-  const s = toMins(start), e0 = toMins(end);
-  if (s === null || e0 === null) return 0;
-  let e = e0; if (e < s) e += 1440;
-  return (e - s) / 60;
-}
-function ensureDays() {
-  const len = Number(app.setup.cycleLength || 7);
-  while (app.days.length < len) app.days.push({status:"off",notes:"",legs:[]});
-  if (app.days.length > len) app.days = app.days.slice(0, len);
-  if (app.activeDay >= len) app.activeDay = len - 1;
-  if (app.activeDay < 0) app.activeDay = 0;
-}
-function cycleDayForToday() {
-  const d = new Date(), pickup = dayNames().indexOf(app.setup.pickupDay), current = d.getDay();
-  const diff = ((current - pickup) % app.setup.cycleLength + app.setup.cycleLength) % app.setup.cycleLength;
-  return diff + 1;
-}
-function todayDay() { return app.days[cycleDayForToday()-1] || {status:"off",notes:"",legs:[]}; }
-function countedMeals() {
-  const m = app.smartDay.meals || {};
-  return ["breakfast","lunch","dinner","custom"].filter(k => !!m[k]).length;
-}
-function mealPayToday() { const c = countedMeals(); return c <= 0 ? 0 : c === 1 ? 20 : 30; }
-function totalActualSaved() { return app.history.reduce((s,x)=>s+Number(x.actualHours||0),0); }
-function mealPayTotal() { return app.history.reduce((s,x)=>s+Number(x.mealPay||0),0); }
-function getActualHours() {
-  let actual = diffHours(app.smartDay.report, app.smartDay.off) + (Number(app.smartDay.delay || 0) / 60);
-  if (app.smartDay.companyProtected || app.smartDay.personalDayOff) actual = 0;
-  return actual;
-}
-function showTab(id) {
-  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  byId(id).classList.add("active");
-  document.querySelector('.tab[data-tab="'+id+'"]').classList.add("active");
-}
-document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => showTab(tab.dataset.tab)));
-
-function defaultLeg() {
-  return {category:"Northeast Corridor",service:"Northeast Regional",train:"153",origin:"",destination:"",report:"",station:"",off:""};
-}
-function loadTodayFromSchedule(showMessage) {
-  const day = todayDay();
-  if (day.status !== "work" || !day.legs.length) {
-    app.smartDay.report = ""; app.smartDay.station = ""; app.smartDay.off = ""; app.smartDay.loadedFromToday = false;
-    saveApp(); renderSmart(); renderHome();
-    if (showMessage) flash("saveMsg","Today is off. Nothing loaded.");
-    return;
-  }
-  app.smartDay.report = day.legs[0].report || "";
-  app.smartDay.station = day.legs[0].station || "";
-  app.smartDay.off = day.legs[day.legs.length-1].off || "";
-  app.smartDay.loadedFromToday = true;
-  saveApp();
-  autoMeals(false);
-  renderSmart();
-  renderHome();
-  if (showMessage) showToast("Today Loaded ✅");
-}
-
-function getAlertState() {
-  const station = toMins(app.smartDay.station);
-  const delay = Number(app.smartDay.delay || 0);
-  if (station === null) return {cls:"good", title:"Standing by", text:"No immediate track alert."};
-  const now = new Date(), current = now.getHours()*60 + now.getMinutes();
-  let diff = (station + delay) - current;
-  if (diff < -720) diff += 1440;
-  if (diff > 720) diff -= 1440;
-  if (diff > 10) return {cls:"good", title:"On time window", text:"Track time in " + diff + " min."};
-  if (diff >= 0) return {cls:"warn", title:"Get ready", text:"Be at track in " + diff + " min."};
-  if (diff >= -15) return {cls:"danger", title:"At station now", text:"Train should be at the station now."};
-  return {cls:"good", title:"Passed", text:"Track time already passed."};
-}
-function updateCountdown() {
-  const box = byId("countdownBox"), main = byId("countdownMain"), sub = byId("countdownSub");
-  const state = getAlertState();
-  box.className = "countdown " + state.cls;
-  const station = toMins(app.smartDay.station);
-  if (station === null) {
-    main.textContent = "--:--";
-    sub.textContent = "Set station time to start countdown.";
-  } else if (state.title === "On time window" || state.title === "Get ready") {
-    const now = new Date(), current = now.getHours()*60 + now.getMinutes();
-    let diff = (station + Number(app.smartDay.delay||0)) - current;
-    if (diff < -720) diff += 1440;
-    if (diff > 720) diff -= 1440;
-    main.textContent = diff + " min";
-    sub.textContent = state.text;
-  } else if (state.title === "At station now") {
-    main.textContent = "NOW";
-    sub.textContent = state.text;
-  } else {
-    main.textContent = "Passed";
-    sub.textContent = state.text;
-  }
-  const ab = byId("alertBox");
-  ab.className = "alertbox " + state.cls;
-  byId("alertTitle").textContent = state.title;
-  byId("alertText").textContent = state.text;
-}
-function currentLegIndex(day) {
-  if (!day || day.status !== "work" || !day.legs.length) return -1;
-  const now = new Date(), current = now.getHours()*60 + now.getMinutes();
-  for (let i=0;i<day.legs.length;i++) {
-    const r = toMins(day.legs[i].report), o = toMins(day.legs[i].off);
-    if (r===null || o===null) continue;
-    let end = o; if (end < r) end += 1440;
-    let nowAdj = current; if (nowAdj < r) nowAdj += 1440;
-    if (nowAdj >= r && nowAdj <= end) return i;
-  }
-  const stationFocused = day.legs.findIndex(l => {
-    const st = toMins(l.station);
-    if (st===null) return false;
-    let diff = st - current;
-    if (diff < -720) diff += 1440;
-    if (diff > 720) diff -= 1440;
-    return diff >= -30 && diff <= 120;
-  });
-  return stationFocused >= 0 ? stationFocused : 0;
-}
-function renderStatus(day, currentIdx) {
-  let html = '<span class="badge gray">Off Duty</span>';
-  if (day.status === "work" && currentIdx >= 0) {
-    const leg = day.legs[currentIdx];
-    const now = new Date(), current = now.getHours()*60 + now.getMinutes();
-    const r = toMins(leg.report), s = toMins(leg.station), o = toMins(leg.off);
-    if (s !== null) {
-      let diff = (s + Number(app.smartDay.delay||0)) - current;
-      if (diff < -720) diff += 1440;
-      if (diff > 720) diff -= 1440;
-      if (diff >= -15 && diff <= 10) html = '<span class="badge amber">At Station</span>';
-      else if (r !== null && o !== null) {
-        let end = o; if (end < r) end += 1440;
-        let nowAdj = current; if (nowAdj < r) nowAdj += 1440;
-        html = (nowAdj >= r && nowAdj <= end) ? '<span class="badge green">On Duty</span>' : '<span class="badge blue">Ready</span>';
-      } else html = '<span class="badge blue">Ready</span>';
-    }
-  }
-  byId("statusBadgeWrap").innerHTML = html;
-}
-function renderHome() {
-  const day = todayDay();
-  byId("todayBadge").textContent = day.status === "work" ? "Work" : "Off";
-  byId("todayTitle").textContent = "Day " + cycleDayForToday() + " · " + (day.status === "work" ? "Work" : "Off");
-  byId("homePlanned").textContent = fmt(diffHours(app.smartDay.report, app.smartDay.off));
-  byId("homeActualLive").textContent = fmt(getActualHours());
-  byId("homeMeals").textContent = String(countedMeals());
-  const box = byId("todayLegs");
-  box.innerHTML = "";
-  if (day.status !== "work" || !day.legs.length) {
-    box.innerHTML = "<div class='leg'>Off day.</div>";
-    byId("currentLegLabel").textContent = "—";
-    byId("nextLegLabel").textContent = "—";
-    renderStatus(day, -1);
-  } else {
-    const current = currentLegIndex(day);
-    const next = current >= 0 && current < day.legs.length - 1 ? current + 1 : -1;
-    byId("currentLegLabel").textContent = current >= 0 ? ("Leg " + (current+1) + " · Train " + day.legs[current].train) : "—";
-    byId("nextLegLabel").textContent = next >= 0 ? ("Leg " + (next+1) + " · Train " + day.legs[next].train) : "—";
-    renderStatus(day, current);
-    day.legs.forEach((l, idx) => {
-      box.innerHTML += `
-        <div class="leg ${idx===current ? 'current' : ''} ${idx===next ? 'next' : ''}">
-          <div class="row">
-            <div>
-              <strong>Leg ${idx+1} · ${l.service||""} · Train ${l.train||""}</strong><br>
-              <span class="sub">${l.origin||""} → ${l.destination||""} · Report ${l.report||""} · Station ${l.station||""} · Off ${l.off||""}</span>
-            </div>
-            <div>
-              ${idx===current ? '<span class="badge blue">Current</span>' : idx===next ? '<span class="badge amber">Next</span>' : ''}
-            </div>
-          </div>
-          <div class="crew">
-            <button class="btn-green home-start" data-i="${idx}">Start Shift</button>
-            <button class="btn-blue home-station" data-i="${idx}">At Station</button>
-            <button class="btn-red home-end" data-i="${idx}">End Leg</button>
-          </div>
-        </div>`;
-    });
-    document.querySelectorAll(".home-start").forEach(btn => btn.onclick = e => homeLegAction(Number(e.target.dataset.i), "report"));
-    document.querySelectorAll(".home-station").forEach(btn => btn.onclick = e => homeLegAction(Number(e.target.dataset.i), "station"));
-    document.querySelectorAll(".home-end").forEach(btn => btn.onclick = e => homeLegAction(Number(e.target.dataset.i), "off"));
-  }
-  updateCountdown();
-}
-function homeLegAction(idx, field) {
-  const day = todayDay();
-  if (!day || day.status !== "work" || !day.legs[idx]) return;
-  day.legs[idx][field] = nowHHMM();
-  saveApp();
-  loadTodayFromSchedule(false);
-  renderBuilder();
-  renderHome();
-  showToast(field === "report" ? "Shift started" : field === "station" ? "Station time set" : "Leg ended");
-}
-
-function fillSelect(select, values, selected) {
-  select.innerHTML = "";
-  values.forEach(v => {
-    const opt = document.createElement("option");
-    opt.value = v; opt.textContent = v;
-    if (v === selected) opt.selected = true;
-    select.appendChild(opt);
-  });
-}
-function renderBuilder() {
-  ensureDays();
-  byId("line").value = app.setup.line;
-  byId("positionKey").value = app.setup.positionKey;
-  byId("pickupDay").value = app.setup.pickupDay;
-  byId("cycleLength").value = app.setup.cycleLength;
-  byId("payRate").value = app.pay.rate;
-  byId("payGuarantee").value = app.pay.guarantee;
-
-  const tabs = byId("dayTabs");
-  tabs.innerHTML = "";
-  app.days.forEach((d,i) => {
-    const b = document.createElement("button");
-    b.className = "daybtn" + (app.activeDay===i ? " active" : "");
-    b.textContent = "Day " + (i+1);
-    b.onclick = () => { app.activeDay = i; saveApp(); renderBuilder(); };
-    tabs.appendChild(b);
-  });
-
-  const day = app.days[app.activeDay];
-  const editor = byId("dayEditor");
-  editor.innerHTML =
-    "<div class='card' style='padding:14px;margin-top:12px'>" +
-    "<div class='row'><h3>Cycle Day " + (app.activeDay+1) + "</h3><select id='dayStatus'><option value='work'" + (day.status==="work"?" selected":"") + ">Work</option><option value='off'" + (day.status==="off"?" selected":"") + ">Off</option></select></div>" +
-    "<label style='margin-top:10px'>Day Notes</label><input id='dayNotes' value='" + String(day.notes||"").replace(/'/g,"&#39;") + "' placeholder='Continuous time / off day / etc'>" +
-    "<div id='builderLegs'></div>" +
-    "<div class='row' style='margin-top:12px'><button id='addLegBtn' class='btn-red'>+ Add Train Leg</button></div>" +
-    "</div>";
-
-  byId("dayStatus").onchange = e => {
-    day.status = e.target.value;
-    if (day.status === "off") day.legs = [];
-    if (day.status === "work" && !day.legs.length) day.legs = [defaultLeg()];
-    saveApp(); renderBuilder(); renderHome();
-  };
-  byId("dayNotes").oninput = e => { day.notes = e.target.value; saveApp(); };
-
-  const legsBox = byId("builderLegs");
-  if (day.status === "off") {
-    legsBox.innerHTML = "<div class='leg'>Off day.</div>";
-  } else {
-    if (!day.legs.length) day.legs.push(defaultLeg());
-    legsBox.innerHTML = "";
-    day.legs.forEach((leg,i) => {
-      const div = document.createElement("div");
-      div.className = "leg";
-      div.innerHTML =
-        "<div class='grid3'>" +
-        "<div><label>Category</label><select class='l-category' data-i='"+i+"'></select></div>" +
-        "<div><label>Service</label><select class='l-service' data-i='"+i+"'></select></div>" +
-        "<div><label>Train</label><select class='l-train' data-i='"+i+"'></select></div>" +
-        "</div>" +
-        "<div class='grid3' style='margin-top:10px'>" +
-        "<div><label>Origin</label><input class='l-origin' data-i='"+i+"' value='"+String(leg.origin||"").replace(/'/g,"&#39;")+"'></div>" +
-        "<div><label>Destination</label><input class='l-dest' data-i='"+i+"' value='"+String(leg.destination||"").replace(/'/g,"&#39;")+"'></div>" +
-        "<div><label>Report</label><input class='l-report' data-i='"+i+"' type='time' value='"+(leg.report||"")+"'></div>" +
-        "</div>" +
-        "<div class='grid2' style='margin-top:10px'>" +
-        "<div><label>Station</label><input class='l-station' data-i='"+i+"' type='time' value='"+(leg.station||"")+"'></div>" +
-        "<div><label>Off</label><input class='l-off' data-i='"+i+"' type='time' value='"+(leg.off||"")+"'></div>" +
-        "</div>" +
-        "<div class='crew'>" +
-        "<button class='btn-green crew-start' data-i='"+i+"'>Start Shift</button>" +
-        "<button class='btn-blue crew-station' data-i='"+i+"'>Arrived @ Station</button>" +
-        "<button class='btn-red crew-end' data-i='"+i+"'>End Shift</button>" +
-        "</div>" +
-        "<div class='small'>These fill report, station, or off with the current time for this leg.</div>" +
-        "<div class='row' style='margin-top:10px'><button class='btn-dark remLeg' data-i='"+i+"'>Remove</button></div>";
-      legsBox.appendChild(div);
-    });
-
-    document.querySelectorAll(".l-category").forEach(sel => {
-      const i = Number(sel.dataset.i), leg = day.legs[i];
-      fillSelect(sel, Object.keys(CATEGORIES), leg.category || Object.keys(CATEGORIES)[0]);
-      const serviceSel = document.querySelector('.l-service[data-i="'+i+'"]');
-      const trainSel = document.querySelector('.l-train[data-i="'+i+'"]');
-      const cat = sel.value;
-      fillSelect(serviceSel, Object.keys(CATEGORIES[cat]), leg.service || Object.keys(CATEGORIES[cat])[0]);
-      fillSelect(trainSel, CATEGORIES[cat][serviceSel.value], leg.train || CATEGORIES[cat][serviceSel.value][0]);
-    });
-
-    document.querySelectorAll(".l-category,.l-service,.l-train,.l-origin,.l-dest,.l-report,.l-station,.l-off").forEach(el => {
-      el.oninput = el.onchange = e => {
-        const i = Number(e.target.dataset.i), leg = day.legs[i];
-        if (e.target.classList.contains("l-category")) {
-          leg.category = e.target.value;
-          leg.service = Object.keys(CATEGORIES[leg.category])[0];
-          leg.train = CATEGORIES[leg.category][leg.service][0];
-          saveApp(); renderBuilder(); renderHome(); return;
-        }
-        if (e.target.classList.contains("l-service")) {
-          leg.service = e.target.value;
-          leg.train = CATEGORIES[leg.category][leg.service][0];
-          saveApp(); renderBuilder(); renderHome(); return;
-        }
-        if (e.target.classList.contains("l-train")) leg.train = e.target.value;
-        if (e.target.classList.contains("l-origin")) leg.origin = e.target.value;
-        if (e.target.classList.contains("l-dest")) leg.destination = e.target.value;
-        if (e.target.classList.contains("l-report")) leg.report = e.target.value;
-        if (e.target.classList.contains("l-station")) leg.station = e.target.value;
-        if (e.target.classList.contains("l-off")) leg.off = e.target.value;
-        saveApp(); renderHome();
-      };
-    });
-
-    document.querySelectorAll(".crew-start").forEach(btn => btn.onclick = e => { day.legs[Number(e.target.dataset.i)].report = nowHHMM(); saveApp(); renderBuilder(); renderHome(); showToast("Report set"); });
-    document.querySelectorAll(".crew-station").forEach(btn => btn.onclick = e => { day.legs[Number(e.target.dataset.i)].station = nowHHMM(); saveApp(); renderBuilder(); renderHome(); showToast("Station set"); });
-    document.querySelectorAll(".crew-end").forEach(btn => btn.onclick = e => {
-      const idx = Number(e.target.dataset.i);
-      day.legs[idx].off = nowHHMM();
-      saveApp(); renderBuilder(); renderHome(); showToast("Leg ended");
-      if (idx < day.legs.length - 1) {
-        app.smartDay.report = day.legs[idx+1].report || app.smartDay.report;
-        app.smartDay.station = day.legs[idx+1].station || app.smartDay.station;
-        saveApp(); renderSmart(); renderHome();
-      }
-    });
-    document.querySelectorAll(".remLeg").forEach(btn => btn.onclick = e => {
-      day.legs.splice(Number(e.target.dataset.i),1);
-      if (!day.legs.length) day.status = "off";
-      saveApp(); renderBuilder(); renderHome();
-    });
-  }
-
-  byId("addLegBtn").onclick = () => {
-    if (day.status !== "work") day.status = "work";
-    day.legs.push(defaultLeg());
-    saveApp(); renderBuilder(); renderHome();
-  };
-}
-
-function applyDelay(minutes) {
-  const current = Number(app.smartDay.delay || 0);
-  app.smartDay.delay = String(Math.max(0, current + minutes));
-  saveApp();
-  renderSmart();
-  renderHome();
-  showToast(minutes > 0 ? "Delay added" : "Delay cleared");
-}
-function clearDelay() {
-  app.smartDay.delay = "0";
-  saveApp();
-  renderSmart();
-  renderHome();
-  showToast("Delay cleared");
-}
-
-function autoMeals(showMessage=true) {
-  const report = app.smartDay.report, off = app.smartDay.off, hours = diffHours(report, off), triggerHrs = Number(app.smartDay.mealMinutes || 360) / 60;
-  app.smartDay.meals.breakfast = false;
-  app.smartDay.meals.lunch = false;
-  app.smartDay.meals.dinner = false;
-  const r = toMins(report), o = toMins(off);
-  if (r !== null) {
-    if (r <= 7*60+30) app.smartDay.meals.breakfast = true;
-    if (r <= 13*60 && (hours >= 4 || hours >= triggerHrs)) app.smartDay.meals.lunch = true;
-  }
-  if (o !== null) {
-    let offAdjusted = o;
-    if (r !== null && o < r) offAdjusted += 1440;
-    if (offAdjusted >= 18*60 || hours >= 10) app.smartDay.meals.dinner = true;
-  }
-  if (hours >= triggerHrs && !app.smartDay.meals.lunch) app.smartDay.meals.lunch = true;
-  saveApp();
-  renderSmart();
-  if (showMessage) flash("saveMsg","Auto meals updated.");
-}
-function renderSmart() {
-  byId("report").value = app.smartDay.report || "";
-  byId("station").value = app.smartDay.station || "";
-  byId("off").value = app.smartDay.off || "";
-  byId("delay").value = app.smartDay.delay || "0";
-  byId("mealMinutes").value = app.smartDay.mealMinutes || "360";
-  byId("notes").value = app.smartDay.notes || "";
-  byId("companyProtected").checked = !!app.smartDay.companyProtected;
-  byId("personalDayOff").checked = !!app.smartDay.personalDayOff;
-  byId("breakfast").checked = !!app.smartDay.meals.breakfast;
-  byId("lunch").checked = !!app.smartDay.meals.lunch;
-  byId("dinner").checked = !!app.smartDay.meals.dinner;
-  byId("custom").checked = !!app.smartDay.meals.custom;
-  byId("autoloadMsg").textContent = app.smartDay.loadedFromToday ? "Today loaded from first/last leg." : "Manual smart day mode.";
-  byId("plannedHours").textContent = fmt(diffHours(app.smartDay.report, app.smartDay.off)) + " hrs";
-  byId("actualHours").textContent = fmt(getActualHours()) + " hrs";
-  byId("delayOut").textContent = String(Number(app.smartDay.delay||0)) + " min";
-  byId("mealCount").textContent = String(countedMeals());
-  byId("mealPayToday").textContent = money(mealPayToday());
-  const state = getAlertState();
-  byId("stationAlert").textContent = state.text;
-  updateCountdown();
-}
-function renderPay() {
-  const actual = totalActualSaved(), meals = mealPayTotal(), base = actual * Number(app.pay.rate || 0), total = base + meals, short = Math.max(0, Number(app.pay.guarantee || 185) - actual);
-  byId("payActual").textContent = fmt(actual);
-  byId("payMealTotal").textContent = money(meals);
-  byId("payEstimate").textContent = money(base);
-  byId("payEstimateMeals").textContent = money(total);
-  byId("weekShort").textContent = fmt(short) + " hrs";
-}
-function renderHistory() {
-  const box = byId("historyList");
-  if (!app.history.length) { box.textContent = "No saved days yet."; return; }
-  box.innerHTML = "";
-  app.history.forEach((item, i) => {
-    box.innerHTML += "<div class='leg'><strong>" + item.date + "</strong><br>Planned: " + fmt(item.plannedHours) + " hrs<br>Actual: " + fmt(item.actualHours) + " hrs<br>Meals: " + item.mealCount + " · " + money(item.mealPay || 0) + "<br>" + (item.notes ? "Notes: " + item.notes + "<br>" : "") + "<button class='btn-dark' type='button' onclick='deleteHistory(" + i + ")'>Delete</button></div>";
-  });
-}
-window.deleteHistory = function(i) {
-  app.history.splice(i,1);
-  saveApp();
-  renderHistory();
-  renderPay();
+let data = JSON.parse(localStorage.getItem("railcrew")) || {
+ legs:[
+  {train:"153",route:"NYP→PHL"},
+  {train:"140",route:"PHL→NYP"}
+ ]
 };
 
-function bindButtons() {
-  byId("reloadTodayBtn").onclick = () => loadTodayFromSchedule(true);
-  byId("saveSetupBtn").onclick = () => {
-    app.setup.line = byId("line").value;
-    app.setup.positionKey = byId("positionKey").value;
-    app.setup.pickupDay = byId("pickupDay").value;
-    app.setup.cycleLength = Number(byId("cycleLength").value || 7);
-    app.pay.rate = Number(byId("payRate").value || app.pay.rate);
-    app.pay.guarantee = Number(byId("payGuarantee").value || app.pay.guarantee);
-    ensureDays(); saveApp(); renderBuilder(); renderHome(); renderPay(); flash("builderMsg","Setup saved."); showToast("Setup Saved ✅");
-  };
-  byId("loadStarterBtn").onclick = () => { app = clone(starter); saveApp(); hydrate(); showToast("Starter Loaded"); };
-  byId("saveDaysBtn").onclick = () => { saveApp(); flash("daysMsg","Cycle days saved."); showToast("Cycle Days Saved ✅"); };
-  byId("endShiftBtn").onclick = () => { app.smartDay.off = nowHHMM(); app.smartDay.loadedFromToday = false; saveApp(); renderSmart(); renderHome(); };
-  byId("autoMealsBtn").onclick = () => autoMeals(true);
-  byId("saveDayBtn").onclick = () => {
-    const entry = {
-      date: new Date().toLocaleDateString(),
-      plannedHours: diffHours(app.smartDay.report, app.smartDay.off),
-      actualHours: getActualHours(),
-      mealCount: countedMeals(),
-      mealPay: mealPayToday(),
-      notes: app.smartDay.notes || ""
-    };
-    app.history.unshift(entry);
-    saveApp(); renderHistory(); renderPay(); flash("saveMsg","Saved."); showToast("Day Saved ✅");
-  };
-  byId("delay5").onclick = () => applyDelay(5);
-  byId("delay10").onclick = () => applyDelay(10);
-  byId("delay15").onclick = () => applyDelay(15);
-  byId("delayClear").onclick = clearDelay;
-  byId("sdelay5").onclick = () => applyDelay(5);
-  byId("sdelay10").onclick = () => applyDelay(10);
-  byId("sdelay15").onclick = () => applyDelay(15);
-  byId("sdelayClear").onclick = clearDelay;
-}
-function syncSmart() {
-  ["report","station","off","delay","mealMinutes","notes","companyProtected","personalDayOff","breakfast","lunch","dinner","custom"].forEach(id => {
-    const el = byId(id);
-    const fn = () => {
-      if (["companyProtected","personalDayOff","breakfast","lunch","dinner","custom"].includes(id)) {
-        if (["breakfast","lunch","dinner","custom"].includes(id)) app.smartDay.meals[id] = el.checked;
-        else app.smartDay[id] = el.checked;
-      } else app.smartDay[id] = el.value;
-      app.smartDay.loadedFromToday = false;
-      saveApp(); renderSmart(); renderHome();
-    };
-    el.addEventListener("input", fn);
-    el.addEventListener("change", fn);
-  });
-}
-function hydrate() {
-  ensureDays();
-  renderBuilder();
-  loadTodayFromSchedule(false);
-  renderSmart();
-  renderHome();
-  renderPay();
-  renderHistory();
-  if (countdownTimer) clearInterval(countdownTimer);
-  countdownTimer = setInterval(() => { renderSmart(); renderHome(); }, 30000);
+function render(){
+ let html="";
+ data.legs.forEach((l,i)=>{
+  html+=`<div>Leg ${i+1}: Train ${l.train} (${l.route})</div>`;
+ });
+ document.getElementById("schedule").innerHTML=html;
 }
 
-bindButtons();
-syncSmart();
-hydrate();
+function now(){
+ let d=new Date();
+ return d.getHours()+":"+String(d.getMinutes()).padStart(2,"0");
+}
+
+function setTime(type){
+ document.getElementById(type).value=now();
+ save();
+}
+
+function save(){
+ data.report=document.getElementById("report").value;
+ data.station=document.getElementById("station").value;
+ data.off=document.getElementById("off").value;
+ localStorage.setItem("railcrew",JSON.stringify(data));
+}
+
+render();
 </script>
+
 </body>
 </html>
