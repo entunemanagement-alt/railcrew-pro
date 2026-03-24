@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RailCrew Pro v41.1</title>
+<title>RailCrew Pro v41.2</title>
 <style>
 body{font-family:Arial;background:#0b1830;color:white;margin:0;padding:15px}
 .card{background:#13233d;padding:15px;border-radius:15px;margin-bottom:15px}
@@ -23,119 +23,107 @@ input{width:100%;padding:10px;margin:5px 0;border-radius:10px;border:none}
 <body>
 
 <div class="card">
-  <h2>Today's Schedule</h2>
-  <div class="small">Each leg now shows and saves report time, station arrival time, and end/off time.</div>
-  <div id="schedule"></div>
-  <button class="dark" onclick="addLeg()">+ Add Leg</button>
+<h2>Today's Schedule</h2>
+<div id="schedule"></div>
+<button class="dark" onclick="addLeg()">+ Add Leg</button>
 </div>
 
 <div class="card">
-  <h2>Quick Controls</h2>
-  <div class="small">Use these to stamp the selected leg fast.</div>
-  <label class="label">Selected Leg</label>
-  <input id="selectedLeg" type="number" min="1" value="1">
-  <button class="green" onclick="setTime('report')">Start Shift</button>
-  <button class="blue" onclick="setTime('arrival')">At Station</button>
-  <button class="red" onclick="setTime('off')">End Shift</button>
-</div>
-
-<div class="card">
-  <h2>Meals</h2>
-  <label><input type="checkbox" id="meal1"> Breakfast</label>
-  <label><input type="checkbox" id="meal2"> Lunch</label>
-  <label><input type="checkbox" id="meal3"> Dinner</label>
+<h2>Quick Controls</h2>
+<label class="label">Selected Leg</label>
+<input id="selectedLeg" type="number" min="1" value="1">
+<button class="green" onclick="setTime('report')">Start Shift</button>
+<button class="blue" onclick="setTime('arrival')">At Station</button>
+<button class="red" onclick="setTime('final')">Clock Out</button>
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem("railcrew_v41_1")) || {
-  legs:[
-    {train:"153",route:"NYP→PHL",report:"07:05",arrival:"07:20",off:"11:32"},
-    {train:"140",route:"PHL→NYP",report:"11:32",arrival:"11:50",off:"15:51"}
-  ],
-  meals:{breakfast:false,lunch:false,dinner:false}
+let data = JSON.parse(localStorage.getItem("railcrew_v41_2")) || {
+ legs:[
+  {train:"153",route:"NYP→PHL",report:"07:05",arrival:"07:20",off:"11:32",final:""},
+  {train:"140",route:"PHL→NYP",report:"11:32",arrival:"11:50",off:"15:51",final:""}
+ ]
 };
 
 function now(){
-  let d=new Date();
-  return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");
+ let d=new Date();
+ return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");
 }
 
 function save(){
-  localStorage.setItem("railcrew_v41_1",JSON.stringify(data));
+ localStorage.setItem("railcrew_v41_2",JSON.stringify(data));
 }
 
 function render(){
-  let html="";
-  data.legs.forEach((l,i)=>{
-    html += `
-      <div class="leg">
-        <div><strong>Leg ${i+1}</strong></div>
-        <div class="row">
-          <div class="col">
-            <div class="label">Train</div>
-            <input value="${l.train||""}" onchange="updateField(${i},'train',this.value)">
-          </div>
-          <div class="col">
-            <div class="label">Route</div>
-            <input value="${l.route||""}" onchange="updateField(${i},'route',this.value)">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <div class="label">Report Time</div>
-            <input type="time" value="${l.report||""}" onchange="updateField(${i},'report',this.value)">
-          </div>
-          <div class="col">
-            <div class="label">Train Arrival / Station Time</div>
-            <input type="time" value="${l.arrival||""}" onchange="updateField(${i},'arrival',this.value)">
-          </div>
-          <div class="col">
-            <div class="label">End / Off Time</div>
-            <input type="time" value="${l.off||""}" onchange="updateField(${i},'off',this.value)">
-          </div>
-        </div>
-        <button class="red" onclick="removeLeg(${i})">Remove Leg</button>
+ let html="";
+ data.legs.forEach((l,i)=>{
+  html+=`
+  <div class="leg">
+    <strong>Leg ${i+1}</strong>
+    <div class="row">
+      <div class="col">
+        <div class="label">Train</div>
+        <input value="${l.train||""}" onchange="update(${i},'train',this.value)">
       </div>
-    `;
-  });
-  document.getElementById("schedule").innerHTML = html;
+      <div class="col">
+        <div class="label">Route</div>
+        <input value="${l.route||""}" onchange="update(${i},'route',this.value)">
+      </div>
+    </div>
 
-  document.getElementById("meal1").checked = !!data.meals.breakfast;
-  document.getElementById("meal2").checked = !!data.meals.lunch;
-  document.getElementById("meal3").checked = !!data.meals.dinner;
+    <div class="row">
+      <div class="col">
+        <div class="label">Report</div>
+        <input type="time" value="${l.report||""}" onchange="update(${i},'report',this.value)">
+      </div>
+      <div class="col">
+        <div class="label">Arrival</div>
+        <input type="time" value="${l.arrival||""}" onchange="update(${i},'arrival',this.value)">
+      </div>
+      <div class="col">
+        <div class="label">Scheduled Off</div>
+        <input type="time" value="${l.off||""}" onchange="update(${i},'off',this.value)">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="label">Final Clock Out (Actual)</div>
+        <input type="time" value="${l.final||""}" onchange="update(${i},'final',this.value)">
+      </div>
+    </div>
+
+    <button class="red" onclick="removeLeg(${i})">Remove</button>
+  </div>
+  `;
+ });
+ document.getElementById("schedule").innerHTML=html;
 }
 
-function updateField(i, field, value){
-  data.legs[i][field] = value;
-  save();
+function update(i,f,v){
+ data.legs[i][f]=v;
+ save();
 }
 
 function addLeg(){
-  data.legs.push({train:"",route:"",report:"",arrival:"",off:""});
-  save();
-  render();
+ data.legs.push({train:"",route:"",report:"",arrival:"",off:"",final:""});
+ save();
+ render();
 }
 
 function removeLeg(i){
-  data.legs.splice(i,1);
-  if(data.legs.length===0){
-    data.legs.push({train:"",route:"",report:"",arrival:"",off:""});
-  }
-  save();
-  render();
+ data.legs.splice(i,1);
+ save();
+ render();
 }
 
-function setTime(field){
-  let idx = Math.max(0, Number(document.getElementById("selectedLeg").value || 1)-1);
-  if(!data.legs[idx]) return;
-  data.legs[idx][field] = now();
-  save();
-  render();
+function setTime(type){
+ let i = Math.max(0,document.getElementById("selectedLeg").value-1);
+ if(!data.legs[i]) return;
+ data.legs[i][type]=now();
+ save();
+ render();
 }
-
-document.getElementById("meal1").addEventListener("change", e => {data.meals.breakfast=e.target.checked; save();});
-document.getElementById("meal2").addEventListener("change", e => {data.meals.lunch=e.target.checked; save();});
-document.getElementById("meal3").addEventListener("change", e => {data.meals.dinner=e.target.checked; save();});
 
 render();
 </script>
