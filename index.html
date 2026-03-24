@@ -2,36 +2,42 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>RailCrew Pro v37</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RailCrew Pro v38</title>
 <style>
-:root{--bg:#0a1020;--bg2:#0f172a;--card:#111827;--card2:#162033;--line:#293548;--text:#f8fafc;--muted:#9fb0c7;--red:#ef4444;--blue:#2563eb;--green:#16a34a;--amber:#f59e0b}
-*{box-sizing:border-box} html,body{margin:0;padding:0;background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text);font-family:Arial,sans-serif} body{min-height:100vh}
-.wrap{max-width:1100px;margin:0 auto;padding:16px 16px 108px} .card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
-.row{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap} .grid2,.grid3,.grid4{display:grid;gap:12px} .grid2{grid-template-columns:1fr 1fr} .grid3{grid-template-columns:1fr 1fr 1fr} .grid4{grid-template-columns:repeat(4,1fr)}
-@media(max-width:920px){.grid4,.grid3{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}} @media(max-width:560px){.grid4,.grid3,.grid2{grid-template-columns:1fr}}
+:root{--bg:#0a1020;--card:#111827;--line:#293548;--text:#f8fafc;--muted:#9fb0c7;--red:#ef4444;--blue:#2563eb;--green:#16a34a;--amber:#f59e0b}
+*{box-sizing:border-box} html,body{margin:0;padding:0;background:#0a1020;color:var(--text);font-family:Arial,sans-serif} body{min-height:100vh}
+.wrap{max-width:1100px;margin:0 auto;padding:16px 16px 100px}
+.card{background:#111827;border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
+.row{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.grid2,.grid3{display:grid;gap:12px} .grid2{grid-template-columns:1fr 1fr} .grid3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}
 h1,h2,h3,p{margin:0} .sub{color:var(--muted);font-size:13px;line-height:1.35}
-label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px} input,select,textarea{width:100%;padding:12px 13px;border-radius:12px;border:1px solid #4b5878;background:#eef2f7;color:#111827;font-size:16px} textarea{min-height:90px;resize:vertical}
-button{padding:12px 14px;border:none;border-radius:12px;font-weight:700;cursor:pointer} .btn-red{background:linear-gradient(180deg,#ff5f5f,#d12626);color:white} .btn-blue{background:linear-gradient(180deg,#60a5fa,#2563eb);color:white} .btn-green{background:linear-gradient(180deg,#22c55e,#15803d);color:white} .btn-dark{background:#374151;color:white} .btn-soft{background:#e5e7eb;color:#111827}
-.logo{width:58px;height:58px;border-radius:18px;background:linear-gradient(180deg,#ff6464,#bf2020);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;letter-spacing:.04em} .brand{display:flex;align-items:center;gap:14px} .pill{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700;background:#124a2c;color:#bbf7d0}
-.section{display:none} .section.active{display:block} .tabs{position:fixed;left:0;right:0;bottom:0;padding:10px;background:linear-gradient(180deg,rgba(10,16,32,.2),rgba(10,16,32,.96));border-top:1px solid var(--line);backdrop-filter:blur(8px)} .tabgrid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:10px} .tab{background:#152033;border:1px solid var(--line);text-align:center;padding:12px;border-radius:12px;color:white;cursor:pointer} .tab.active{background:#7f1d1d}
+label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
+input,select,textarea{width:100%;padding:12px;border-radius:12px;border:1px solid #4b5878;background:#eef2f7;color:#111827;font-size:16px}
+button{padding:12px 14px;border:none;border-radius:12px;font-weight:700;cursor:pointer}
+.btn-red{background:#d12626;color:#fff} .btn-blue{background:#2563eb;color:#fff} .btn-green{background:#15803d;color:#fff} .btn-dark{background:#374151;color:#fff}
+.logo{width:58px;height:58px;border-radius:18px;background:#bf2020;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800}
+.brand{display:flex;align-items:center;gap:14px} .pill{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700;background:#124a2c;color:#bbf7d0}
+.section{display:none} .section.active{display:block} .tabs{position:fixed;left:0;right:0;bottom:0;padding:10px;background:#0a1020;border-top:1px solid var(--line)} .tabgrid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:10px} .tab{background:#152033;border:1px solid var(--line);text-align:center;padding:12px;border-radius:12px;color:#fff;cursor:pointer} .tab.active{background:#7f1d1d}
 @media(max-width:620px){.tabgrid{grid-template-columns:repeat(3,1fr)}}
-.kv{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid rgba(255,255,255,.08)} .kv:first-child{border-top:none} .leg{background:#0f172a;border:1px solid var(--line);padding:12px;border-radius:12px;margin-top:10px} .smallcheck{display:flex;gap:8px;align-items:flex-start;margin-top:8px} .smallcheck input{width:auto;margin-top:3px}
-.msg{margin-top:10px;color:#bbf7d0;font-size:14px;min-height:20px} .toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:var(--green);color:white;padding:10px 18px;border-radius:999px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.28)}
-.countdown{padding:14px;border-radius:16px;border:1px solid var(--line);background:#0f172a} .countdown.good{background:linear-gradient(180deg,rgba(22,163,74,.18),rgba(22,163,74,.05))} .countdown.warn{background:linear-gradient(180deg,rgba(245,158,11,.18),rgba(245,158,11,.05))} .countdown.danger{background:linear-gradient(180deg,rgba(239,68,68,.18),rgba(239,68,68,.05))}
-.big{font-size:40px;font-weight:800} .dot{width:12px;height:12px;border-radius:999px;background:#334155;border:1px solid #64748b} .dot.active{background:#2563eb;outline:2px solid #93c5fd} .dot.current{background:#16a34a}
-.swipe-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px} .swipe-indicator{display:flex;gap:6px;flex-wrap:wrap} .swipe-frame{overflow:hidden;border-radius:16px} .swipe-track{display:flex;transition:transform .25s ease} .day-page{min-width:100%;padding:0}
-.page-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px} .current-badge{background:#124a2c;color:#bbf7d0;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700} .swipe-nav{display:flex;gap:8px;justify-content:space-between;margin-top:12px}
+.leg{background:#0f172a;border:1px solid var(--line);padding:12px;border-radius:12px;margin-top:10px}
+.msg{margin-top:10px;color:#bbf7d0;font-size:14px;min-height:20px}
+.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:#15803d;color:#fff;padding:10px 18px;border-radius:999px;z-index:9999}
+.countdown{padding:14px;border-radius:16px;border:1px solid var(--line);background:#0f172a} .good{background:rgba(22,163,74,.12)} .warn{background:rgba(245,158,11,.12)} .danger{background:rgba(239,68,68,.12)}
+.big{font-size:40px;font-weight:800} .kv{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid rgba(255,255,255,.08)} .kv:first-child{border-top:none}
+.daynav{display:flex;gap:8px;overflow:auto;margin-top:10px} .daybtn{background:#2563eb;color:#fff;border:none;border-radius:10px;padding:10px 12px;white-space:nowrap} .daybtn.active{outline:2px solid #93c5fd}
+.crew{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px} @media(max-width:560px){.crew{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="card"><div class="row"><div class="brand"><div class="logo">RC</div><div><h1>RailCrew Pro v37</h1><p class="sub">Picker merged into the schedule builder. Each leg can have its own category, service, and train number.</p></div></div><span class="pill">Merged Picker</span></div></div>
+  <div class="card"><div class="row"><div class="brand"><div class="logo">RC</div><div><h1>RailCrew Pro v38</h1><p class="sub">1-Tap Crew Mode: Start Shift, At Station, End Shift buttons on every leg.</p></div></div><span class="pill">Crew Mode</span></div></div>
 
   <section id="home" class="section active">
     <div class="grid2">
       <div class="card">
-        <div class="row"><div><h2>Today</h2><p class="sub">Auto-load uses first leg report/station and last leg off time.</p></div><span id="todayBadge" class="pill">Work</span></div>
+        <div class="row"><div><h2>Today</h2><p class="sub">Auto-load uses first leg report/station and last leg off.</p></div><span id="todayBadge" class="pill">Work</span></div>
         <div id="todayTitle" style="font-size:28px;font-weight:700;margin-top:12px">No schedule loaded</div>
         <div id="todayLegs" class="sub" style="margin-top:10px"></div>
       </div>
@@ -42,9 +48,7 @@ button{padding:12px 14px;border:none;border-radius:12px;font-weight:700;cursor:p
           <div class="big" id="countdownMain">--:--</div>
           <div class="sub" id="countdownSub">Set station time to start countdown.</div>
         </div>
-        <div class="row" style="margin-top:12px">
-          <button class="btn-blue" id="reloadTodayBtn" type="button">Reload Today From Schedule</button>
-        </div>
+        <div class="row" style="margin-top:12px"><button class="btn-blue" id="reloadTodayBtn" type="button">Reload Today From Schedule</button></div>
       </div>
     </div>
   </section>
@@ -59,18 +63,16 @@ button{padding:12px 14px;border:none;border-radius:12px;font-weight:700;cursor:p
       </div>
       <div class="grid3">
         <div><label>Cycle Length</label><input id="cycleLength" type="number" min="1" max="31"></div>
-        <div><label>Hourly Rate</label><input id="payRate" type="number" step="0.01"></div>
-        <div><label>Guarantee Hours</label><input id="payGuarantee" type="number"></div>
+        <div><label>Hourly Rate</label><input id="payRate"></div>
+        <div><label>Guarantee Hours</label><input id="payGuarantee"></div>
       </div>
-      <div class="row" style="margin-top:12px"><button id="saveSetupBtn" class="btn-red" type="button">Save Setup</button><button id="loadStarterBtn" class="btn-dark" type="button">Load Starter</button></div>
+      <div class="row" style="margin-top:12px"><button id="saveSetupBtn" class="btn-red">Save Setup</button><button id="loadStarterBtn" class="btn-dark">Load Starter</button></div>
       <div class="msg" id="builderMsg"></div>
     </div>
-
     <div class="card">
-      <div class="row"><div><h2>Cycle Day Builder</h2><p class="sub">Each leg has its own category, service, and train picker.</p></div><button id="saveDaysBtn" class="btn-red" type="button">Save Cycle Days</button></div>
-      <div class="swipe-head"><div class="swipe-indicator" id="swipeDots"></div><div class="sub">Swipe or use Prev / Next</div></div>
-      <div class="swipe-frame" id="swipeFrame"><div class="swipe-track" id="swipeTrack"></div></div>
-      <div class="swipe-nav"><button id="prevDayBtn" class="btn-dark" type="button">Prev Day</button><button id="copyPrevBtn" class="btn-blue" type="button">Copy Previous Day</button><button id="nextDayBtn" class="btn-dark" type="button">Next Day</button></div>
+      <div class="row"><div><h2>Cycle Day Builder</h2><p class="sub">Each leg has its own picker and 1-tap buttons.</p></div><button id="saveDaysBtn" class="btn-red">Save Cycle Days</button></div>
+      <div id="dayTabs" class="daynav"></div>
+      <div id="dayEditor"></div>
       <div class="msg" id="daysMsg"></div>
     </div>
   </section>
@@ -83,12 +85,12 @@ button{padding:12px 14px;border:none;border-radius:12px;font-weight:700;cursor:p
         <label>Report Time</label><input type="time" id="report">
         <label>Station / Track Time</label><input type="time" id="station">
         <label>Off Time</label><input type="time" id="off">
-        <div class="row"><button class="btn-green" id="endShiftBtn" type="button">End Shift Now</button><button class="btn-dark" id="autoMealsBtn" type="button">Auto Meals</button></div>
+        <div class="row"><button class="btn-green" id="endShiftBtn">End Shift Now</button><button class="btn-dark" id="autoMealsBtn">Auto Meals</button></div>
         <label>Delay (min)</label><input type="number" id="delay" min="0" value="0">
         <label>Meal Trigger Minutes</label><input type="number" id="mealMinutes" min="1" value="360">
-        <label>Notes</label><textarea id="notes" placeholder="Delay / station issues / jumped train / company notes"></textarea>
-        <label class="smallcheck"><input type="checkbox" id="companyProtected"> <span>Company protected</span></label>
-        <label class="smallcheck"><input type="checkbox" id="personalDayOff"> <span>Personal day off</span></label>
+        <label>Notes</label><textarea id="notes"></textarea>
+        <label><input type="checkbox" id="companyProtected"> Company protected</label>
+        <label><input type="checkbox" id="personalDayOff"> Personal day off</label>
       </div>
       <div class="card">
         <h2>Today Summary</h2>
@@ -97,11 +99,11 @@ button{padding:12px 14px;border:none;border-radius:12px;font-weight:700;cursor:p
         <div class="kv"><span class="sub">Meal Count</span><strong id="mealCount">0</strong></div>
         <div class="kv"><span class="sub">Meal Pay Today</span><strong id="mealPayToday">$0</strong></div>
         <div class="kv"><span class="sub">Track Alert</span><strong id="stationAlert">No alert</strong></div>
-        <label class="smallcheck"><input type="checkbox" id="breakfast"> <span>Breakfast</span></label>
-        <label class="smallcheck"><input type="checkbox" id="lunch"> <span>Lunch</span></label>
-        <label class="smallcheck"><input type="checkbox" id="dinner"> <span>Dinner</span></label>
-        <label class="smallcheck"><input type="checkbox" id="custom"> <span>Custom Meal</span></label>
-        <div class="row" style="margin-top:12px"><button class="btn-red" id="saveDayBtn" type="button">Save Day</button></div>
+        <label><input type="checkbox" id="breakfast"> Breakfast</label>
+        <label><input type="checkbox" id="lunch"> Lunch</label>
+        <label><input type="checkbox" id="dinner"> Dinner</label>
+        <label><input type="checkbox" id="custom"> Custom Meal</label>
+        <div class="row" style="margin-top:12px"><button class="btn-red" id="saveDayBtn">Save Day</button></div>
         <div class="msg" id="saveMsg"></div>
       </div>
     </div>
@@ -118,91 +120,417 @@ button{padding:12px 14px;border:none;border-radius:12px;font-weight:700;cursor:p
     </div>
   </section>
 
-  <section id="history" class="section"><div class="card"><h2>History</h2><div id="historyList" class="sub" style="margin-top:12px">No saved days yet.</div></div></section>
+  <section id="history" class="section">
+    <div class="card"><h2>History</h2><div id="historyList" class="sub" style="margin-top:12px">No saved days yet.</div></div>
+  </section>
 </div>
 
 <div class="tabs"><div class="tabgrid"><div class="tab active" data-tab="home">Home</div><div class="tab" data-tab="builder">Builder</div><div class="tab" data-tab="smart">Smart</div><div class="tab" data-tab="pay">Pay</div><div class="tab" data-tab="history">History</div></div></div>
 
 <script>
-const CATEGORIES = {"Northeast Corridor": {"Acela": ["887", "2104", "2108", "2121", "2122", "2126", "2150", "2151", "2152", "2153", "2154", "2155", "2159", "2162", "2163", "2167", "2168", "2169", "2170", "2172", "2173", "2174", "2190", "2192", "2193", "2201", "2203", "2205", "2206", "2207", "2214", "2216", "2218", "2220", "2222", "2223", "2224", "2226", "2233", "2247", "2248", "2249", "2250", "2252", "2253", "2254", "2255", "2256", "2257", "2259", "2262", "2263", "2265", "2271", "2274", "2292", "2295"], "Northeast Regional": ["65", "66", "67", "82", "84", "85", "86", "87", "88", "93", "94", "95", "96", "99", "100", "101", "103", "104", "105", "106", "107", "109", "110", "111", "112", "113", "117", "118", "119", "120", "121", "122", "123", "124", "125", "126", "127", "128", "129", "130", "131", "132", "134", "135", "136", "137", "138", "139", "140", "141", "142", "143", "144", "145", "146", "147", "148", "149", "150", "151", "152", "153", "154", "155", "156", "157", "158", "159", "160", "161", "162", "163", "164", "165", "166", "167", "168", "169", "170", "171", "172", "173", "174", "175", "176", "177", "178", "179", "181", "182", "183", "184", "185", "186", "189", "190", "192", "193", "194", "195", "196", "197", "198"], "Keystone Service": ["600", "601", "605", "607", "609", "610", "611", "612", "615", "620", "622", "624", "626", "637", "639", "640", "641", "642", "643", "644", "645", "646", "647", "648", "649", "650", "651", "652", "653", "654", "655", "656", "657", "658", "660", "661", "662", "663", "664", "665", "666", "667", "669", "670", "671", "672", "674"]}, "Long Distance": {"Crescent": ["19", "20"], "Cardinal": ["50", "51"], "Silver Meteor": ["97", "98"], "Silver Star": ["91", "92"], "Palmetto": ["89", "90"]}, "Regional / State Supported": {"Carolinian": ["79", "80"], "Vermonter": ["54", "55", "56", "57"], "Pennsylvanian": ["42", "43"]}};
-const KEY="railcrew_v37_merged_picker";
-const starter={
-  setup:{line:"NEC",positionKey:"811",pickupDay:"Wednesday",cycleLength:7},
-  pay:{rate:26.69,guarantee:185},
-  activeDay:0,
-  days:[
-    {status:"work",notes:"Continuous time",legs:[
+const CATEGORIES = {"Northeast Corridor": {"Acela": ["2150", "2151", "2152", "2153", "2254"], "Northeast Regional": ["65", "66", "67", "140", "143", "153", "177", "178", "186", "196"], "Keystone Service": ["600", "601", "640", "641", "650", "651", "660", "661"]}, "Long Distance": {"Crescent": ["19", "20"], "Cardinal": ["50", "51"], "Silver Meteor": ["97", "98"], "Silver Star": ["91", "92"], "Palmetto": ["89", "90"]}, "Regional / State Supported": {"Carolinian": ["79", "80"], "Vermonter": ["54", "55", "56", "57"], "Pennsylvanian": ["42", "43"]}};
+const KEY = "railcrew_v38_crew_mode";
+const starter = {
+  setup: {line:"NEC", positionKey:"811", pickupDay:"Wednesday", cycleLength:7},
+  pay: {rate:26.69, guarantee:185},
+  activeDay: 0,
+  days: [
+    {status:"work", notes:"Continuous time", legs:[
       {category:"Northeast Corridor",service:"Northeast Regional",train:"153",origin:"NYP",destination:"PHL",report:"07:05",station:"07:20",off:"11:32"},
       {category:"Northeast Corridor",service:"Northeast Regional",train:"140",origin:"PHL",destination:"NYP",report:"11:32",station:"11:50",off:"15:51"}
     ]},
-    {status:"work",notes:"Continuous time",legs:[
+    {status:"work", notes:"Continuous time", legs:[
       {category:"Long Distance",service:"Cardinal",train:"50",origin:"NYP",destination:"WAS",report:"10:33",station:"10:50",off:"19:01"},
       {category:"Northeast Corridor",service:"Northeast Regional",train:"177",origin:"WAS",destination:"NYP",report:"19:01",station:"19:20",off:"21:52"}
     ]},
     {status:"off",notes:"",legs:[]},{status:"off",notes:"",legs:[]},{status:"off",notes:"",legs:[]},{status:"off",notes:"",legs:[]},{status:"off",notes:"",legs:[]}
   ],
-  smartDay:{report:"",station:"",off:"",delay:"0",mealMinutes:"360",notes:"",companyProtected:false,personalDayOff:false,meals:{breakfast:false,lunch:false,dinner:false,custom:false},loadedFromToday:false},
+  smartDay: {report:"",station:"",off:"",delay:"0",mealMinutes:"360",notes:"",companyProtected:false,personalDayOff:false,meals:{breakfast:false,lunch:false,dinner:false,custom:false},loadedFromToday:false},
   history:[]
 };
-let app=JSON.parse(localStorage.getItem(KEY)||"null")||starter;
-let touchStartX=null,touchMoveX=null,countdownTimer=null;
-const byId=id=>document.getElementById(id);
-const saveApp=()=>localStorage.setItem(KEY,JSON.stringify(app));
-const clone=x=>JSON.parse(JSON.stringify(x));
-const fmt=v=>Number(v||0).toFixed(2);
-const money=v=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(v||0);
-function showToast(msg){const old=document.querySelector(".toast"); if(old) old.remove(); const t=document.createElement("div"); t.className="toast"; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),1800)}
-function flash(id,text){byId(id).textContent=text; setTimeout(()=>{if(byId(id).textContent===text) byId(id).textContent=""},2200)}
-function nowHHMM(){const d=new Date(); return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")}
-function dayNames(){return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]}
-function toMins(v){if(!v)return null; const p=v.split(":"); if(p.length!==2)return null; return Number(p[0])*60+Number(p[1])}
-function diffHours(start,end){const s=toMins(start),e0=toMins(end); if(s===null||e0===null)return 0; let e=e0; if(e<s)e+=1440; return (e-s)/60}
-function ensureDays(){const len=Number(app.setup.cycleLength||7); while(app.days.length<len) app.days.push({status:"off",notes:"",legs:[]}); if(app.days.length>len) app.days=app.days.slice(0,len); if(app.activeDay>=len) app.activeDay=len-1; if(app.activeDay<0) app.activeDay=0}
-function cycleDayForToday(){const d=new Date(), pickup=dayNames().indexOf(app.setup.pickupDay), current=d.getDay(); const diff=((current-pickup)%app.setup.cycleLength+app.setup.cycleLength)%app.setup.cycleLength; return diff+1}
-function todayDay(){return app.days[cycleDayForToday()-1]||{status:"off",notes:"",legs:[]}}
-function dayHours(day){return (day.legs||[]).reduce((s,l)=>s+diffHours(l.report,l.off),0)}
-function countedMeals(){const m=app.smartDay.meals||{}; return ["breakfast","lunch","dinner","custom"].filter(k=>!!m[k]).length}
-function mealPayFromCount(c){if(c<=0)return 0; if(c===1)return 20; return 30}
-function mealPayToday(){return mealPayFromCount(countedMeals())}
-function totalActualSaved(){return app.history.reduce((s,x)=>s+Number(x.actualHours||0),0)}
-function mealPayTotal(){return app.history.reduce((s,x)=>s+Number(x.mealPay||0),0)}
-function getActualHours(){let actual=diffHours(app.smartDay.report,app.smartDay.off)+(Number(app.smartDay.delay||0)/60); if(app.smartDay.companyProtected||app.smartDay.personalDayOff) actual=0; return actual}
-function showTab(id){document.querySelectorAll(".section").forEach(s=>s.classList.remove("active")); document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active")); byId(id).classList.add("active"); document.querySelector('.tab[data-tab="'+id+'"]').classList.add("active")}
-document.querySelectorAll(".tab").forEach(tab=>tab.addEventListener("click",()=>showTab(tab.dataset.tab)));
+let app = JSON.parse(localStorage.getItem(KEY) || "null") || starter;
+let countdownTimer = null;
 
-function loadTodayFromSchedule(showMessage){const day=todayDay(); if(day.status!=="work"||!day.legs.length){app.smartDay.report=""; app.smartDay.station=""; app.smartDay.off=""; app.smartDay.loadedFromToday=false; saveApp(); renderSmart(); renderHome(); if(showMessage) flash("saveMsg","Today is off. Nothing loaded."); return} app.smartDay.report=day.legs[0].report||""; app.smartDay.station=day.legs[0].station||""; app.smartDay.off=day.legs[day.legs.length-1].off||""; app.smartDay.loadedFromToday=true; saveApp(); autoMeals(false); renderSmart(); renderHome(); if(showMessage) showToast("Today Loaded ✅")}
+const byId = id => document.getElementById(id);
+const saveApp = () => localStorage.setItem(KEY, JSON.stringify(app));
+const clone = x => JSON.parse(JSON.stringify(x));
+const fmt = v => Number(v || 0).toFixed(2);
+const money = v => new Intl.NumberFormat('en-US', {style:'currency', currency:'USD'}).format(v || 0);
 
-function renderHome(){const day=todayDay(), cday=cycleDayForToday(), company=!!app.smartDay.companyProtected, personal=!!app.smartDay.personalDayOff; byId("todayBadge").textContent=company?"Company":personal?"Day Off":day.status==="work"?"Work":"Off"; byId("todayTitle").textContent="Day "+cday+" · "+(day.status==="work"?"Work":"Off"); const box=byId("todayLegs"); box.innerHTML=""; if(company) box.innerHTML="<div class='leg'>Company protected day selected.</div>"; else if(personal||day.status!=="work") box.innerHTML="<div class='leg'>Off day.</div>"; else day.legs.forEach(l=>{box.innerHTML += "<div class='leg'><strong>"+(l.service||"")+" · Train "+(l.train||"")+"</strong><br><span class='sub'>"+(l.origin||"")+" → "+(l.destination||"")+" · Report "+(l.report||"")+" · Station "+(l.station||"")+" · Off "+(l.off||"")+"</span></div>"}); updateCountdown()}
-function updateCountdown(){const box=byId("countdownBox"), main=byId("countdownMain"), sub=byId("countdownSub"); const station=toMins(app.smartDay.station); if(station===null){box.className="countdown good"; main.textContent="--:--"; sub.textContent="Set station time to start countdown."; return} const now=new Date(), current=now.getHours()*60+now.getMinutes(); let diff=station-current; if(diff<-720) diff+=1440; if(diff>720) diff-=1440; box.className="countdown"; if(diff>10){box.classList.add("good"); main.textContent=diff+" min"; sub.textContent="Time until station / track."; return} if(diff>=0){box.classList.add("warn"); main.textContent=diff+" min"; sub.textContent="Get ready for track."; return} if(diff>=-15){box.classList.add("danger"); main.textContent="NOW"; sub.textContent="Train should be at station now."; return} box.classList.add("good"); main.textContent="Passed"; sub.textContent="Station time already passed."}
-
-function renderBuilder(){ensureDays(); byId("line").value=app.setup.line; byId("positionKey").value=app.setup.positionKey; byId("pickupDay").value=app.setup.pickupDay; byId("cycleLength").value=app.setup.cycleLength; byId("payRate").value=app.pay.rate; byId("payGuarantee").value=app.pay.guarantee; renderSwipeDots(); renderSwipePages(); updateSwipePosition(false)}
-function renderSwipeDots(){const cday=cycleDayForToday(), box=byId("swipeDots"); box.innerHTML=""; app.days.forEach((d,i)=>{const dot=document.createElement("button"); dot.type="button"; dot.className="dot"+(app.activeDay===i?" active":"")+(cday===i+1?" current":""); dot.onclick=()=>{app.activeDay=i; saveApp(); renderBuilder()}; box.appendChild(dot)})}
-function renderSwipePages(){const cday=cycleDayForToday(), track=byId("swipeTrack"); track.innerHTML=""; app.days.forEach((day,idx)=>{const page=document.createElement("div"); page.className="day-page"; page.innerHTML="<div class='card' style='margin-top:0'><div class='page-title'><div><h3>Cycle Day "+(idx+1)+"</h3><div class='sub'>Per-leg picker is built in</div></div>"+(cday===idx+1?"<span class='current-badge'>Current Cycle Day</span>":"")+"</div><label>Status</label><select data-day='"+idx+"' class='dayStatus'><option value='work'"+(day.status==="work"?" selected":"")+">Work</option><option value='off'"+(day.status==="off"?" selected":"")+">Off</option></select><label style='margin-top:10px'>Day Notes</label><input data-day='"+idx+"' class='dayNotes' value='"+String(day.notes||"").replace(/'/g,"&#39;")+"' placeholder='Continuous time / off day / etc'><div id='legs-"+idx+"'></div><div class='row' style='margin-top:12px'><button data-day='"+idx+"' class='btn-red addLegBtn' type='button'>+ Add Train Leg</button></div></div>"; track.appendChild(page)}); app.days.forEach((day,idx)=>{const legsBox=byId("legs-"+idx); if(day.status==="off"){legsBox.innerHTML="<div class='leg'>Off day.</div>"; return} if(!day.legs.length) day.legs.push(defaultLeg()); legsBox.innerHTML=""; day.legs.forEach((leg,i)=>{const div=document.createElement("div"); div.className="leg"; div.innerHTML="<div class='grid3'><div><label>Category</label><select class='l-category' data-day='"+idx+"' data-i='"+i+"'></select></div><div><label>Service</label><select class='l-service' data-day='"+idx+"' data-i='"+i+"'></select></div><div><label>Train</label><select class='l-train' data-day='"+idx+"' data-i='"+i+"'></select></div></div><div class='grid3' style='margin-top:10px'><div><label>Origin</label><input class='l-origin' data-day='"+idx+"' data-i='"+i+"' value='"+String(leg.origin||"").replace(/'/g,"&#39;")+"'></div><div><label>Destination</label><input class='l-dest' data-day='"+idx+"' data-i='"+i+"' value='"+String(leg.destination||"").replace(/'/g,"&#39;")+"'></div><div><label>Report</label><input class='l-report' data-day='"+idx+"' data-i='"+i+"' type='time' value='"+(leg.report||"")+"'></div></div><div class='grid2' style='margin-top:10px'><div><label>Station</label><input class='l-station' data-day='"+idx+"' data-i='"+i+"' type='time' value='"+(leg.station||"")+"'></div><div><label>Off</label><input class='l-off' data-day='"+idx+"' data-i='"+i+"' type='time' value='"+(leg.off||"")+"'></div></div><div class='row' style='margin-top:10px'><button class='btn-dark remLeg' data-day='"+idx+"' data-i='"+i+"' type='button'>Remove</button></div>"; legsBox.appendChild(div)})}); attachBuilderHandlers(); hydrateLegPickers()}
-function defaultLeg(){return {category:"Northeast Corridor",service:"Northeast Regional",train:"153",origin:"",destination:"",report:"",station:"",off:""}}
-function fillSelect(select, values, selected){select.innerHTML=""; values.forEach(v=>{const opt=document.createElement("option"); opt.value=v; opt.textContent=v; if(v===selected) opt.selected=true; select.appendChild(opt)})}
-function hydrateLegPickers(){document.querySelectorAll(".l-category").forEach(sel=>{const dayIdx=Number(sel.dataset.day), legIdx=Number(sel.dataset.i), leg=app.days[dayIdx].legs[legIdx]; fillSelect(sel, Object.keys(CATEGORIES), leg.category||Object.keys(CATEGORIES)[0]); const serviceSel=document.querySelector('.l-service[data-day="'+dayIdx+'"][data-i="'+legIdx+'"]'); const trainSel=document.querySelector('.l-train[data-day="'+dayIdx+'"][data-i="'+legIdx+'"]'); const cat=sel.value; fillSelect(serviceSel, Object.keys(CATEGORIES[cat]), leg.service||Object.keys(CATEGORIES[cat])[0]); const svc=serviceSel.value; fillSelect(trainSel, CATEGORIES[cat][svc], leg.train||CATEGORIES[cat][svc][0])})}
-function attachBuilderHandlers(){
-  document.querySelectorAll(".dayStatus").forEach(el=>{el.onchange=e=>{const dayIdx=Number(e.target.dataset.day), day=app.days[dayIdx]; day.status=e.target.value; if(day.status==="off") day.legs=[]; if(day.status==="work"&&!day.legs.length) day.legs=[defaultLeg()]; saveApp(); renderBuilder(); renderHome()}});
-  document.querySelectorAll(".dayNotes").forEach(el=>{el.oninput=e=>{app.days[Number(e.target.dataset.day)].notes=e.target.value; saveApp();}});
-  document.querySelectorAll(".addLegBtn").forEach(el=>{el.onclick=e=>{const dayIdx=Number(e.target.dataset.day), day=app.days[dayIdx]; if(day.status!=="work") day.status="work"; day.legs.push(defaultLeg()); app.activeDay=dayIdx; saveApp(); renderBuilder(); renderHome()}});
-  document.querySelectorAll(".remLeg").forEach(el=>{el.onclick=e=>{const dayIdx=Number(e.target.dataset.day), legIdx=Number(e.target.dataset.i), day=app.days[dayIdx]; day.legs.splice(legIdx,1); if(!day.legs.length) day.status="off"; app.activeDay=dayIdx; saveApp(); renderBuilder(); renderHome()}});
-  document.querySelectorAll(".l-origin,.l-dest,.l-report,.l-station,.l-off").forEach(el=>{el.oninput=e=>{const dayIdx=Number(e.target.dataset.day), legIdx=Number(e.target.dataset.i), leg=app.days[dayIdx].legs[legIdx], c=e.target.className; if(c.includes("l-origin")) leg.origin=e.target.value; if(c.includes("l-dest")) leg.destination=e.target.value; if(c.includes("l-report")) leg.report=e.target.value; if(c.includes("l-station")) leg.station=e.target.value; if(c.includes("l-off")) leg.off=e.target.value; saveApp(); renderHome()}});
-  document.querySelectorAll(".l-category").forEach(el=>{el.onchange=e=>{const dayIdx=Number(e.target.dataset.day), legIdx=Number(e.target.dataset.i), leg=app.days[dayIdx].legs[legIdx], cat=e.target.value; leg.category=cat; leg.service=Object.keys(CATEGORIES[cat])[0]; leg.train=CATEGORIES[cat][leg.service][0]; saveApp(); renderBuilder(); renderHome()}});
-  document.querySelectorAll(".l-service").forEach(el=>{el.onchange=e=>{const dayIdx=Number(e.target.dataset.day), legIdx=Number(e.target.dataset.i), leg=app.days[dayIdx].legs[legIdx], service=e.target.value; leg.service=service; leg.train=CATEGORIES[leg.category][service][0]; saveApp(); renderBuilder(); renderHome()}});
-  document.querySelectorAll(".l-train").forEach(el=>{el.onchange=e=>{const dayIdx=Number(e.target.dataset.day), legIdx=Number(e.target.dataset.i), leg=app.days[dayIdx].legs[legIdx]; leg.train=e.target.value; saveApp(); renderHome()}});
+function showToast(msg) {
+  const old = document.querySelector(".toast");
+  if (old) old.remove();
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 1800);
 }
-function updateSwipePosition(animate=true){const track=byId("swipeTrack"); if(!animate) track.style.transition="none"; track.style.transform="translateX(-"+(app.activeDay*100)+"%)"; if(!animate) requestAnimationFrame(()=>track.style.transition="transform .25s ease")}
-function swipeTo(dayIdx){ensureDays(); if(dayIdx<0) dayIdx=0; if(dayIdx>app.days.length-1) dayIdx=app.days.length-1; app.activeDay=dayIdx; saveApp(); updateSwipePosition(true); renderSwipeDots()}
-function setupSwipe(){const frame=byId("swipeFrame"); frame.addEventListener("touchstart",e=>{if(!e.touches||!e.touches.length)return; touchStartX=e.touches[0].clientX; touchMoveX=touchStartX},{passive:true}); frame.addEventListener("touchmove",e=>{if(!e.touches||!e.touches.length)return; touchMoveX=e.touches[0].clientX},{passive:true}); frame.addEventListener("touchend",()=>{if(touchStartX===null||touchMoveX===null)return; const delta=touchMoveX-touchStartX; if(Math.abs(delta)>50){if(delta<0) swipeTo(app.activeDay+1); else swipeTo(app.activeDay-1)} touchStartX=null; touchMoveX=null})}
-function autoMeals(showMessage=true){const report=app.smartDay.report, off=app.smartDay.off, hours=diffHours(report,off), triggerHrs=Number(app.smartDay.mealMinutes||360)/60; app.smartDay.meals.breakfast=false; app.smartDay.meals.lunch=false; app.smartDay.meals.dinner=false; const r=toMins(report), o=toMins(off); if(r!==null){if(r<=7*60+30) app.smartDay.meals.breakfast=true; if(r<=13*60&&(hours>=4||hours>=triggerHrs)) app.smartDay.meals.lunch=true} if(o!==null){let offAdjusted=o; if(r!==null&&o<r) offAdjusted+=1440; if(offAdjusted>=18*60||hours>=10) app.smartDay.meals.dinner=true} if(hours>=triggerHrs&&!app.smartDay.meals.lunch) app.smartDay.meals.lunch=true; saveApp(); renderSmart(); if(showMessage) flash("saveMsg","Auto meals updated.")}
-function renderSmart(){byId("report").value=app.smartDay.report||""; byId("station").value=app.smartDay.station||""; byId("off").value=app.smartDay.off||""; byId("delay").value=app.smartDay.delay||"0"; byId("mealMinutes").value=app.smartDay.mealMinutes||"360"; byId("notes").value=app.smartDay.notes||""; byId("companyProtected").checked=!!app.smartDay.companyProtected; byId("personalDayOff").checked=!!app.smartDay.personalDayOff; byId("breakfast").checked=!!app.smartDay.meals.breakfast; byId("lunch").checked=!!app.smartDay.meals.lunch; byId("dinner").checked=!!app.smartDay.meals.dinner; byId("custom").checked=!!app.smartDay.meals.custom; byId("autoloadMsg").textContent=app.smartDay.loadedFromToday?"Today loaded from first/last leg.":"Manual smart day mode."; byId("plannedHours").textContent=fmt(diffHours(app.smartDay.report,app.smartDay.off))+" hrs"; byId("actualHours").textContent=fmt(getActualHours())+" hrs"; byId("mealCount").textContent=String(countedMeals()); byId("mealPayToday").textContent=money(mealPayToday()); const station=toMins(app.smartDay.station); if(station===null) byId("stationAlert").textContent="No station time"; else {const now=new Date(), current=now.getHours()*60+now.getMinutes(); let diff=station-current; if(diff<-720) diff+=1440; if(diff>720) diff-=1440; if(diff<=10&&diff>=0) byId("stationAlert").textContent="Be at track in "+diff+" min"; else if(diff<0&&diff>=-15) byId("stationAlert").textContent="Train should be at station now"; else byId("stationAlert").textContent="No alert";} updateCountdown()}
-function renderPay(){const actual=totalActualSaved(), meals=mealPayTotal(), base=actual*Number(app.pay.rate||0), total=base+meals, short=Math.max(0,Number(app.pay.guarantee||185)-actual); byId("payActual").textContent=fmt(actual); byId("payMealTotal").textContent=money(meals); byId("payEstimate").textContent=money(base); byId("payEstimateMeals").textContent=money(total); byId("weekShort").textContent=fmt(short)+" hrs"}
-function renderHistory(){const box=byId("historyList"); if(!app.history.length){box.textContent="No saved days yet."; return} box.innerHTML=""; app.history.forEach((item,i)=>{box.innerHTML += "<div class='leg'><strong>"+item.date+"</strong><br>Planned: "+fmt(item.plannedHours)+" hrs<br>Actual: "+fmt(item.actualHours)+" hrs<br>Meals: "+item.mealCount+" · "+money(item.mealPay||0)+"<br>"+(item.notes?"Notes: "+item.notes+"<br>":"")+"<button class='btn-dark' type='button' onclick='deleteHistory("+i+")'>Delete</button></div>"})}
-window.deleteHistory=function(i){app.history.splice(i,1); saveApp(); renderHistory(); renderPay()}
-function bindButtons(){byId("reloadTodayBtn").onclick=()=>loadTodayFromSchedule(true); byId("saveSetupBtn").onclick=()=>{app.setup.line=byId("line").value; app.setup.positionKey=byId("positionKey").value; app.setup.pickupDay=byId("pickupDay").value; app.setup.cycleLength=Number(byId("cycleLength").value||7); app.pay.rate=Number(byId("payRate").value||app.pay.rate); app.pay.guarantee=Number(byId("payGuarantee").value||app.pay.guarantee); ensureDays(); saveApp(); renderBuilder(); renderHome(); renderPay(); flash("builderMsg","Setup saved."); showToast("Setup Saved ✅")}; byId("loadStarterBtn").onclick=()=>{app=clone(starter); saveApp(); hydrate(); showToast("Starter Loaded")}; byId("saveDaysBtn").onclick=()=>{saveApp(); flash("daysMsg","Cycle days saved."); showToast("Cycle Days Saved ✅")}; byId("prevDayBtn").onclick=()=>swipeTo(app.activeDay-1); byId("nextDayBtn").onclick=()=>swipeTo(app.activeDay+1); byId("copyPrevBtn").onclick=()=>{if(app.activeDay===0){flash("daysMsg","No previous day to copy."); return} app.days[app.activeDay]=clone(app.days[app.activeDay-1]); saveApp(); renderBuilder(); renderHome(); flash("daysMsg","Copied previous day.")}; byId("endShiftBtn").onclick=()=>{app.smartDay.off=nowHHMM(); app.smartDay.loadedFromToday=false; saveApp(); renderSmart(); renderHome()}; byId("autoMealsBtn").onclick=()=>autoMeals(true); byId("saveDayBtn").onclick=()=>{const entry={date:new Date().toLocaleDateString(), plannedHours:diffHours(app.smartDay.report,app.smartDay.off), actualHours:getActualHours(), mealCount:countedMeals(), mealPay:mealPayToday(), notes:app.smartDay.notes||""}; app.history.unshift(entry); saveApp(); renderHistory(); renderPay(); flash("saveMsg","Saved."); showToast("Day Saved ✅")}; }
-function syncSmart(){["report","station","off","delay","mealMinutes","notes","companyProtected","personalDayOff","breakfast","lunch","dinner","custom"].forEach(id=>{const el=byId(id); const fn=()=>{if(["companyProtected","personalDayOff","breakfast","lunch","dinner","custom"].includes(id)){if(["breakfast","lunch","dinner","custom"].includes(id)) app.smartDay.meals[id]=el.checked; else app.smartDay[id]=el.checked;} else app.smartDay[id]=el.value; app.smartDay.loadedFromToday=false; saveApp(); renderSmart(); renderHome();}; el.addEventListener("input",fn); el.addEventListener("change",fn);})}
-function hydrate(){ensureDays(); renderBuilder(); loadTodayFromSchedule(false); renderSmart(); renderHome(); renderPay(); renderHistory(); if(countdownTimer) clearInterval(countdownTimer); countdownTimer=setInterval(updateCountdown,30000)}
-bindButtons(); setupSwipe(); syncSmart(); hydrate();
+function flash(id, text) {
+  byId(id).textContent = text;
+  setTimeout(() => { if (byId(id).textContent === text) byId(id).textContent = ""; }, 2200);
+}
+function nowHHMM() {
+  const d = new Date();
+  return String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
+}
+function dayNames() { return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]; }
+function toMins(v) {
+  if (!v) return null;
+  const p = v.split(":");
+  if (p.length !== 2) return null;
+  return Number(p[0])*60 + Number(p[1]);
+}
+function diffHours(start, end) {
+  const s = toMins(start), e0 = toMins(end);
+  if (s === null || e0 === null) return 0;
+  let e = e0; if (e < s) e += 1440;
+  return (e - s) / 60;
+}
+function ensureDays() {
+  const len = Number(app.setup.cycleLength || 7);
+  while (app.days.length < len) app.days.push({status:"off",notes:"",legs:[]});
+  if (app.days.length > len) app.days = app.days.slice(0, len);
+  if (app.activeDay >= len) app.activeDay = len - 1;
+  if (app.activeDay < 0) app.activeDay = 0;
+}
+function cycleDayForToday() {
+  const d = new Date(), pickup = dayNames().indexOf(app.setup.pickupDay), current = d.getDay();
+  const diff = ((current - pickup) % app.setup.cycleLength + app.setup.cycleLength) % app.setup.cycleLength;
+  return diff + 1;
+}
+function todayDay() { return app.days[cycleDayForToday()-1] || {status:"off",notes:"",legs:[]}; }
+function countedMeals() {
+  const m = app.smartDay.meals || {};
+  return ["breakfast","lunch","dinner","custom"].filter(k => !!m[k]).length;
+}
+function mealPayToday() { const c = countedMeals(); return c <= 0 ? 0 : c === 1 ? 20 : 30; }
+function totalActualSaved() { return app.history.reduce((s,x)=>s+Number(x.actualHours||0),0); }
+function mealPayTotal() { return app.history.reduce((s,x)=>s+Number(x.mealPay||0),0); }
+function getActualHours() {
+  let actual = diffHours(app.smartDay.report, app.smartDay.off) + (Number(app.smartDay.delay || 0) / 60);
+  if (app.smartDay.companyProtected || app.smartDay.personalDayOff) actual = 0;
+  return actual;
+}
+function showTab(id) {
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  byId(id).classList.add("active");
+  document.querySelector('.tab[data-tab="'+id+'"]').classList.add("active");
+}
+document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => showTab(tab.dataset.tab)));
+
+function defaultLeg() {
+  return {category:"Northeast Corridor",service:"Northeast Regional",train:"153",origin:"",destination:"",report:"",station:"",off:""};
+}
+function loadTodayFromSchedule(showMessage) {
+  const day = todayDay();
+  if (day.status !== "work" || !day.legs.length) {
+    app.smartDay.report = ""; app.smartDay.station = ""; app.smartDay.off = ""; app.smartDay.loadedFromToday = false;
+    saveApp(); renderSmart(); renderHome();
+    if (showMessage) flash("saveMsg","Today is off. Nothing loaded.");
+    return;
+  }
+  app.smartDay.report = day.legs[0].report || "";
+  app.smartDay.station = day.legs[0].station || "";
+  app.smartDay.off = day.legs[day.legs.length-1].off || "";
+  app.smartDay.loadedFromToday = true;
+  saveApp();
+  autoMeals(false);
+  renderSmart();
+  renderHome();
+  if (showMessage) showToast("Today Loaded ✅");
+}
+function updateCountdown() {
+  const box = byId("countdownBox"), main = byId("countdownMain"), sub = byId("countdownSub");
+  const station = toMins(app.smartDay.station);
+  if (station === null) {
+    box.className = "countdown good"; main.textContent = "--:--"; sub.textContent = "Set station time to start countdown."; return;
+  }
+  const now = new Date(), current = now.getHours()*60 + now.getMinutes();
+  let diff = station - current; if (diff < -720) diff += 1440; if (diff > 720) diff -= 1440;
+  box.className = "countdown";
+  if (diff > 10) { box.classList.add("good"); main.textContent = diff + " min"; sub.textContent = "Time until station / track."; return; }
+  if (diff >= 0) { box.classList.add("warn"); main.textContent = diff + " min"; sub.textContent = "Get ready for track."; return; }
+  if (diff >= -15) { box.classList.add("danger"); main.textContent = "NOW"; sub.textContent = "Train should be at station now."; return; }
+  box.classList.add("good"); main.textContent = "Passed"; sub.textContent = "Station time already passed.";
+}
+function renderHome() {
+  const day = todayDay();
+  byId("todayBadge").textContent = day.status === "work" ? "Work" : "Off";
+  byId("todayTitle").textContent = "Day " + cycleDayForToday() + " · " + (day.status === "work" ? "Work" : "Off");
+  const box = byId("todayLegs");
+  box.innerHTML = "";
+  if (day.status !== "work" || !day.legs.length) box.innerHTML = "<div class='leg'>Off day.</div>";
+  else day.legs.forEach((l, idx) => {
+    box.innerHTML += "<div class='leg'><strong>Leg " + (idx+1) + " · " + (l.service||"") + " · Train " + (l.train||"") + "</strong><br><span class='sub'>" + (l.origin||"") + " → " + (l.destination||"") + " · Report " + (l.report||"") + " · Station " + (l.station||"") + " · Off " + (l.off||"") + "</span></div>";
+  });
+  updateCountdown();
+}
+
+function fillSelect(select, values, selected) {
+  select.innerHTML = "";
+  values.forEach(v => {
+    const opt = document.createElement("option");
+    opt.value = v; opt.textContent = v;
+    if (v === selected) opt.selected = true;
+    select.appendChild(opt);
+  });
+}
+function renderBuilder() {
+  ensureDays();
+  byId("line").value = app.setup.line;
+  byId("positionKey").value = app.setup.positionKey;
+  byId("pickupDay").value = app.setup.pickupDay;
+  byId("cycleLength").value = app.setup.cycleLength;
+  byId("payRate").value = app.pay.rate;
+  byId("payGuarantee").value = app.pay.guarantee;
+
+  const tabs = byId("dayTabs");
+  tabs.innerHTML = "";
+  app.days.forEach((d,i) => {
+    const b = document.createElement("button");
+    b.className = "daybtn" + (app.activeDay===i ? " active" : "");
+    b.textContent = "Day " + (i+1);
+    b.onclick = () => { app.activeDay = i; saveApp(); renderBuilder(); };
+    tabs.appendChild(b);
+  });
+
+  const day = app.days[app.activeDay];
+  const editor = byId("dayEditor");
+  editor.innerHTML =
+    "<div class='card' style='padding:14px;margin-top:12px'>" +
+    "<div class='row'><h3>Cycle Day " + (app.activeDay+1) + "</h3><select id='dayStatus'><option value='work'" + (day.status==="work"?" selected":"") + ">Work</option><option value='off'" + (day.status==="off"?" selected":"") + ">Off</option></select></div>" +
+    "<label style='margin-top:10px'>Day Notes</label><input id='dayNotes' value='" + String(day.notes||"").replace(/'/g,"&#39;") + "' placeholder='Continuous time / off day / etc'>" +
+    "<div id='builderLegs'></div>" +
+    "<div class='row' style='margin-top:12px'><button id='addLegBtn' class='btn-red'>+ Add Train Leg</button></div>" +
+    "</div>";
+
+  byId("dayStatus").onchange = e => {
+    day.status = e.target.value;
+    if (day.status === "off") day.legs = [];
+    if (day.status === "work" && !day.legs.length) day.legs = [defaultLeg()];
+    saveApp(); renderBuilder(); renderHome();
+  };
+  byId("dayNotes").oninput = e => { day.notes = e.target.value; saveApp(); };
+
+  const legsBox = byId("builderLegs");
+  if (day.status === "off") {
+    legsBox.innerHTML = "<div class='leg'>Off day.</div>";
+  } else {
+    if (!day.legs.length) day.legs.push(defaultLeg());
+    legsBox.innerHTML = "";
+    day.legs.forEach((leg,i) => {
+      const div = document.createElement("div");
+      div.className = "leg";
+      div.innerHTML =
+        "<div class='grid3'>" +
+        "<div><label>Category</label><select class='l-category' data-i='"+i+"'></select></div>" +
+        "<div><label>Service</label><select class='l-service' data-i='"+i+"'></select></div>" +
+        "<div><label>Train</label><select class='l-train' data-i='"+i+"'></select></div>" +
+        "</div>" +
+        "<div class='grid3' style='margin-top:10px'>" +
+        "<div><label>Origin</label><input class='l-origin' data-i='"+i+"' value='"+String(leg.origin||"").replace(/'/g,"&#39;")+"'></div>" +
+        "<div><label>Destination</label><input class='l-dest' data-i='"+i+"' value='"+String(leg.destination||"").replace(/'/g,"&#39;")+"'></div>" +
+        "<div><label>Report</label><input class='l-report' data-i='"+i+"' type='time' value='"+(leg.report||"")+"'></div>" +
+        "</div>" +
+        "<div class='grid2' style='margin-top:10px'>" +
+        "<div><label>Station</label><input class='l-station' data-i='"+i+"' type='time' value='"+(leg.station||"")+"'></div>" +
+        "<div><label>Off</label><input class='l-off' data-i='"+i+"' type='time' value='"+(leg.off||"")+"'></div>" +
+        "</div>" +
+        "<div class='crew'>" +
+        "<button class='btn-green crew-start' data-i='"+i+"'>Start Shift</button>" +
+        "<button class='btn-blue crew-station' data-i='"+i+"'>Arrived @ Station</button>" +
+        "<button class='btn-red crew-end' data-i='"+i+"'>End Shift</button>" +
+        "</div>" +
+        "<div class='small'>These fill report, station, or off with the current time for this leg.</div>" +
+        "<div class='row' style='margin-top:10px'><button class='btn-dark remLeg' data-i='"+i+"'>Remove</button></div>";
+      legsBox.appendChild(div);
+    });
+
+    document.querySelectorAll(".l-category").forEach(sel => {
+      const i = Number(sel.dataset.i), leg = day.legs[i];
+      fillSelect(sel, Object.keys(CATEGORIES), leg.category || Object.keys(CATEGORIES)[0]);
+      const serviceSel = document.querySelector('.l-service[data-i="'+i+'"]');
+      const trainSel = document.querySelector('.l-train[data-i="'+i+'"]');
+      const cat = sel.value;
+      fillSelect(serviceSel, Object.keys(CATEGORIES[cat]), leg.service || Object.keys(CATEGORIES[cat])[0]);
+      fillSelect(trainSel, CATEGORIES[cat][serviceSel.value], leg.train || CATEGORIES[cat][serviceSel.value][0]);
+    });
+
+    document.querySelectorAll(".l-category,.l-service,.l-train,.l-origin,.l-dest,.l-report,.l-station,.l-off").forEach(el => {
+      el.oninput = el.onchange = e => {
+        const i = Number(e.target.dataset.i), leg = day.legs[i];
+        if (e.target.classList.contains("l-category")) {
+          leg.category = e.target.value;
+          leg.service = Object.keys(CATEGORIES[leg.category])[0];
+          leg.train = CATEGORIES[leg.category][leg.service][0];
+          saveApp(); renderBuilder(); renderHome(); return;
+        }
+        if (e.target.classList.contains("l-service")) {
+          leg.service = e.target.value;
+          leg.train = CATEGORIES[leg.category][leg.service][0];
+          saveApp(); renderBuilder(); renderHome(); return;
+        }
+        if (e.target.classList.contains("l-train")) leg.train = e.target.value;
+        if (e.target.classList.contains("l-origin")) leg.origin = e.target.value;
+        if (e.target.classList.contains("l-dest")) leg.destination = e.target.value;
+        if (e.target.classList.contains("l-report")) leg.report = e.target.value;
+        if (e.target.classList.contains("l-station")) leg.station = e.target.value;
+        if (e.target.classList.contains("l-off")) leg.off = e.target.value;
+        saveApp(); renderHome();
+      };
+    });
+
+    document.querySelectorAll(".crew-start").forEach(btn => btn.onclick = e => { day.legs[Number(e.target.dataset.i)].report = nowHHMM(); saveApp(); renderBuilder(); renderHome(); showToast("Report set"); });
+    document.querySelectorAll(".crew-station").forEach(btn => btn.onclick = e => { day.legs[Number(e.target.dataset.i)].station = nowHHMM(); saveApp(); renderBuilder(); renderHome(); showToast("Station set"); });
+    document.querySelectorAll(".crew-end").forEach(btn => btn.onclick = e => { day.legs[Number(e.target.dataset.i)].off = nowHHMM(); saveApp(); renderBuilder(); renderHome(); showToast("Off set"); });
+    document.querySelectorAll(".remLeg").forEach(btn => btn.onclick = e => {
+      day.legs.splice(Number(e.target.dataset.i),1);
+      if (!day.legs.length) day.status = "off";
+      saveApp(); renderBuilder(); renderHome();
+    });
+  }
+
+  byId("addLegBtn").onclick = () => {
+    if (day.status !== "work") day.status = "work";
+    day.legs.push(defaultLeg());
+    saveApp(); renderBuilder(); renderHome();
+  };
+}
+
+function autoMeals(showMessage=true) {
+  const report = app.smartDay.report, off = app.smartDay.off, hours = diffHours(report, off), triggerHrs = Number(app.smartDay.mealMinutes || 360) / 60;
+  app.smartDay.meals.breakfast = false;
+  app.smartDay.meals.lunch = false;
+  app.smartDay.meals.dinner = false;
+  const r = toMins(report), o = toMins(off);
+  if (r !== null) {
+    if (r <= 7*60+30) app.smartDay.meals.breakfast = true;
+    if (r <= 13*60 && (hours >= 4 || hours >= triggerHrs)) app.smartDay.meals.lunch = true;
+  }
+  if (o !== null) {
+    let offAdjusted = o;
+    if (r !== null && o < r) offAdjusted += 1440;
+    if (offAdjusted >= 18*60 || hours >= 10) app.smartDay.meals.dinner = true;
+  }
+  if (hours >= triggerHrs && !app.smartDay.meals.lunch) app.smartDay.meals.lunch = true;
+  saveApp();
+  renderSmart();
+  if (showMessage) flash("saveMsg","Auto meals updated.");
+}
+function renderSmart() {
+  byId("report").value = app.smartDay.report || "";
+  byId("station").value = app.smartDay.station || "";
+  byId("off").value = app.smartDay.off || "";
+  byId("delay").value = app.smartDay.delay || "0";
+  byId("mealMinutes").value = app.smartDay.mealMinutes || "360";
+  byId("notes").value = app.smartDay.notes || "";
+  byId("companyProtected").checked = !!app.smartDay.companyProtected;
+  byId("personalDayOff").checked = !!app.smartDay.personalDayOff;
+  byId("breakfast").checked = !!app.smartDay.meals.breakfast;
+  byId("lunch").checked = !!app.smartDay.meals.lunch;
+  byId("dinner").checked = !!app.smartDay.meals.dinner;
+  byId("custom").checked = !!app.smartDay.meals.custom;
+  byId("autoloadMsg").textContent = app.smartDay.loadedFromToday ? "Today loaded from first/last leg." : "Manual smart day mode.";
+  byId("plannedHours").textContent = fmt(diffHours(app.smartDay.report, app.smartDay.off)) + " hrs";
+  byId("actualHours").textContent = fmt(getActualHours()) + " hrs";
+  byId("mealCount").textContent = String(countedMeals());
+  byId("mealPayToday").textContent = money(mealPayToday());
+  const station = toMins(app.smartDay.station);
+  if (station === null) byId("stationAlert").textContent = "No station time";
+  else {
+    const now = new Date(), current = now.getHours()*60 + now.getMinutes();
+    let diff = station - current;
+    if (diff < -720) diff += 1440;
+    if (diff > 720) diff -= 1440;
+    if (diff <= 10 && diff >= 0) byId("stationAlert").textContent = "Be at track in " + diff + " min";
+    else if (diff < 0 && diff >= -15) byId("stationAlert").textContent = "Train should be at station now";
+    else byId("stationAlert").textContent = "No alert";
+  }
+  updateCountdown();
+}
+function renderPay() {
+  const actual = totalActualSaved(), meals = mealPayTotal(), base = actual * Number(app.pay.rate || 0), total = base + meals, short = Math.max(0, Number(app.pay.guarantee || 185) - actual);
+  byId("payActual").textContent = fmt(actual);
+  byId("payMealTotal").textContent = money(meals);
+  byId("payEstimate").textContent = money(base);
+  byId("payEstimateMeals").textContent = money(total);
+  byId("weekShort").textContent = fmt(short) + " hrs";
+}
+function renderHistory() {
+  const box = byId("historyList");
+  if (!app.history.length) { box.textContent = "No saved days yet."; return; }
+  box.innerHTML = "";
+  app.history.forEach((item, i) => {
+    box.innerHTML += "<div class='leg'><strong>" + item.date + "</strong><br>Planned: " + fmt(item.plannedHours) + " hrs<br>Actual: " + fmt(item.actualHours) + " hrs<br>Meals: " + item.mealCount + " · " + money(item.mealPay || 0) + "<br>" + (item.notes ? "Notes: " + item.notes + "<br>" : "") + "<button class='btn-dark' type='button' onclick='deleteHistory(" + i + ")'>Delete</button></div>";
+  });
+}
+window.deleteHistory = function(i) {
+  app.history.splice(i,1);
+  saveApp();
+  renderHistory();
+  renderPay();
+};
+
+function bindButtons() {
+  byId("reloadTodayBtn").onclick = () => loadTodayFromSchedule(true);
+  byId("saveSetupBtn").onclick = () => {
+    app.setup.line = byId("line").value;
+    app.setup.positionKey = byId("positionKey").value;
+    app.setup.pickupDay = byId("pickupDay").value;
+    app.setup.cycleLength = Number(byId("cycleLength").value || 7);
+    app.pay.rate = Number(byId("payRate").value || app.pay.rate);
+    app.pay.guarantee = Number(byId("payGuarantee").value || app.pay.guarantee);
+    ensureDays(); saveApp(); renderBuilder(); renderHome(); renderPay(); flash("builderMsg","Setup saved."); showToast("Setup Saved ✅");
+  };
+  byId("loadStarterBtn").onclick = () => { app = clone(starter); saveApp(); hydrate(); showToast("Starter Loaded"); };
+  byId("saveDaysBtn").onclick = () => { saveApp(); flash("daysMsg","Cycle days saved."); showToast("Cycle Days Saved ✅"); };
+  byId("endShiftBtn").onclick = () => { app.smartDay.off = nowHHMM(); app.smartDay.loadedFromToday = false; saveApp(); renderSmart(); renderHome(); };
+  byId("autoMealsBtn").onclick = () => autoMeals(true);
+  byId("saveDayBtn").onclick = () => {
+    const entry = {
+      date: new Date().toLocaleDateString(),
+      plannedHours: diffHours(app.smartDay.report, app.smartDay.off),
+      actualHours: getActualHours(),
+      mealCount: countedMeals(),
+      mealPay: mealPayToday(),
+      notes: app.smartDay.notes || ""
+    };
+    app.history.unshift(entry);
+    saveApp(); renderHistory(); renderPay(); flash("saveMsg","Saved."); showToast("Day Saved ✅");
+  };
+}
+function syncSmart() {
+  ["report","station","off","delay","mealMinutes","notes","companyProtected","personalDayOff","breakfast","lunch","dinner","custom"].forEach(id => {
+    const el = byId(id);
+    const fn = () => {
+      if (["companyProtected","personalDayOff","breakfast","lunch","dinner","custom"].includes(id)) {
+        if (["breakfast","lunch","dinner","custom"].includes(id)) app.smartDay.meals[id] = el.checked;
+        else app.smartDay[id] = el.checked;
+      } else app.smartDay[id] = el.value;
+      app.smartDay.loadedFromToday = false;
+      saveApp(); renderSmart(); renderHome();
+    };
+    el.addEventListener("input", fn);
+    el.addEventListener("change", fn);
+  });
+}
+function hydrate() {
+  ensureDays();
+  renderBuilder();
+  loadTodayFromSchedule(false);
+  renderSmart();
+  renderHome();
+  renderPay();
+  renderHistory();
+  if (countdownTimer) clearInterval(countdownTimer);
+  countdownTimer = setInterval(updateCountdown, 30000);
+}
+
+bindButtons();
+syncSmart();
+hydrate();
 </script>
 </body>
 </html>
