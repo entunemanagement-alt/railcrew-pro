@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>RailCrew Pro Mega</title>
+<style>
+  :root {
+    --bg1:#07111f; --bg2:#0b1830; --bg3:#10264a; --card:#13233d; --card2:#1a2c4d;
+    --line:rgba(148,163,184,.18); --text:#f8fafc; --muted:#a8b7cc;
+    --accent:#dc2626; --blue:#2563eb; --success:#10b981; --warning:#f59e0b;
+  }
+  * { box-sizing: border-box; }
+  html, body { 
+    margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; 
+    color: var(--text); background: radial-gradient(circle at top left, rgba(37,99,235,.18), transparent 30%), linear-gradient(180deg, var(--bg1), var(--bg3)); 
+    min-height: 100vh; 
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 18px 18px 100px; }
+  .card { background: linear-gradient(180deg, var(--card), var(--card2)); border: 1px solid var(--line); border-radius: 20px; padding: 18px; margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+  
+  /* Tabs Navigation */
+  .tabs { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(7,17,31,0.95); border-top: 1px solid var(--line); padding: 10px; z-index: 1000; }
+  .tabgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 1000px; margin: 0 auto; }
+  .tab { background: #152033; border: 1px solid var(--line); padding: 12px; border-radius: 12px; text-align: center; cursor: pointer; font-weight: bold; font-size: 14px; }
+  .tab.active { background: var(--blue); border-color: #60a5fa; }
+
+  /* Grid & UI Elements */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media(max-width:600px){ .grid2 { grid-template-columns: 1fr; } }
+  label { display: block; font-size: 12px; color: var(--muted); text-transform: uppercase; font-weight: bold; margin-bottom: 6px; }
+  input, select, textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #4b5878; background: #eef2f7; color: #111; font-size: 16px; }
+  button { width: 100%; padding: 14px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; color: white; transition: 0.2s; }
+  .btn-main { background: var(--accent); }
+  .btn-blue { background: var(--blue); }
+  .btn-sec { background: #374151; }
+  
+  /* Payroll/Stats */
+  .guarantee-bar { background: #1e293b; height: 12px; border-radius: 6px; margin: 10px 0; overflow: hidden; }
+  .progress { background: var(--success); height: 100%; width: 0%; transition: 0.5s; }
+  .stat-row { display: flex; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--line); }
+  .pay-summary { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); padding: 15px; border-radius: 15px; text-align: center; margin-top: 10px; }
+  
+  /* Leg Items */
+  .leg-item { background: rgba(255,255,255,0.03); border: 1px solid var(--line); padding: 15px; border-radius: 16px; margin-top: 10px; position: relative; }
+  .delete-btn { position: absolute; top: 10px; right: 10px; color: #ef4444; background: none; font-size: 1.2rem; }
+  .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: bold; background: var(--blue); margin-top: 5px; }
+
+  /* Countdown */
+  #countdownBox { background: #000; border: 2px solid var(--blue); padding: 20px; border-radius: 15px; text-align: center; margin-top: 15px; display: none; }
+  #timer { font-family: monospace; font-size: 2.5rem; color: var(--blue); display: block; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div id="view-payroll" class="view">
+    <div class="card">
+      <h2 style="margin-top:0">Payroll & Guarantee</h2>
+      <div class="grid2">
+        <div><label>Hourly Rate ($)</label><input type="number" id="hourlyRate" value="45.00" oninput="updateUI()"></div>
+        <div style="text-align:right"><label>Status</label><div id="guaranteeStatus" style="font-weight:bold; margin-top:10px">QUALIFIED</div></div>
+      </div>
+      <div class="guarantee-bar"><div id="progressBar" class="progress"></div></div>
+      <div class="stat-row">
+          <div><label>Actual Hrs</label><div id="totalActualHrs" style="font-size:1.2rem; font-weight:bold; color:var(--success)">0.00</div></div>
+          <div><label>OT (1.5x)</label><div id="totalOtHrs" style="font-size:1.2rem; font-weight:bold; color:var(--warning)">0.00</div></div>
+      </div>
+      <div class="pay-summary">
+          <label>Est. Gross Monthly Pay</label>
+          <div id="estPay" style="font-size: 2.2rem; font-weight: bold;">$0.00</div>
+          <small id="payBreakdown" style="color:var(--muted)"></small>
+      </div>
+      <label style="display:flex; align-items:center; gap:10px; text-transform:none; margin-top:15px">
+          <input type="checkbox" id="breakGuarantee" style="width:auto" onchange="toggleGuarantee()"> <span>Break Guarantee (Sick/Unpaid)</span>
+      </label>
+    </div>
+  </div>
+
+  <div id="view-live" class="view hidden">
+    <div class="card" style="border-color: var(--blue)">
+      <h2 style="margin-top:0">Arrival Countdown</h2>
+      <div class="grid2">
+          <div><label>Train #</label><input type="number" id="trackTrain" placeholder="e.g. 52"></div>
+          <button class="btn-blue" onclick="startLiveTrack()">Fetch Live Data</button>
+      </div>
+      <div class="grid2" style="margin-top:10px">
+          <div><label>Manual Time</label><input type="time" id="manualTime"></div>
+          <button class="btn-sec" onclick="setManualCountdown()">Manual Set</button>
+      </div>
+      <div id="countdownBox">
+          <div style="color:var(--blue); font-size:12px; font-weight:bold; letter-spacing:1px">TRACKING ACTIVE TRAIN</div>
+          <div id="targetStation" style="margin:8px 0; font-size:1.1rem">--</div>
+          <span id="timer">00:00:00</span>
+          <div id="liveStatus" style="font-size:13px; color:var(--muted); margin-top:8px">Standby</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-schedule" class="view hidden">
+    <div class="card">
+      <h2 style="margin-top:0">Add Schedule Leg</h2>
+      <div class="grid2">
+        <div><label>Train #</label><input type="number" id="trainNo"></div>
+        <div><label>Date</label><input type="date" id="workDate"></div>
+      </div>
+      <div class="grid2">
+        <div><label>Report Time</label><input type="time" id="report"></div>
+        <div><label>Actual Off (Final)</label><input type="time" id="actOff" style="border-color:var(--blue)"></div>
+      </div>
+      <label>Notes (Engines/Delays)</label>
+      <textarea id="notes" placeholder="e.g. Engine 152, 20m signal delay..."></textarea>
+      <button class="btn-main" onclick="addLeg()">Save to Ledger</button>
+    </div>
+
+    <div class="card">
+      <h3>Monthly Ledger</h3>
+      <div id="ledgerList"></div>
+      <button class="btn-sec" onclick="clearData()" style="margin-top:20px">Reset All Data</button>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tabgrid">
+    <div class="tab active" onclick="showView('payroll', this)">Payroll</div>
+    <div class="tab" onclick="showView('live', this)">Live Track</div>
+    <div class="tab" onclick="showView('schedule', this)">Schedule</div>
+  </div>
+</div>
+
+<script>
+  let ledger = JSON.parse(localStorage.getItem('rc_mega_ledger')) || [];
+  let isBroken = JSON.parse(localStorage.getItem('rc_mega_broken')) || false;
+  let timerInterval = null;
+
+  function save() {
+    localStorage.setItem('rc_mega_ledger', JSON.stringify(ledger));
+    localStorage.setItem('rc_mega_broken', JSON.stringify(isBroken));
+    localStorage.setItem('rc_mega_rate', document.getElementById('hourlyRate').value);
+  }
+
+  function showView(viewId, el) {
+    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+    document.getElementById('view-' + viewId).classList.remove('hidden');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function calculateHours(start, end) {
+    if(!start || !end) return 0;
+    let [sH, sM] = start.split(':').map(Number);
+    let [eH, eM] = end.split(':').map(Number);
+    let diff = (eH * 60 + eM) - (sH * 60 + sM);
+    if(diff < 0) diff += 1440;
+    return diff / 60;
+  }
+
+  function addLeg() {
+    const leg = {
+      id: Date.now(),
+      train: document.getElementById('trainNo').value,
+      date: document.getElementById('workDate').value,
+      report: document.getElementById('report').value,
+      actOff: document.getElementById('actOff').value,
+      notes: document.getElementById('notes').value
+    };
+    if(!leg.train || !leg.report || !leg.actOff) return alert("Fill Train, Report, and Final Off time.");
+    ledger.push(leg);
+    save(); updateUI();
+    ['trainNo','report','actOff','notes'].forEach(id => document.getElementById(id).value = '');
+  }
+
+  function toggleGuarantee() { isBroken = document.getElementById('breakGuarantee').checked; save(); updateUI(); }
+
+  function updateUI() {
+    const rate = parseFloat(document.getElementById('hourlyRate').value) || 0;
+    const list = document.getElementById('ledgerList');
+    list.innerHTML = '';
+    let actualWorked = 0;
+
+    ledger.sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(leg => {
+      const hrs = calculateHours(leg.report, leg.actOff);
+      actualWorked += hrs;
+      const div = document.createElement('div');
+      div.className = 'leg-item';
+      div.innerHTML = `<button class="delete-btn" onclick="deleteLeg(${leg.id})">×</button>
+        <strong>#${leg.train}</strong> | <small>${leg.date}</small>
+        <div style="font-size:0.85rem; margin-top:5px">${leg.report} → ${leg.actOff} <span class="badge">${hrs.toFixed(2)} Hrs</span></div>
+        ${leg.notes ? `<div style="font-size:12px; color:var(--muted); margin-top:5px; font-style:italic">${leg.notes}</div>` : ''}`;
+      list.appendChild(div);
+    });
+
+    let paidStraight = isBroken ? Math.min(actualWorked, 186) : Math.max(185, Math.min(actualWorked, 186));
+    let paidOt = Math.max(0, actualWorked - 186);
+    let totalPay = (paidStraight * rate) + (paidOt * (rate * 1.5));
+
+    document.getElementById('totalActualHrs').innerText = actualWorked.toFixed(2);
+    document.getElementById('totalOtHrs').innerText = paidOt.toFixed(2);
+    document.getElementById('estPay').innerText = `$${totalPay.toLocaleString(undefined, {minimumFractionDigits:2})}`;
+    document.getElementById('payBreakdown').innerText = `${paidStraight.toFixed(2)}h @ Reg + ${paidOt.toFixed(2)}h @ 1.5x`;
+    document.getElementById('progressBar').style.width = Math.min((actualWorked/185)*100, 100) + "%";
+    document.getElementById('guaranteeStatus').innerText = isBroken ? "BROKEN" : "QUALIFIED";
+    document.getElementById('guaranteeStatus').style.color = isBroken ? "var(--accent)" : "var(--success)";
+  }
+
+  function deleteLeg(id) { ledger = ledger.filter(l => l.id !== id); save(); updateUI(); }
+  function clearData() { if(confirm("Clear all monthly data?")) { ledger=[]; isBroken=false; save(); updateUI(); } }
+
+  // Countdown Logic
+  async function startLiveTrack() {
+    const num = document.getElementById('trackTrain').value;
+    if(!num) return alert("Enter train #");
+    document.getElementById('countdownBox').style.display = 'block';
+    document.getElementById('liveStatus').innerText = "Locating...";
+    try {
+      const resp = await fetch(`https://api-v3.amtraker.com/v3/trains/${num}`);
+      const data = await resp.json();
+      const train = data[num][0];
+      const stop = train.stations.find(s => !s.postArr);
+      document.getElementById('targetStation').innerText = stop.name;
+      document.getElementById('liveStatus').innerText = `${train.trainTimely} • ${train.velocity} MPH`;
+      initTimer(new Date(stop.estArr || stop.schArr).getTime());
+    } catch(e) { document.getElementById('liveStatus').innerText = "Fetch failed. Use Manual."; }
+  }
+
+  function setManualCountdown() {
+    const val = document.getElementById('manualTime').value;
+    if(!val) return alert("Pick a time");
+    const [h,m] = val.split(':');
+    const t = new Date(); t.setHours(h,m,0,0);
+    if(t < new Date()) t.setDate(t.getDate()+1);
+    document.getElementById('countdownBox').style.display = 'block';
+    document.getElementById('targetStation').innerText = "Manual Destination";
+    initTimer(t.getTime());
+  }
+
+  function initTimer(target) {
+    if(timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      const diff = target - Date.now();
+      if(diff < 0) { document.getElementById('timer').innerText="ARRIVED"; clearInterval(timerInterval); return; }
+      const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+      document.getElementById('timer').innerText = `${h>0?h+':':''}${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
+    }, 1000);
+  }
+
+  document.getElementById('workDate').valueAsDate = new Date();
+  const savedRate = localStorage.getItem('rc_mega_rate');
+  if(savedRate) document.getElementById('hourlyRate').value = savedRate;
+  updateUI();
+</script>
+</body>
+</html>
