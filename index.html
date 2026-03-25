@@ -1,0 +1,599 @@
+<!DOCTYPE html><html>
+<head>
+    <title>RailCrew Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="RailCrew Pro">
+    <style>
+        :root {
+            --bg: #0b1a2a;
+            --card: #13233d;
+            --text: #ffffff;
+            --accent: #dc2626;
+            --input: #1e293b;
+            --muted: #94a3b8;
+            --success: #10b981;
+            --blue: #2563eb;
+        }.high-contrast {
+        --bg: #000000;
+        --card: #141414;
+        --text: #ffffff;
+        --accent: #ff0000;
+        --input: #000000;
+        --muted: #d1d5db;
+        --success: #22c55e;
+        --blue: #3b82f6;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        padding: 18px;
+        margin: 0;
+        transition: 0.3s;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    h2 {
+        border-bottom: 2px solid var(--accent);
+        padding-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .subtext {
+        color: var(--muted);
+        font-size: 0.88rem;
+        margin-top: 6px;
+    }
+
+    .card {
+        background: var(--card);
+        padding: 15px;
+        border-radius: 14px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.28);
+    }
+
+    .top-grid,
+    .two-col,
+    .tool-grid,
+    .time-grid {
+        display: grid;
+        gap: 10px;
+    }
+
+    .top-grid { grid-template-columns: 1fr 1fr; }
+    .two-col { grid-template-columns: 1fr 1fr; }
+    .tool-grid { grid-template-columns: 1fr 1fr; }
+    .time-grid { grid-template-columns: 1fr 1fr; }
+
+    @media (max-width: 700px) {
+        .top-grid,
+        .two-col,
+        .tool-grid,
+        .time-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    label {
+        display: block;
+        margin-top: 10px;
+        font-size: 0.75rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing: .03em;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 12px;
+        margin-top: 5px;
+        border-radius: 10px;
+        border: 1px solid #334155;
+        background: var(--input);
+        color: var(--text);
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+
+    textarea { min-height: 78px; resize: vertical; }
+
+    button, .btn-link {
+        width: 100%;
+        padding: 12px;
+        margin-top: 12px;
+        border: none;
+        border-radius: 10px;
+        background: var(--accent);
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        box-sizing: border-box;
+        font-size: 0.95rem;
+    }
+
+    .btn-link { background: #334155; }
+    .btn-secondary { background: #4b5563; }
+    .btn-live { background: var(--blue); margin-top: 6px; font-size: 0.8rem; padding: 9px; }
+    .btn-success { background: var(--success); }
+    .btn-small { padding: 8px 10px; font-size: 0.82rem; margin-top: 8px; }
+
+    .leg-item {
+        border-left: 4px solid var(--accent);
+        background: var(--input);
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 0 10px 10px 0;
+        position: relative;
+    }
+
+    .train-no { font-size: 1.1rem; font-weight: bold; color: var(--accent); }
+    .route-line { font-size: 0.86rem; margin-top: 4px; }
+    .time-line { font-size: 0.84rem; margin-top: 6px; color: var(--muted); }
+
+    .duty-badge {
+        background: #064e3b;
+        color: #6ee7b7;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        float: right;
+    }
+
+    .live-badge {
+        background: #1d4ed8;
+        color: #dbeafe;
+        padding: 3px 8px;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        display: inline-block;
+        margin-top: 8px;
+    }
+
+    .notes-text {
+        font-size: 0.85rem;
+        color: #cbd5e1;
+        margin-top: 8px;
+        font-style: italic;
+        background: rgba(0,0,0,0.2);
+        padding: 7px;
+        border-radius: 6px;
+    }
+
+    .status-line { font-size: 0.82rem; color: #cbd5e1; margin-top: 6px; }
+    .muted { color: var(--muted); font-size: 0.82rem; }
+
+    .delete-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: #64748b;
+        border: none;
+        background: none;
+        font-size: 1.2rem;
+        width: auto;
+        padding: 0;
+        margin: 0;
+    }
+
+    .contrast-toggle {
+        font-size: 0.72rem;
+        background: #334155;
+        padding: 6px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .summary-box {
+        background: var(--input);
+        padding: 12px;
+        border-radius: 10px;
+    }
+
+    .summary-line {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 7px 0;
+        border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .summary-line:first-child { border-top: none; }
+
+    .pill {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: bold;
+    }
+
+    .pill-red { background: rgba(220,38,38,.18); color: #fecaca; }
+    .pill-green { background: rgba(16,185,129,.18); color: #a7f3d0; }
+    .pill-blue { background: rgba(37,99,235,.18); color: #bfdbfe; }
+
+    .hidden { display: none; }
+</style>
+
+</head>
+<body><h2>
+    RailCrew Pro
+    <span class="contrast-toggle" onclick="toggleContrast()">High Contrast</span>
+</h2>
+
+<div class="top-grid">
+    <div class="card">
+        <h3>Today Summary</h3>
+        <p class="subtext">Quick look at your current day.</p>
+        <div class="summary-box" style="margin-top:12px;">
+            <div class="summary-line"><span>Legs</span><strong id="legsCount">0</strong></div>
+            <div class="summary-line"><span>Planned Duty</span><strong id="totalDuty">0h 0m</strong></div>
+            <div class="summary-line"><span>Meal Pay</span><strong id="mealPay">$0</strong></div>
+            <div class="summary-line"><span>Auto Live</span><strong id="autoLiveText">Off</strong></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Train Tools</h3>
+        <p class="subtext">Quick jump to official and live tools.</p>
+        <div class="tool-grid" style="margin-top:12px;">
+            <a href="https://www.amtrak.com/home" target="_blank" class="btn-link">Status</a>
+            <a href="https://www.amtrak.com/train-schedules-timetables" target="_blank" class="btn-link">Schedules</a>
+            <a href="https://www.amtrak.com/train-routes" target="_blank" class="btn-link">Routes</a>
+            <a href="https://www.amtrak.com/track-your-train-with-google-maps" target="_blank" class="btn-link">Track</a>
+        </div>
+        <div class="muted" style="margin-top:10px;">Live lookup uses Amtraker when available.</div>
+    </div>
+</div>
+
+<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div>
+            <h3>Add Leg</h3>
+            <p class="subtext">Build today’s working schedule.</p>
+        </div>
+        <span id="activeTrackingBadge" class="pill pill-blue hidden">Tracking Active Train</span>
+    </div>
+
+    <div class="two-col" style="margin-top:10px;">
+        <div>
+            <label>Train #</label>
+            <input id="train" type="number" placeholder="e.g. 52">
+            <button class="btn-live" onclick="fetchLive(this)">Fetch Live Info</button>
+
+            <div id="liveTrack" style="display:none; margin-top:10px; border-top:1px solid #334155; padding-top:10px;">
+                <span id="activeTrainLabel" style="color:#6ee7b7; font-weight:bold;"></span>
+                <div class="tool-grid" style="margin-top:8px;">
+                    <button id="asmLink" class="btn-link btn-small" style="background:#1e40af; margin:0;">ASM Live Map</button>
+                    <button id="railRatLink" class="btn-link btn-small" style="background:#1e40af; margin:0;">RailRat Text</button>
+                </div>
+            </div>
+        </div>
+        <div>
+            <label>Route</label>
+            <input id="route" placeholder="e.g. BAL-NYP">
+        </div>
+    </div>
+
+    <div class="time-grid">
+        <div><label>Report</label><input type="time" id="report"></div>
+        <div><label>Off</label><input type="time" id="off"></div>
+    </div>
+
+    <label>Notes (Engines, Delays, etc.)</label>
+    <textarea id="notes" rows="2"></textarea>
+
+    <div class="two-col">
+        <button onclick="addLeg()">Add to Schedule</button>
+        <button class="btn-secondary" onclick="toggleAutoLive()" id="autoLiveBtn">Auto Live: Off</button>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Meals</h3>
+    <p class="subtext">Track meal pay for the day.</p>
+    <div class="two-col" style="margin-top:8px;">
+        <label><input type="checkbox" id="mealBreakfast" style="width:auto; margin-right:8px;"> Breakfast</label>
+        <label><input type="checkbox" id="mealLunch" style="width:auto; margin-right:8px;"> Lunch</label>
+        <label><input type="checkbox" id="mealDinner" style="width:auto; margin-right:8px;"> Dinner</label>
+        <label><input type="checkbox" id="mealCustom" style="width:auto; margin-right:8px;"> Custom Meal</label>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Schedule</h3>
+    <div id="list"></div>
+    <button id="dlBtn" class="btn-success" style="display:none;" onclick="downloadReport()">Download Report</button>
+    <button id="clBtn" class="btn-secondary" style="display:none;" onclick="clearAll()">Clear All</button>
+</div>
+
+<script>
+    let legs = JSON.parse(localStorage.getItem('railLegs')) || [];
+    let autoLive = JSON.parse(localStorage.getItem('railAutoLive') || 'false');
+    let meals = JSON.parse(localStorage.getItem('railMeals') || '{"breakfast":false,"lunch":false,"dinner":false,"custom":false}');
+    let liveTimer = null;
+
+    render();
+    syncAutoLiveUI();
+    syncMealUI();
+    if (autoLive) startAutoLive();
+
+    function toggleContrast() {
+        document.body.classList.toggle('high-contrast');
+    }
+
+    function calculateDuty(start, end) {
+        if (!start || !end) return { mins: 0, text: '0h 0m' };
+        let [sH, sM] = start.split(':').map(Number);
+        let [eH, eM] = end.split(':').map(Number);
+        let diff = (eH * 60 + eM) - (sH * 60 + sM);
+        if (diff < 0) diff += 1440;
+        return { mins: diff, text: `${Math.floor(diff/60)}h ${diff%60}m` };
+    }
+
+    function saveLegs() {
+        localStorage.setItem('railLegs', JSON.stringify(legs));
+    }
+
+    function saveMeals() {
+        localStorage.setItem('railMeals', JSON.stringify(meals));
+    }
+
+    function getMealCount() {
+        return ['breakfast','lunch','dinner','custom'].filter(k => !!meals[k]).length;
+    }
+
+    function getMealPay() {
+        const count = getMealCount();
+        if (count <= 0) return 0;
+        if (count === 1) return 20;
+        return 30;
+    }
+
+    function syncMealUI() {
+        document.getElementById('mealBreakfast').checked = !!meals.breakfast;
+        document.getElementById('mealLunch').checked = !!meals.lunch;
+        document.getElementById('mealDinner').checked = !!meals.dinner;
+        document.getElementById('mealCustom').checked = !!meals.custom;
+    }
+
+    function bindMealEvents() {
+        document.getElementById('mealBreakfast').addEventListener('change', e => { meals.breakfast = e.target.checked; saveMeals(); renderSummary(); });
+        document.getElementById('mealLunch').addEventListener('change', e => { meals.lunch = e.target.checked; saveMeals(); renderSummary(); });
+        document.getElementById('mealDinner').addEventListener('change', e => { meals.dinner = e.target.checked; saveMeals(); renderSummary(); });
+        document.getElementById('mealCustom').addEventListener('change', e => { meals.custom = e.target.checked; saveMeals(); renderSummary(); });
+    }
+
+    function addLeg() {
+        const train = document.getElementById('train').value.trim();
+        const report = document.getElementById('report').value;
+        const off = document.getElementById('off').value;
+        const route = document.getElementById('route').value.trim();
+        const notes = document.getElementById('notes').value.trim();
+
+        if (!train || !report || !off) {
+            alert('Fill in Train #, Report, and Off time');
+            return;
+        }
+
+        legs.push({
+            train,
+            report,
+            off,
+            route,
+            notes,
+            liveStatus: '',
+            nextStop: '',
+            speed: '',
+            lastUpdated: ''
+        });
+
+        saveLegs();
+        document.getElementById('train').value = '';
+        document.getElementById('route').value = '';
+        document.getElementById('report').value = '';
+        document.getElementById('off').value = '';
+        document.getElementById('notes').value = '';
+
+        render();
+        setTimeout(() => {
+            document.getElementById('list').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
+        alert('Leg added to schedule');
+    }
+
+    function clearAll() {
+        if (confirm('Clear all?')) {
+            legs = [];
+            localStorage.removeItem('railLegs');
+            render();
+        }
+    }
+
+    function syncAutoLiveUI() {
+        const btn = document.getElementById('autoLiveBtn');
+        const text = document.getElementById('autoLiveText');
+        btn.textContent = `Auto Live: ${autoLive ? 'On' : 'Off'}`;
+        btn.style.background = autoLive ? '#2563eb' : '#4b5563';
+        text.textContent = autoLive ? 'On' : 'Off';
+    }
+
+    function toggleAutoLive() {
+        autoLive = !autoLive;
+        localStorage.setItem('railAutoLive', JSON.stringify(autoLive));
+        syncAutoLiveUI();
+        if (autoLive) startAutoLive(); else stopAutoLive();
+    }
+
+    function startAutoLive() {
+        stopAutoLive();
+        refreshAllLive();
+        liveTimer = setInterval(refreshAllLive, 60000);
+    }
+
+    function stopAutoLive() {
+        if (liveTimer) clearInterval(liveTimer);
+        liveTimer = null;
+    }
+
+    async function fetchLive(btn) {
+        const trainNum = document.getElementById('train').value;
+        if (!trainNum) return alert('Enter a train number first');
+
+        const oldText = btn.innerText;
+        btn.innerText = 'Searching...';
+
+        try {
+            const info = await fetchTrainData(trainNum);
+            if (!info) {
+                alert('Train not found or not currently active.');
+                return;
+            }
+
+            document.getElementById('route').value = info.routeName || document.getElementById('route').value;
+            if (info.origSchDep) {
+                const timePart = info.origSchDep.split(' ')[1];
+                if (timePart) document.getElementById('report').value = timePart.substring(0, 5);
+            }
+
+            setupTracking(trainNum, false);
+
+            alert(
+                `Found ${info.routeName || 'Train ' + trainNum}!
+
+` +
+                `Status: ${info.trainTimely || 'N/A'}
+` +
+                `Next Stop: ${info.nextStop || 'N/A'}
+` +
+                `Speed: ${info.velocity || 0} MPH`
+            );
+        } catch (err) {
+            alert('Could not connect to live feed.');
+        } finally {
+            btn.innerText = oldText;
+        }
+    }
+
+    async function fetchTrainData(trainNum) {
+        const response = await fetch(`https://api-v3.amtraker.com/v3/trains/${trainNum}`);
+        const data = await response.json();
+        if (!data || !data[trainNum] || !data[trainNum].length) return null;
+
+        const info = data[trainNum][0];
+        const nextStopObj = info.stations?.find(s => s.status === 'Enroute') || info.stations?.find(s => s.code && !s.postArr) || info.stations?.[0];
+
+        return {
+            routeName: info.routeName || '',
+            trainTimely: info.trainTimely || '',
+            velocity: info.velocity || 0,
+            origSchDep: info.origSchDep || '',
+            nextStop: nextStopObj?.name || nextStopObj?.code || ''
+        };
+    }
+
+    async function refreshAllLive() {
+        if (!legs.length) return;
+        for (let i = 0; i < legs.length; i++) {
+            const trainNum = legs[i].train;
+            if (!trainNum) continue;
+            try {
+                const info = await fetchTrainData(trainNum);
+                if (info) {
+                    legs[i].route = info.routeName || legs[i].route;
+                    legs[i].liveStatus = info.trainTimely || '';
+                    legs[i].nextStop = info.nextStop || '';
+                    legs[i].speed = info.velocity ? `${info.velocity} MPH` : '';
+                    legs[i].lastUpdated = new Date().toLocaleTimeString();
+                }
+            } catch (e) {
+                // keep existing values on failure
+            }
+        }
+        saveLegs();
+        render();
+    }
+
+    function getMinutes(timeStr) {
+        if (!timeStr || !timeStr.includes(':')) return null;
+        const [h, m] = timeStr.split(':').map(Number);
+        return (h * 60) + m;
+    }
+
+    function getActiveTrainFromSchedule() {
+        if (!legs || !legs.length) return '';
+        const now = new Date();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+        for (const leg of legs) {
+            const report = getMinutes(leg.report);
+            const off = getMinutes(leg.off);
+            if (report === null || off === null) continue;
+
+            let start = report;
+            let end = off;
+            let current = currentMinutes;
+
+            if (end < start) {
+                end += 1440;
+                if (current < start) current += 1440;
+            }
+
+            if (current >= start && current <= end) return leg.train || '';
+        }
+
+        return legs[0]?.train || '';
+    }
+
+    function setupTracking(num, fromAuto = false) {
+        const trackDiv = document.getElementById('liveTrack');
+        const asm = document.getElementById('asmLink');
+        const rat = document.getElementById('railRatLink');
+        const label = document.getElementById('activeTrainLabel');
+        const badge = document.getElementById('activeTrackingBadge');
+
+        if (num && String(num).length > 0) {
+            trackDiv.style.display = 'block';
+            label.innerText = 'Track Train #' + num;
+            localStorage.setItem('lastTrainTracked', num);
+            asm.onclick = () => window.open(`https://asm.transitdocs.com/train/${num}`, '_blank');
+            rat.onclick = () => window.open(`https://railrat.net/trains/${num}`, '_blank');
+            badge.classList.remove('hidden');
+            badge.textContent = fromAuto ? 'Tracking Active Train' : 'Tracking Typed Train';
+        } else {
+            trackDiv.style.display = 'none';
+            badge.classList.add('hidden');
+        }
+    }
+
+    function syncActiveTracking() {
+        const typedTrain = document.getElementById('train').value;
+        if (typedTrain && typedTrain.length > 0) {
+            setupTracking(typedTrain, false);
+            return;
+        }
+
+        const activeTrain = getActiveTrainFromSchedule();
+        if (activeTrain) setupTracking(activeTrain, true);
+        else setupTracking('', false);
+    }
+
+    function getTotalDutyText() {
+        const totalMins = legs.reduce((sum, leg) => sum + calculateDuty(leg.report, leg.off).mins, 0);
+        return `${Math.floor(totalMins / 60)}h ${totalMins % 60}m`;
+    }
+
+    function renderSummary() {
+    
