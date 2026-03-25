@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>RailCrew Pro Ultimate</title>
+
+<style>
+:root {
+  --bg:#0b1a2a;
+  --card:#13233d;
+  --text:#fff;
+  --accent:#dc2626;
+  --blue:#2563eb;
+  --green:#10b981;
+}
+
+body {
+  font-family:-apple-system,system-ui;
+  background:var(--bg);
+  color:var(--text);
+  padding:20px;
+  margin:0;
+}
+
+h2 {
+  border-bottom:2px solid var(--accent);
+  padding-bottom:8px;
+}
+
+.card {
+  background:var(--card);
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+}
+
+input, textarea {
+  width:100%;
+  padding:12px;
+  margin-top:5px;
+  border-radius:8px;
+  border:none;
+}
+
+button {
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  background:var(--accent);
+  color:white;
+  font-weight:bold;
+}
+
+.btn-blue { background:var(--blue); }
+.btn-green { background:var(--green); }
+
+.leg {
+  background:#1e293b;
+  padding:10px;
+  border-radius:8px;
+  margin-top:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h2>RailCrew Pro</h2>
+
+<div class="card">
+<h3>Add Leg</h3>
+
+<input id="train" placeholder="Train #">
+<input id="route" placeholder="Route">
+
+<label>Report</label>
+<input type="time" id="report">
+
+<label>Arrival</label>
+<input type="time" id="arrival">
+
+<label>Scheduled Off</label>
+<input type="time" id="sched">
+
+<label>Final Off</label>
+<input type="time" id="final">
+
+<textarea id="notes" placeholder="Notes..."></textarea>
+
+<button onclick="addLeg()">Add</button>
+</div>
+
+<div class="card">
+<h3>Schedule</h3>
+<div id="list"></div>
+</div>
+
+<div class="card">
+<h3>Live Tools</h3>
+
+<input id="track" placeholder="Train #">
+
+<button class="btn-blue" onclick="openASM()">ASM</button>
+<button class="btn-blue" onclick="openRail()">RailRat</button>
+
+</div>
+
+<div class="card">
+<h3>Countdown</h3>
+
+<input type="time" id="manualTime">
+<button onclick="startTimer()">Start</button>
+
+<h1 id="timer">00:00</h1>
+</div>
+<script>
+
+let legs = JSON.parse(localStorage.getItem('legs')) || []
+
+function save(){
+  localStorage.setItem('legs', JSON.stringify(legs))
+}
+
+function addLeg(){
+  let leg = {
+    train: train.value,
+    route: route.value,
+    report: report.value,
+    arrival: arrival.value,
+    sched: sched.value,
+    final: final.value,
+    notes: notes.value
+  }
+
+  if(!leg.train || !leg.report || !leg.final){
+    alert("Fill required fields")
+    return
+  }
+
+  legs.push(leg)
+  save()
+  render()
+}
+
+function render(){
+  list.innerHTML = legs.map(l => `
+    <div class="leg">
+      <b>Train ${l.train}</b><br>
+      ${l.route}<br>
+      ${l.report} → ${l.final}<br>
+      ${l.notes || ""}
+    </div>
+  `).join('')
+}
+
+function openASM(){
+  let t = track.value
+  if(!t) return
+  window.open(`https://asm.transitdocs.com/train/${t}`)
+}
+
+function openRail(){
+  let t = track.value
+  if(!t) return
+  window.open(`https://railrat.net/trains/${t}`)
+}
+
+let interval
+
+function startTimer(){
+  let val = manualTime.value
+  if(!val) return
+
+  let [h,m] = val.split(':')
+  let target = new Date()
+  target.setHours(h,m,0)
+
+  interval = setInterval(()=>{
+    let diff = target - new Date()
+    if(diff <= 0){
+      timer.innerText = "ARRIVED"
+      clearInterval(interval)
+      return
+    }
+
+    let min = Math.floor(diff/60000)
+    let sec = Math.floor((diff%60000)/1000)
+
+    timer.innerText = `${min}:${sec<10?'0'+sec:sec}`
+  },1000)
+}
+
+render()
+
+</script>
+</body>
+</html>
