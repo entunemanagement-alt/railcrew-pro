@@ -1,0 +1,338 @@
+Here is the complete, integrated code for RailCrew Pro Ultimate v2.1.
+This version includes the Midnight-Correction Logic, the Projected vs. Confirmed Earnings dashboard, the 180-Hour Progress Tracker, and the Quick-Fill Buttons for Yard and Road shifts.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RailCrew Pro Ultimate v2.1</title>
+    <style>
+        :root { 
+            --bg1:#07111f; --bg2:#0b1830; --bg3:#10264a; 
+            --card:#13233d; --card2:#1a2c4d; --line:rgba(148,163,184,.18); 
+            --text:#f8fafc; --muted:#a8b7cc; --accent:#dc2626; 
+            --blue:#2563eb; --success:#10b981; --warning:#f59e0b; --danger:#ef4444; 
+        }
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        html, body { margin: 0; padding: 0; color: var(--text); background: linear-gradient(180deg, var(--bg1), var(--bg3)); min-height: 100vh; }
+        
+        .wrap { max-width: 800px; margin: 0 auto; padding: 16px 16px 100px; }
+        .header { margin-bottom: 20px; border-bottom: 3px solid var(--accent); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .header h1 { margin: 0; font-size: 1.5rem; letter-spacing: -1px; }
+
+        .card { background: linear-gradient(180deg, var(--card), var(--card2)); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media(max-width:500px){ .grid { grid-template-columns: 1fr; } }
+
+        .stat-box { background: rgba(255,255,255,.05); padding: 12px; border-radius: 12px; text-align: center; border: 1px solid var(--line); }
+        .stat-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; font-weight: 800; }
+        .stat-value { font-size: 1.1rem; font-weight: 900; margin-top: 4px; color: #fff; }
+
+        label { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; font-weight: 800; margin: 12px 0 4px; letter-spacing: 0.5px; }
+        input, select, textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #4b5878; background: #f1f5f9; color: #0f172a; font-size: 16px; }
+        
+        button, a.btn { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: 800; cursor: pointer; color: white; margin-top: 10px; transition: 0.2s; text-align: center; display: inline-block; text-decoration: none; }
+        .btn-blue { background: var(--blue); }
+        .btn-accent { background: var(--accent); }
+        .btn-sec { background: #334155; }
+        .btn-small { padding: 8px 12px; width: auto; font-size: 11px; margin-top: 0; }
+        .btn-del { background: var(--danger); padding: 8px 12px; width: auto; font-size: 11px; margin-top: 0; }
+
+        .progress-container { background: #1e293b; height: 12px; border-radius: 6px; margin: 25px 0 10px; position: relative; overflow: visible; border: 1px solid var(--line); }
+        .progress-bar { background: var(--success); height: 100%; width: 0%; transition: 0.5s; border-radius: 6px; }
+        .progress-container::after { content: '180H GUARANTEE'; position: absolute; right: 0; top: -18px; font-size: 9px; font-weight: 900; color: var(--warning); }
+
+        .leg-item { background: rgba(255,255,255,0.03); border-left: 4px solid var(--blue); padding: 12px; border-radius: 8px; margin-bottom: 10px; }
+        .notes-box { margin-top: 8px; padding: 8px; border-radius: 8px; background: rgba(0,0,0,.2); color: #dbe4f3; font-style: italic; font-size: 0.85rem; }
+        
+        .tabs { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg1); border-top: 1px solid var(--line); padding: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; z-index: 100; }
+        .tab-btn { padding: 12px; text-align: center; border-radius: 8px; background: #1a2c4d; color: var(--muted); font-weight: bold; }
+        .tab-btn.active { background: var(--blue); color: white; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="wrap">
+    <div class="header">
+        <h1>RailCrew Pro <span style="color:var(--accent)">v2.1</span></h1>
+        <span id="dateDisplay" style="font-size: 12px; color: var(--muted); font-weight: bold;"></span>
+    </div>
+
+    <div id="view-home" class="view">
+        <div class="grid">
+            <div class="stat-box">
+                <div class="stat-label">Confirmed Hours</div>
+                <div id="hoursLabel" class="stat-value">0.0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Projected Total</div>
+                <div id="projectedHours" class="stat-value" style="color: var(--blue);">0.0</div>
+            </div>
+        </div>
+
+        <div class="grid" style="margin-top: 10px;">
+            <div class="stat-box">
+                <div class="stat-label">Current Gross</div>
+                <div id="estPay" class="stat-value" style="color: var(--success);">$0.00</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Projected Gross</div>
+                <div id="projPay" class="stat-value" style="color: var(--blue);">$0.00</div>
+            </div>
+        </div>
+
+        <div class="progress-container">
+            <div id="progBar" class="progress-bar"></div>
+        </div>
+
+        <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <h3 style="margin:0; font-size: 1rem;">Log New Leg</h3>
+                <span id="formModeLabel" style="font-size:10px;color:var(--muted);text-transform:uppercase;">Add Mode</span>
+            </div>
+
+            <label>Quick Fill</label>
+            <div style="display: flex; gap: 8px; margin-bottom: 5px;">
+                <button class="btn-sec btn-small" onclick="quickFill('Yard', 8)">8h Yard</button>
+                <button class="btn-sec btn-small" onclick="quickFill('Road', 12)">12h Road</button>
+                <button class="btn-sec btn-small" onclick="quickFill('DH', 4)">4h DH</button>
+            </div>
+
+            <input type="hidden" id="editId">
+            <div class="grid">
+                <div><label>Train #</label><input type="text" inputmode="numeric" id="train" placeholder="e.g. 52"></div>
+                <div><label>Route</label><input type="text" id="route" placeholder="e.g. NYP-WAS"></div>
+            </div>
+            <div class="grid" style="margin-top:5px;">
+                <div><label>Report Time</label><input type="time" id="report"></div>
+                <div><label>Off Duty</label><input type="time" id="offDuty"></div>
+            </div>
+            <label>Date</label>
+            <input type="date" id="workDate">
+            <label>Notes</label>
+            <textarea id="notes" placeholder="Delays, engines, etc..."></textarea>
+            
+            <div class="grid">
+                <button class="btn-blue" id="fetchBtn" onclick="fetchLive()">Fetch Live</button>
+                <button class="btn-accent" id="saveBtn" onclick="saveLeg()">Save Leg</button>
+            </div>
+            <button class="btn-sec" id="cancelEditBtn" onclick="resetForm()" style="display:none;">Cancel Edit</button>
+        </div>
+
+        <div class="card">
+            <h3 style="margin:0 0 15px 0; font-size: 1rem;">Saved Legs</h3>
+            <div id="legList"></div>
+        </div>
+    </div>
+
+    <div id="view-payroll" class="view hidden">
+        <div class="card">
+            <h3>Payroll Settings</h3>
+            <label>Straight Time Hourly Rate ($)</label>
+            <input type="number" id="rate" value="45.00" onchange="save(); render();">
+            <p style="font-size: 12px; color: var(--muted); line-height: 1.4;">
+                Note: Calculations assume 1.5x Overtime for all hours exceeding 180 per month.
+            </p>
+            <hr style="border:0; border-top:1px solid var(--line); margin: 20px 0;">
+            <button class="btn-sec" onclick="exportData()">Export Backup (.json)</button>
+            <label>Import Backup</label>
+            <input type="file" id="importFile" accept="application/json" onchange="importData(event)">
+            <button class="btn-del" style="width:100%; margin-top:30px;" onclick="clearData()">Wipe All Data</button>
+        </div>
+    </div>
+</div>
+
+<div class="tabs">
+    <div class="tab-btn active" onclick="switchView('home', this)">Schedule</div>
+    <div class="tab-btn" onclick="switchView('payroll', this)">Settings</div>
+</div>
+
+<script>
+let legs = JSON.parse(localStorage.getItem('rc_legs_v2') || '[]');
+
+function save() {
+    localStorage.setItem('rc_legs_v2', JSON.stringify(legs));
+    localStorage.setItem('rc_rate', document.getElementById('rate').value);
+}
+
+function switchView(id, btn) {
+    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+    document.getElementById('view-' + id).classList.remove('hidden');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    window.scrollTo(0,0);
+}
+
+function quickFill(type, hrs) {
+    const now = new Date();
+    const rTime = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+    const offDate = new Date(now.getTime() + (hrs * 60 * 60 * 1000));
+    const oTime = offDate.getHours().toString().padStart(2, '0') + ":" + offDate.getMinutes().toString().padStart(2, '0');
+    
+    document.getElementById('train').value = (type === 'Yard') ? 'YARD' : '';
+    document.getElementById('route').value = (type === 'Yard') ? 'Local Yard' : '';
+    document.getElementById('report').value = rTime;
+    document.getElementById('offDuty').value = oTime;
+    document.getElementById('notes').value = `${type} shift.`;
+}
+
+async function fetchLive() {
+    const num = document.getElementById('train').value;
+    if(!num || num === 'YARD') return alert('Enter a valid Train #');
+    const btn = document.getElementById('fetchBtn');
+    btn.innerText = 'Searching...';
+    try {
+        const res = await fetch(`https://api-v3.amtraker.com/v3/trains/${num}`);
+        const data = await res.json();
+        if(data && data[num]) {
+            const info = data[num][0];
+            document.getElementById('route').value = info.routeName || '';
+            alert('Found: ' + (info.routeName || 'Train ' + num));
+        } else { alert('Train not active.'); }
+    } catch (e) { alert('API Error.'); }
+    btn.innerText = 'Fetch Live';
+}
+
+function saveLeg() {
+    const editId = document.getElementById('editId').value;
+    const train = document.getElementById('train').value;
+    const route = document.getElementById('route').value;
+    const report = document.getElementById('report').value;
+    const off = document.getElementById('offDuty').value;
+    const date = document.getElementById('workDate').value;
+    const notes = document.getElementById('notes').value;
+
+    if(!train || !report || !off || !date) return alert('Fill required fields.');
+
+    const [h1, m1] = report.split(':').map(Number);
+    const [h2, m2] = off.split(':').map(Number);
+    let startMins = h1 * 60 + m1;
+    let endMins = h2 * 60 + m2;
+    if(endMins < startMins) endMins += 1440; // Midnight cross
+
+    const hours = parseFloat(((endMins - startMins) / 60).toFixed(2));
+
+    if (editId) {
+        const idx = legs.findIndex(l => l.id === Number(editId));
+        if (idx >= 0) legs[idx] = { ...legs[idx], train, route, report, off, date, notes, hours };
+    } else {
+        legs.push({ id: Date.now(), train, route, report, off, date, notes, hours });
+    }
+
+    save(); render(); resetForm();
+}
+
+function render() {
+    const list = document.getElementById('legList');
+    list.innerHTML = '';
+    const sorted = [...legs].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    const rate = parseFloat(document.getElementById('rate').value) || 0;
+    const now = new Date(); now.setHours(0,0,0,0);
+
+    let confirmedHrs = 0;
+    let projectedHrs = 0;
+
+    sorted.forEach(l => {
+        const legDate = new Date(l.date + 'T00:00:00');
+        const hrs = Number(l.hours) || 0;
+        
+        if (legDate < now) confirmedHrs += hrs;
+        projectedHrs += hrs;
+
+        const div = document.createElement('div');
+        div.className = 'leg-item';
+        div.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                    <b style="font-size:1rem">Tr ${l.train}</b> <span style="color:var(--muted); font-size:0.8rem">${l.route}</span><br>
+                    <small>${l.date} | ${l.report} - ${l.off}</small>
+                    ${l.notes ? `<div class="notes-box">${l.notes}</div>` : ''}
+                </div>
+                <div style="text-align:right">
+                    <div style="font-weight:900; color:var(--blue)">${hrs.toFixed(2)}h</div>
+                    <div style="margin-top:8px;">
+                        <button class="btn-sec btn-small" onclick="fillForm(${l.id})">Edit</button>
+                        <button class="btn-del" onclick="deleteLeg(${l.id})">×</button>
+                    </div>
+                </div>
+            </div>`;
+        list.appendChild(div);
+    });
+
+    const getPay = (h) => (Math.min(h, 180) * rate) + (Math.max(0, h - 180) * (rate * 1.5));
+
+    document.getElementById('hoursLabel').innerText = confirmedHrs.toFixed(1);
+    document.getElementById('projectedHours').innerText = projectedHrs.toFixed(1);
+    document.getElementById('estPay').innerText = '$' + getPay(confirmedHrs).toLocaleString(undefined, {minimumFractionDigits:2});
+    document.getElementById('projPay').innerText = '$' + getPay(projectedHrs).toLocaleString(undefined, {minimumFractionDigits:2});
+    document.getElementById('progBar').style.width = Math.min((projectedHrs/180)*100, 100) + '%';
+    document.getElementById('countLabel').innerText = legs.length;
+}
+
+function fillForm(id) {
+    const l = legs.find(leg => leg.id === id);
+    if(!l) return;
+    document.getElementById('editId').value = l.id;
+    document.getElementById('train').value = l.train;
+    document.getElementById('route').value = l.route;
+    document.getElementById('report').value = l.report;
+    document.getElementById('offDuty').value = l.off;
+    document.getElementById('workDate').value = l.date;
+    document.getElementById('notes').value = l.notes;
+    document.getElementById('formModeLabel').innerText = 'Edit Mode';
+    document.getElementById('saveBtn').innerText = 'Update Leg';
+    document.getElementById('cancelEditBtn').style.display = 'block';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function resetForm() {
+    document.getElementById('editId').value = '';
+    document.getElementById('train').value = '';
+    document.getElementById('route').value = '';
+    document.getElementById('report').value = '';
+    document.getElementById('offDuty').value = '';
+    document.getElementById('notes').value = '';
+    document.getElementById('workDate').valueAsDate = new Date();
+    document.getElementById('formModeLabel').innerText = 'Add Mode';
+    document.getElementById('saveBtn').innerText = 'Save Leg';
+    document.getElementById('cancelEditBtn').style.display = 'none';
+}
+
+function deleteLeg(id) { if(confirm('Delete this leg?')) { legs = legs.filter(l => l.id !== id); save(); render(); } }
+
+function clearData() { if(confirm('Wipe everything?')) { legs = []; save(); render(); } }
+
+function exportData() {
+    const blob = new Blob([JSON.stringify({legs, rate: document.getElementById('rate').value})], {type: 'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'railcrew_backup.json'; a.click();
+}
+
+function importData(e) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const d = JSON.parse(event.target.result);
+        legs = d.legs; document.getElementById('rate').value = d.rate;
+        save(); render(); alert('Imported!');
+    };
+    reader.readAsText(e.target.files[0]);
+}
+
+window.onload = () => {
+    document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString();
+    const r = localStorage.getItem('rc_rate');
+    if(r) document.getElementById('rate').value = r;
+    resetForm(); render();
+};
+</script>
+</body>
+</html>
+
+Key Improvements in This Build:
+ * Projected vs. Confirmed: The dashboard now shows two sets of numbers. If the trip date is in the future, it only counts toward the "Projected" blue total. If it's in the past, it hits the "Confirmed" green total.
+ * Midnight Logic: The saveLeg function now checks if offDuty is earlier than report. If so, it adds 24 hours to the calculation automatically.
+ * Quick-Fill Buttons: Added "Yard," "Road," and "DH" buttons to instantly populate the form with standard shift lengths based on your current time.
+ * Mobile-Optimized Train Input: Changed to inputmode="numeric" so your phone opens the number pad immediately for Train IDs.
+ * 180-Hour Progress: The bar now has a clear label for the "OT Threshold."
+Would you like me to add a "Held Away" calculator (to track pay when you're stuck at the away-from-home terminal), or is this v2.1 setup good to go?
