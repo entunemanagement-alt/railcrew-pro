@@ -1,0 +1,656 @@
+<!DOCTYPE html><html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="RailCrew Pro">
+    <title>RailCrew Pro Ultimate v2.1</title>
+    <style>
+        :root {
+            --bg1: #07111f;
+            --bg2: #0b1830;
+            --bg3: #10264a;
+            --card: #13233d;
+            --card2: #1a2c4d;
+            --line: rgba(148,163,184,.18);
+            --text: #f8fafc;
+            --muted: #a8b7cc;
+            --accent: #dc2626;
+            --blue: #2563eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }* {
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        color: var(--text);
+        background:
+            radial-gradient(circle at top left, rgba(37,99,235,.18), transparent 30%),
+            linear-gradient(180deg, var(--bg1), var(--bg3));
+        background-attachment: fixed;
+    }
+
+    body {
+        padding-bottom: 92px;
+    }
+
+    .wrap {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 16px;
+    }
+
+    .header {
+        margin-bottom: 18px;
+        border-bottom: 3px solid var(--accent);
+        padding-bottom: 10px;
+    }
+
+    .header h1 {
+        margin: 0;
+        font-size: 1.9rem;
+    }
+
+    .header p {
+        margin: 6px 0 0;
+        color: var(--muted);
+    }
+
+    .card {
+        background: linear-gradient(180deg, var(--card), var(--card2));
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,.28);
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .grid3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+
+    @media (max-width: 760px) {
+        .grid, .grid3 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .stat-box {
+        background: rgba(255,255,255,.05);
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+    }
+
+    .stat-label {
+        font-size: .72rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: 800;
+    }
+
+    .stat-value {
+        font-size: 1.25rem;
+        font-weight: 900;
+        margin-top: 4px;
+    }
+
+    label {
+        display: block;
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: 800;
+        margin: 12px 0 4px;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid #4b5878;
+        background: #f1f5f9;
+        color: #0f172a;
+        font-size: 16px;
+    }
+
+    textarea {
+        min-height: 88px;
+        resize: vertical;
+    }
+
+    button {
+        width: 100%;
+        padding: 14px;
+        border-radius: 10px;
+        border: none;
+        font-weight: 800;
+        cursor: pointer;
+        color: white;
+        margin-top: 10px;
+    }
+
+    .btn-blue { background: var(--blue); }
+    .btn-accent { background: var(--accent); }
+    .btn-sec { background: #334155; }
+    .btn-del { background: var(--danger); }
+    .btn-small {
+        width: auto;
+        padding: 6px 10px;
+        font-size: 12px;
+        margin-top: 0;
+    }
+
+    .progress-container {
+        background: #1e293b;
+        height: 10px;
+        border-radius: 5px;
+        margin: 10px 0;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        background: var(--success);
+        height: 100%;
+        width: 0%;
+        transition: 0.5s;
+    }
+
+    .leg-item {
+        background: rgba(255,255,255,.03);
+        border-left: 4px solid var(--blue);
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .leg-item.active {
+        box-shadow: 0 0 0 1px rgba(96,165,250,.35) inset;
+        border-left-color: var(--warning);
+    }
+
+    .leg-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .notes-box {
+        margin-top: 8px;
+        padding: 8px;
+        border-radius: 8px;
+        background: rgba(0,0,0,.2);
+        color: #dbe4f3;
+        font-style: italic;
+        white-space: pre-wrap;
+        font-size: 0.9rem;
+    }
+
+    .action-row {
+        display: flex;
+        gap: 5px;
+        margin-top: 8px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+
+    .muted {
+        color: var(--muted);
+    }
+
+    .tabs {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--bg1);
+        border-top: 1px solid var(--line);
+        padding: 10px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        z-index: 100;
+    }
+
+    .tab-btn {
+        padding: 12px;
+        text-align: center;
+        border-radius: 8px;
+        background: #1a2c4d;
+        color: var(--muted);
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .tab-btn.active {
+        background: var(--blue);
+        color: white;
+    }
+
+    .hidden {
+        display: none;
+    }
+</style>
+
+</head>
+<body><div class="wrap">
+    <div class="header">
+        <h1>RailCrew Pro <span style="color:var(--accent)">Ultimate</span></h1>
+        <p>Schedule, Payroll & Rest Tracking</p>
+    </div><div id="view-schedule" class="view">
+    <div class="grid3" style="margin-bottom:15px;">
+        <div class="stat-box">
+            <div class="stat-label">Total Legs</div>
+            <div id="countLabel" class="stat-value">0</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Hours Logged</div>
+            <div id="hoursLabel" class="stat-value">0.0</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Meal Pay</div>
+            <div id="mealPayLabel" class="stat-value">$0</div>
+        </div>
+    </div>
+
+    <div class="grid" style="margin-bottom:15px;">
+        <div class="stat-box">
+            <div class="stat-label">Current / Active</div>
+            <div id="activeTrainLabelHome" class="stat-value" style="font-size:1rem;">None</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Next Leg</div>
+            <div id="nextTrainLabelHome" class="stat-value" style="font-size:1rem;">None</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 style="margin-top:0;">Meals</h3>
+        <p class="muted" style="margin-top:0;">1 meal = $20 · 2 or more meals = $30</p>
+        <div class="grid" style="margin-top:8px;">
+            <label style="display:flex;align-items:center;gap:8px;margin:0;text-transform:none;cursor:pointer;"><input type="checkbox" id="mealBreakfast" style="width:20px;height:20px;margin:0;"> Breakfast</label>
+            <label style="display:flex;align-items:center;gap:8px;margin:0;text-transform:none;cursor:pointer;"><input type="checkbox" id="mealLunch" style="width:20px;height:20px;margin:0;"> Lunch</label>
+            <label style="display:flex;align-items:center;gap:8px;margin:0;text-transform:none;cursor:pointer;"><input type="checkbox" id="mealDinner" style="width:20px;height:20px;margin:0;"> Dinner</label>
+            <label style="display:flex;align-items:center;gap:8px;margin:0;text-transform:none;cursor:pointer;"><input type="checkbox" id="mealCustom" style="width:20px;height:20px;margin:0;"> Custom Meal</label>
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;flex-wrap:wrap;">
+            <h3 style="margin:0;">Log New Leg</h3>
+            <span id="formModeLabel" style="font-size:12px; opacity:0.7;">Add Mode</span>
+        </div>
+
+        <input type="hidden" id="editId">
+
+        <div class="grid">
+            <div><label>Train #</label><input type="number" id="train" placeholder="e.g. 52"></div>
+            <div><label>Route</label><input type="text" id="route" placeholder="e.g. NYP-WAS"></div>
+        </div>
+
+        <div class="grid3">
+            <div><label>Report</label><input type="time" id="report"></div>
+            <div><label>Arrival</label><input type="time" id="arrival"></div>
+            <div><label>Off Duty</label><input type="time" id="offDuty"></div>
+        </div>
+
+        <div class="grid">
+            <div><label>Date</label><input type="date" id="workDate"></div>
+            <div style="display:flex;align-items:flex-end;padding-bottom:5px;">
+                <label style="display:flex;align-items:center;gap:8px;margin:0;cursor:pointer;text-transform:none;">
+                    <input type="checkbox" id="isDeadhead" style="width:20px;height:20px;margin:0;">
+                    Deadhead (75% Pay)
+                </label>
+            </div>
+        </div>
+
+        <label>Notes</label>
+        <textarea id="notes" placeholder="Delays, engines, yard notes..."></textarea>
+
+        <div class="grid">
+            <button class="btn-blue" id="fetchBtn" onclick="fetchLive()">Fetch Live Info</button>
+            <button class="btn-accent" id="saveBtn" onclick="saveLeg()">Add to Schedule</button>
+        </div>
+        <button class="btn-sec hidden" id="cancelEditBtn" onclick="resetForm()">Cancel Edit</button>
+    </div>
+
+    <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;gap:10px;flex-wrap:wrap;">
+            <h3 style="margin:0;">Saved Legs</h3>
+            <button class="btn-sec btn-small" onclick="exportData()">Export Backup</button>
+        </div>
+        <div id="legList"></div>
+    </div>
+</div>
+
+<div id="view-payroll" class="view hidden">
+    <div class="card">
+        <h3>Payroll Estimator</h3>
+        <label>Hourly Rate ($)</label>
+        <input type="number" id="rate" value="45.00" oninput="calculatePayroll(); save();">
+
+        <div class="stat-box" style="margin-top:20px; text-align:center; border-color:var(--success);">
+            <div class="stat-label">Est. Gross Monthly</div>
+            <div id="estPay" class="stat-value" style="font-size:2rem; color:var(--success);">$0.00</div>
+        </div>
+
+        <label>180-Hour Guarantee Progress</label>
+        <div class="progress-container">
+            <div id="progBar" class="progress-bar"></div>
+        </div>
+        <p style="font-size:12px; color:var(--muted);">Calculates 1.0x for work, 0.75x for Deadhead. OT (1.5x) added for total hours over 180.</p>
+    </div>
+
+    <div class="card">
+        <h3>Data Management</h3>
+        <label>Import Backup</label>
+        <input type="file" id="importFile" accept="application/json" onchange="importData(event)">
+        <button class="btn-del" onclick="clearData()" style="margin-top:20px;">Wipe All Data</button>
+    </div>
+</div>
+
+</div><div class="tabs">
+    <div class="tab-btn active" onclick="switchView('schedule', this)">Schedule</div>
+    <div class="tab-btn" onclick="switchView('payroll', this)">Payroll</div>
+</div><script>
+    let legs = JSON.parse(localStorage.getItem('rc_legs_v2') || '[]');
+    let meals = JSON.parse(localStorage.getItem('rc_meals_v2') || '{"breakfast":false,"lunch":false,"dinner":false,"custom":false}');
+
+    function save() {
+        localStorage.setItem('rc_legs_v2', JSON.stringify(legs));
+        localStorage.setItem('rc_rate', document.getElementById('rate').value);
+        localStorage.setItem('rc_meals_v2', JSON.stringify(meals));
+    }
+
+    function getMealCount() {
+        return ['breakfast','lunch','dinner','custom'].filter(k => !!meals[k]).length;
+    }
+
+    function getMealPay() {
+        const count = getMealCount();
+        if (count <= 0) return 0;
+        if (count === 1) return 20;
+        return 30;
+    }
+
+    function syncMealsUI() {
+        document.getElementById('mealBreakfast').checked = !!meals.breakfast;
+        document.getElementById('mealLunch').checked = !!meals.lunch;
+        document.getElementById('mealDinner').checked = !!meals.dinner;
+        document.getElementById('mealCustom').checked = !!meals.custom;
+    }
+
+    function bindMealEvents() {
+        document.getElementById('mealBreakfast').addEventListener('change', e => { meals.breakfast = e.target.checked; save(); render(); });
+        document.getElementById('mealLunch').addEventListener('change', e => { meals.lunch = e.target.checked; save(); render(); });
+        document.getElementById('mealDinner').addEventListener('change', e => { meals.dinner = e.target.checked; save(); render(); });
+        document.getElementById('mealCustom').addEventListener('change', e => { meals.custom = e.target.checked; save(); render(); });
+    }
+
+    function switchView(id, btn) {
+        document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+        document.getElementById('view-' + id).classList.remove('hidden');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function calculateRest(offDutyTime) {
+        if (!offDutyTime) return '--:--';
+        const [h, m] = offDutyTime.split(':').map(Number);
+        let restH = h + 10;
+        if (restH >= 24) restH -= 24;
+        return `${restH.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+    }
+
+    function minutesFromTime(time) {
+        if (!time || !time.includes(':')) return null;
+        const [h, m] = time.split(':').map(Number);
+        return h * 60 + m;
+    }
+
+    async function fetchLive() {
+        const num = document.getElementById('train').value;
+        const btn = document.getElementById('fetchBtn');
+        if (!num) return alert('Enter Train #');
+        btn.innerText = 'Searching...';
+        try {
+            const res = await fetch(`https://api-v3.amtraker.com/v3/trains/${num}`);
+            const data = await res.json();
+            if (data && data[num] && data[num][0]) {
+                const info = data[num][0];
+                document.getElementById('route').value = info.routeName || '';
+                alert('Found: ' + (info.routeName || ('Train ' + num)));
+            } else {
+                alert('Train not active or not found.');
+            }
+        } catch (e) {
+            alert('Connection error.');
+        }
+        btn.innerText = 'Fetch Live Info';
+    }
+
+    function resetForm() {
+        document.getElementById('editId').value = '';
+        ['train', 'route', 'report', 'arrival', 'offDuty', 'notes'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        document.getElementById('isDeadhead').checked = false;
+        document.getElementById('formModeLabel').innerText = 'Add Mode';
+        document.getElementById('saveBtn').innerText = 'Add to Schedule';
+        document.getElementById('cancelEditBtn').classList.add('hidden');
+        document.getElementById('workDate').valueAsDate = new Date();
+    }
+
+    function fillForm(id) {
+        const leg = legs.find(l => l.id === id);
+        if (!leg) return;
+        document.getElementById('editId').value = leg.id;
+        document.getElementById('train').value = leg.train;
+        document.getElementById('route').value = leg.route;
+        document.getElementById('report').value = leg.report;
+        document.getElementById('arrival').value = leg.arrival;
+        document.getElementById('offDuty').value = leg.off;
+        document.getElementById('workDate').value = leg.date;
+        document.getElementById('notes').value = leg.notes;
+        document.getElementById('isDeadhead').checked = !!leg.isDeadhead;
+        document.getElementById('formModeLabel').innerText = 'Edit Mode';
+        document.getElementById('saveBtn').innerText = 'Update Leg';
+        document.getElementById('cancelEditBtn').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function saveLeg() {
+        const editId = document.getElementById('editId').value;
+        const train = document.getElementById('train').value.trim();
+        const report = document.getElementById('report').value;
+        const off = document.getElementById('offDuty').value;
+
+        if (!train || !report || !off) return alert('Fill in Train, Report, and Off Duty.');
+
+        const [h1, m1] = report.split(':').map(Number);
+        const [h2, m2] = off.split(':').map(Number);
+        let diff = (h2 * 60 + m2) - (h1 * 60 + m1);
+        if (diff < 0) diff += 1440;
+        const hours = parseFloat((diff / 60).toFixed(2));
+
+        const legData = {
+            id: editId ? Number(editId) : Date.now(),
+            train,
+            route: document.getElementById('route').value.trim(),
+            report,
+            arrival: document.getElementById('arrival').value,
+            off,
+            date: document.getElementById('workDate').value,
+            notes: document.getElementById('notes').value.trim(),
+            hours,
+            isDeadhead: document.getElementById('isDeadhead').checked
+        };
+
+        if (editId) {
+            const idx = legs.findIndex(l => l.id === Number(editId));
+            if (idx >= 0) legs[idx] = legData;
+        } else {
+            legs.push(legData);
+        }
+
+        save();
+        render();
+        resetForm();
+    }
+
+    function deleteLeg(id) {
+        if (confirm('Delete this leg?')) {
+            legs = legs.filter(l => l.id !== id);
+            save();
+            render();
+        }
+    }
+
+    function calculatePayroll() {
+        const rate = parseFloat(document.getElementById('rate').value) || 0;
+        let totalHrs = 0;
+        let totalPay = 0;
+
+        legs.forEach(l => {
+            const h = Number(l.hours) || 0;
+            totalHrs += h;
+            const multiplier = l.isDeadhead ? 0.75 : 1.0;
+            totalPay += h * rate * multiplier;
+        });
+
+        if (totalHrs > 180) {
+            totalPay += (totalHrs - 180) * rate * 0.5;
+        }
+
+        totalPay += getMealPay();
+
+        document.getElementById('hoursLabel').innerText = totalHrs.toFixed(1);
+        document.getElementById('estPay').innerText = '$' + totalPay.toLocaleString(undefined, { minimumFractionDigits: 2 });
+        document.getElementById('progBar').style.width = Math.min((totalHrs / 180) * 100, 100) + '%';
+    }
+
+    function render() {
+        const list = document.getElementById('legList');
+        list.innerHTML = '';
+        const sorted = [...legs].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
+        const now = new Date();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        let activeLeg = null;
+        let nextLeg = null;
+
+        const chron = [...legs].sort((a, b) => (minutesFromTime(a.report) ?? 9999) - (minutesFromTime(b.report) ?? 9999));
+        for (const leg of chron) {
+            const start = minutesFromTime(leg.report);
+            const endBase = minutesFromTime(leg.off);
+            if (start === null || endBase === null) continue;
+            let end = endBase;
+            let current = currentMinutes;
+            if (end < start) {
+                end += 1440;
+                if (current < start) current += 1440;
+            }
+            if (!activeLeg && current >= start && current <= end) activeLeg = leg;
+            if (!nextLeg && current < start) nextLeg = leg;
+        }
+        if (!nextLeg && chron.length) nextLeg = chron[0];
+
+        sorted.forEach(l => {
+            const div = document.createElement('div');
+            div.className = 'leg-item' + (activeLeg && activeLeg.id === l.id ? ' active' : '');
+            div.innerHTML = `
+                <div class="leg-info">
+                    <div>
+                        <b style="font-size:1.1rem">Train ${l.train} ${l.isDeadhead ? '<span style="color:var(--accent)">[DH]</span>' : ''}</b>
+                        <span style="color:var(--muted)">${l.route || ''}</span><br>
+                        <small>${l.date || ''} | ${l.report || '--'} - ${l.off || '--'}</small><br>
+                        <small style="color:var(--success); font-weight:bold;">Rested At: ${calculateRest(l.off)}</small>
+                        ${l.notes ? `<div class="notes-box">${l.notes}</div>` : ''}
+                    </div>
+                    <div style="text-align:right">
+                        <div style="font-weight:900; color:var(--blue)">${Number(l.hours || 0).toFixed(2)}h</div>
+                        <div class="action-row">
+                            <button class="btn-sec btn-small" onclick="fillForm(${l.id})">Edit</button>
+                            <button class="btn-del btn-small" onclick="deleteLeg(${l.id})">Del</button>
+                        </div>
+                    </div>
+                </div>`;
+            list.appendChild(div);
+        });
+
+        document.getElementById('countLabel').innerText = legs.length;
+        document.getElementById('mealPayLabel').innerText = '$' + getMealPay();
+        document.getElementById('activeTrainLabelHome').innerText = activeLeg ? `Train ${activeLeg.train}` : 'None';
+        document.getElementById('nextTrainLabelHome').innerText = nextLeg ? `Train ${nextLeg.train}` : 'None';
+        calculatePayroll();
+    }
+
+    function clearData() {
+        if (confirm('Wipe all data?')) {
+            legs = [];
+            meals = { breakfast:false, lunch:false, dinner:false, custom:false };
+            localStorage.removeItem('rc_legs_v2');
+            localStorage.removeItem('rc_meals_v2');
+            syncMealsUI();
+            render();
+            resetForm();
+        }
+    }
+
+    function exportData() {
+        const blob = new Blob([JSON.stringify({ legs, rate: document.getElementById('rate').value }, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'railcrew_backup.json';
+        a.click();
+    }
+
+    function importData(e) {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                legs = Array.isArray(data.legs) ? data.legs : [];
+                document.getElementById('rate').value = data.rate || 45;
+                save();
+                render();
+                resetForm();
+                alert('Imported!');
+            } catch (err) {
+                alert('Could not import file');
+            } finally {
+                document.getElementById('importFile').value = '';
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    window.onload = () => {
+        const rate = localStorage.getItem('rc_rate');
+        if (rate) document.getElementById('rate').value = rate;
+        syncMealsUI();
+        bindMealEvents();
+        resetForm();
+        render();
+    };
+</script></body>
+</html>
