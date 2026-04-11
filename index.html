@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RailCrew Pro Planner</title>
+    <style>
+        :root {
+            --bg: #0b1a2a;
+            --card: #13233d;
+            --accent: #ef4444;
+            --planned: #3b82f6;
+            --active: #22c55e;
+            --done: #64748b;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: white;
+            padding: 15px;
+            line-height: 1.5;
+        }
+
+        h1 { border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-top: 0; }
+
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.8rem; color: #94a3b8; margin-bottom: 4px; }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border-radius: 8px;
+            border: 1px solid #2d3748;
+            background: #1e293b;
+            color: white;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            background: var(--accent);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:hover { opacity: 0.9; }
+
+        .job {
+            background: #1e293b;
+            padding: 15px;
+            margin-top: 12px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        /* Dynamic Status Colors */
+        .job.Planned { border-left: 5px solid var(--planned); }
+        .job.Active { border-left: 5px solid var(--active); }
+        .job.Done { border-left: 5px solid var(--done); opacity: 0.8; }
+
+        .job-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .job-title { font-weight: bold; font-size: 1.1rem; }
+        .job-info { color: #cbd5e1; font-size: 0.9rem; margin: 5px 0; }
+        .status-badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; background: rgba(255,255,255,0.1); }
+        
+        .delete-btn {
+            background: #334155;
+            padding: 8px;
+            font-size: 0.8rem;
+            width: auto;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>RailCrew Pro</h1>
+
+    <div class="card">
+        <h3>Add New Job</h3>
+        <div class="input-group">
+            <input id="train" placeholder="Train # (e.g. Q352)">
+        </div>
+        <div class="input-group">
+            <input id="route" placeholder="Route (e.g. CHI -> CLE)">
+        </div>
+        <div style="display: flex; gap: 10px;" class="input-group">
+            <div style="flex: 1;">
+                <label>On Duty</label>
+                <input type="time" id="start">
+            </div>
+            <div style="flex: 1;">
+                <label>Off Duty</label>
+                <input type="time" id="end">
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Current Status</label>
+            <select id="status">
+                <option value="Planned">Planned</option>
+                <option value="Active">Active</option>
+                <option value="Done">Done</option>
+            </select>
+        </div>
+        <button onclick="addJob()">Add to Schedule</button>
+    </div>
+
+    <div class="card">
+        <h3>Today's Schedule</h3>
+        <div id="list"></div>
+    </div>
+
+    <script>
+        let jobs = JSON.parse(localStorage.getItem('jobs') || '[]');
+
+        function save() {
+            localStorage.setItem('jobs', JSON.stringify(jobs));
+        }
+
+        // Helper to calculate duration between two HH:mm strings
+        function getDuration(start, end) {
+            const [sH, sM] = start.split(':').map(Number);
+            const [eH, eM] = end.split(':').map(Number);
+            let diff = (eH * 60 + eM) - (sH * 60 + sM);
+            if (diff < 0) diff += 1440; // Handle overnight shifts
+            const h = Math.floor(diff / 60);
+            const m = diff % 60;
+            return `${h}h ${m}m`;
+        }
+
+        function addJob() {
+            const train = document.getElementById('train').value;
+            const route = document.getElementById('route').value;
+            const start = document.getElementById('start').value;
+            const end = document.getElementById('end').value;
+            const status = document.getElementById('status').value;
+
+            if (!train || !start || !end) {
+                alert("Please enter Train # and Times");
+                return;
+            }
+
+            jobs.push({
+                id: Date.now(),
+                train,
+                route: route || "No route specified",
+                start,
+                end,
+                status
+            });
+
+            // Clear inputs
+            document.getElementById('train').value = '';
+            document.getElementById('route').value = '';
+            document.getElementById('start').value = '';
+            document.getElementById('end').value = '';
+
+            save();
+            render();
+        }
+
+        function deleteJob(id) {
+            if(confirm("Delete this job?")) {
+                jobs = jobs.filter(j => j.id !== id);
+                save();
+                render();
+            }
+        }
+
+        function render() {
+            const list = document.getElementById('list');
+            list.innerHTML = "";
+
+            if (jobs.length === 0) {
+                list.innerHTML = `<p style="color: #64748b; text-align: center;">No jobs scheduled.</p>`;
+                return;
+            }
+
+            jobs.forEach(j => {
+                const duration = getDuration(j.start, j.end);
+                const div = document.createElement('div');
+                div.className = `job ${j.status}`;
+                div.innerHTML = `
+                    <div class="job-header">
+                        <span class="job-title">Train ${j.train}</span>
+                        <span class="status-badge">${j.status}</span>
+                    </div>
+                    <div class="job-info">📍 ${j.route}</div>
+                    <div class="job-info">⏰ ${j.start} - ${j.end} (<b>${duration}</b>)</div>
+                    <button class="delete-btn" onclick="deleteJob(${j.id})">Remove</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        render();
+    </script>
+</body>
+</html>
