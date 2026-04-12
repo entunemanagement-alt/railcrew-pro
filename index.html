@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RailCrew Pro</title>
+  <style>
+    :root{
+      --bg:#071321;
+      --card:#13233d;
+      --accent:#ef4444;
+      --text:#f8fafc;
+      --muted:#94a3b8;
+      --line:#28415f;
+      --green:#22c55e;
+      --blue:#3b82f6;
+      --orange:#f59e0b;
+      --gray:#64748b;
+      --purple:#a855f7;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:linear-gradient(180deg,#091626 0%,#071321 100%);
+      color:var(--text);
+      min-height:100vh;
+      padding:16px 16px 100px;
+    }
+
+    .app-shell{max-width:980px;margin:0 auto}
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .brand h1{margin:0;font-size:1.7rem}
+    .brand p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+
+    .top-chip{
+      background:rgba(255,255,255,.08);
+      border-radius:14px;
+      padding:10px 12px;
+      min-width:120px;
+      text-align:center;
+      font-size:.85rem;
+    }
+
+    .card{
+      background:linear-gradient(180deg,rgba(19,35,61,.98),rgba(16,35,61,.96));
+      padding:18px;
+      border-radius:18px;
+      margin-bottom:16px;
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .compact-card{padding:14px}
+
+    .tabs,.tab-row,.quick-action-row,.bottom-nav{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .tab-btn.active,
+    .bottom-nav button.active{
+      background:linear-gradient(135deg,var(--accent),#dc2626);
+    }
+
+    .tab-btn.inactive{
+      background:rgba(255,255,255,.08);
+    }
+
+    .panel.hidden{display:none}
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .col{
+      flex:1;
+      min-width:140px;
+    }
+
+    .input-group{margin-bottom:14px}
+
+    label{
+      display:block;
+      font-size:.8rem;
+      color:var(--muted);
+      margin-bottom:5px;
+    }
+
+    input,select,textarea{
+      width:100%;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(8,17,31,.7);
+      color:var(--text);
+      font-size:1rem;
+      outline:none;
+    }
+
+    textarea{
+      min-height:100px;
+      resize:vertical;
+    }
+
+    button{
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      border:none;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--accent),#dc2626);
+      color:white;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .secondary-btn{background:#334155}
+    .green-btn{background:linear-gradient(135deg,#15803d,#16a34a)}
+    .blue-btn{background:linear-gradient(135deg,#2563eb,#3b82f6)}
+    .warning-btn{background:#b45309}
+
+    .section-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+
+    .section-title h3{margin:0}
+    .subtle{color:var(--muted);font-size:.85rem}
+
+    .small-live-grid,
+    .summary-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+    }
+
+    .small-live-box,
+    .summary-box{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      padding:12px;
+      border-radius:14px;
+    }
+
+    .small-live-label,
+    .summary-label{
+      color:var(--muted);
+      font-size:.74rem;
+      text-transform:uppercase;
+    }
+
+    .small-live-value,
+    .summary-value{
+      margin-top:4px;
+      font-size:1rem;
+      font-weight:700;
+    }
+
+    .live-banner{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      background:rgba(239,68,68,.1);
+      border:1px solid rgba(239,68,68,.2);
+    }
+
+    .divider{
+      height:1px;
+      background:var(--line);
+      margin:14px 0;
+    }
+
+    .draft-leg,
+    .day-card,
+    .leg-card{
+      background:rgba(255,255,255,.04);
+      border-radius:14px;
+      padding:12px;
+      margin-top:10px;
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .day-card{
+      border-left:5px solid var(--blue);
+    }
+
+    .day-card.WorkDay{border-left-color:var(--green)}
+    .day-card.DayOff{border-left-color:var(--gray)}
+    .day-card.ProtectedDay{border-left-color:var(--blue)}
+    .day-card.CompanyCancel{border-left-color:var(--orange)}
+    .day-card.VacationPersonal{border-left-color:var(--purple)}
+
+    .badge{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:999px;
+      background:rgba(255,255,255,.1);
+      font-size:.75rem;
+    }
+
+    .small{
+      color:var(--muted);
+      font-size:.9rem;
+      margin-top:4px;
+    }
+
+    .bottom-nav{
+      position:fixed;
+      left:12px;
+      right:12px;
+      bottom:12px;
+      background:rgba(10,20,34,.9);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:10px;
+      z-index:50;
+      max-width:920px;
+      margin:0 auto;
+    }
+
+    .bottom-nav button{
+      flex:1;
+      margin-top:0;
+      padding:12px 10px;
+      font-size:.82rem;
+      background:rgba(255,255,255,.06);
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:88px;
+      transform:translateX(-50%) translateY(20px);
+      background:rgba(15,23,42,.96);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:14px;
+      padding:12px 16px;
+      opacity:0;
+      pointer-events:none;
+      transition:.25s ease;
+      z-index:1000;
+      text-align:center;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
+
+    @media (max-width:560px){
+      .small-live-grid,.summary-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="topbar">
+      <div class="brand">
+        <h1>RailCrew Pro</h1>
+        <p>Whole-train schedule & guarantee tracker</p>
+      </div>
+      <div class="top-chip" id="todayChip">Today</div>
+    </div>
+
+    <div class="card compact-card">
+      <div class="section-title">
+        <div>
+          <h3 style="color:#fb7185;">🚆 LIVE TRAIN</h3>
+          <div style="font-size:1.8rem;font-weight:800;margin-top:5px;" id="liveTrainBig">--</div>
+        </div>
+        <span class="subtle">Selected Date</span>
+      </div>
+
+      <div class="small-live-grid">
+        <div class="small-live-box">
+          <div class="small-live-label">Route</div>
+          <div class="small-live-value" id="liveRoute">No trip</div>
+        </div>
+        <div class="small-live-box">
+          <div class="small-live-label">Leg</div>
+          <div class="small-live-value" id="liveLeg">--</div>
+        </div>
+        <div class="small-live-box">
+          <div class="small-live-label">Report</div>
+          <div class="small-live-value" id="liveReport">--:--</div>
+        </div>
+        <div class="small-live-box">
+          <div class="small-live-label">Final Off</div>
+          <div class="small-live-value" id="liveFinalOff">--:--</div>
+        </div>
+      </div>
+
+      <div class="live-banner">
+        <div class="small-live-label" style="color:#fb7185;">Next Move</div>
+        <div class="small-live-value" id="nextMoveText">No trip yet for selected date.</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section-title">
+        <h3>Quick Actions</h3>
+        <span class="subtle" id="quickActionStatus">Shift Controls</span>
+      </div>
+
+      <div class="quick-action-row">
+        <button class="green-btn" onclick="quickSetStage('On Duty')">Start Leg</button>
+        <button class="blue-btn" onclick="quickMarkArrived()">Mark Arrived</button>
+        <button class="warning-btn" onclick="quickAdvanceToNextLeg()">Next Leg</button>
+        <button class="secondary-btn" onclick="quickSetStage('Released')">Release Day</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="summary-grid">
+        <div class="summary-box">
+          <div class="summary-label">Today Hours</div>
+          <div class="summary-value" id="quickTodayHours">0.00</div>
+        </div>
+        <div class="summary-box">
+          <div class="summary-label">Guarantee</div>
+          <div class="summary-value" id="quickGuarantee">0 / 185</div>
+        </div>
+        <div class="summary-box">
+          <div class="summary-label">Estimated Day Pay</div>
+          <div class="summary-value" id="quickTodayPay">$0.00</div>
+        </div>
+        <div class="summary-box">
+          <div class="summary-label">Legs Today</div>
+          <div class="summary-value" id="homeLegCount">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab-row">
+        <button id="tab-home" class="tab-btn active" onclick="switchTab('home')">Home</button>
+        <button id="tab-planner" class="tab-btn inactive" onclick="switchTab('planner')">Planner</button>
+        <button id="tab-import" class="tab-btn inactive" onclick="switchTab('import')">Import</button>
+        <button id="tab-today" class="tab-btn inactive" onclick="switchTab('today')">Today</button>
+        <button id="tab-month" class="tab-btn inactive" onclick="switchTab('month')">Month</button>
+      </div>
+    </div>
+
+    <div id="panel-home" class="panel">
+      <div class="card">
+        <div class="section-title">
+          <h3>Today Snapshot</h3>
+          <span class="subtle" id="homeDateLabel"></span>
+        </div>
+        <div class="small" id="homeSummaryText">Nothing saved yet.</div>
+      </div>
+    </div>
+
+    <div id="panel-planner" class="panel hidden">
+      <div class="card">
+        <h3 id="plannerTitle">Add/Edit Day</h3>
+
+        <div class="row">
+          <div class="col input-group">
+            <label>Date</label>
+            <input type="date" id="workDate">
+          </div>
+          <div class="col input-group">
+            <label>Day Type</label>
+            <select id="dayType" onchange="toggleWorkFields()">
+              <option value="Work Day">Work Day</option>
+              <option value="Day Off">Day Off</option>
+              <option value="Protected Day">Protected Day</option>
+              <option value="Company Cancel">Company Cancel</option>
+              <option value="Vacation / Personal">Vacation / Personal</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="workFieldsWrap">
+          <div class="row">
+            <div class="col input-group">
+              <label>Work Stage</label>
+              <select id="dayStatus">
+                <option value="Planned">Planned</option>
+                <option value="On Duty">On Duty</option>
+                <option value="En Route">En Route</option>
+                <option value="Layover">Layover</option>
+                <option value="Released">Released</option>
+              </select>
+            </div>
+            <div class="col input-group">
+              <label>Current Leg</label>
+              <input type="number" id="currentLegIndex" min="1" value="1">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col input-group">
+            <label>Hourly Rate</label>
+            <input type="number" id="payRate" step="0.01" value="26.69">
+          </div>
+          <div class="col input-group">
+            <label>Meals</label>
+            <select id="meals">
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Guarantee Credit Hours</label>
+          <input type="number" id="guaranteeCreditHours" step="0.01">
+        </div>
+
+        <div class="input-group">
+          <label>Day Notes</label>
+          <textarea id="dayNotes" placeholder="Notes for the day"></textarea>
+        </div>
+
+        <div id="legBuilderWrap">
+          <div class="divider"></div>
+          <h4>Add Train Leg</h4>
+
+          <div class="row">
+            <div class="col input-group">
+              <label>Train #</label>
+              <input id="train">
+            </div>
+            <div class="col input-group">
+              <label>Route</label>
+              <input id="route">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col input-group">
+              <label>Report</label>
+              <input type="time" id="reportTime">
+            </div>
+            <div class="col input-group">
+              <label>Train Leave / Station Time</label>
+              <input type="time" id="stationTime">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col input-group">
+              <label>Arrival</label>
+              <input type="time" id="arrival">
+            </div>
+            <div class="col input-group">
+              <label>Off Duty</label>
+              <input type="time" id="end">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Leg Notes</label>
+            <textarea id="legNotes"></textarea>
+          </div>
+
+          <button class="green-btn" onclick="addLegToDraftDay()">+ Add Leg to Day</button>
+          <div id="draftLegs"></div>
+        </div>
+
+        <button onclick="saveWorkDay()">Save Final Day</button>
+        <button class="secondary-btn" onclick="clearPlanner()">Clear</button>
+      </div>
+    </div>
+
+    <div id="panel-import" class="panel hidden">
+      <div class="card">
+        <h3>Schedule Import</h3>
+        <p class="subtle">Format: date | type | train | route | report | leave | arrival | off | note</p>
+        <textarea id="importText" style="height:200px;" placeholder="Paste rows here..."></textarea>
+        <button onclick="importSchedule()">Process Import</button>
+      </div>
+    </div>
+
+    <div id="panel-today" class="panel hidden">
+      <div class="card">
+        <div class="input-group">
+          <label>Show Date</label>
+          <input type="date" id="filterDate" onchange="handleFilterDateChange()">
+        </div>
+        <div id="list" style="margin-top:15px;"></div>
+      </div>
+    </div>
+
+    <div id="panel-month" class="panel hidden">
+      <div class="card">
+        <div class="input-group">
+          <label>Show Month</label>
+          <input type="month" id="filterMonth" onchange="render()">
+        </div>
+        <div class="summary-grid" style="margin-top:15px;">
+          <div class="summary-box">
+            <div class="summary-label">Month Hours</div>
+            <div class="summary-value" id="monthHours">0.00</div>
+          </div>
+          <div class="summary-box">
+            <div class="summary-label">Guarantee Status</div>
+            <div class="summary-value" id="guaranteeStatus">Active</div>
+          </div>
+          <div class="summary-box">
+            <div class="summary-label">Est. Month Pay</div>
+            <div class="summary-value" id="monthPay">$0.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button id="nav-home" class="active" onclick="switchTab('home')">Home</button>
+    <button id="nav-planner" onclick="switchTab('planner')">Planner</button>
+    <button id="nav-import" onclick="switchTab('import')">Import</button>
+    <button id="nav-today" onclick="switchTab('today')">Today</button>
+    <button id="nav-month" onclick="switchTab('month')">Month</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = 'railcrew_v15_clean';
+    const VIEW_DATE_KEY = 'railcrew_view_date_v15_clean';
+    const GUARANTEE_HOURS = 185;
+
+    let days = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    let draftLegs = [];
+    let editingId = null;
+
+    function showToast(m) {
+      const t = document.getElementById('toast');
+      t.textContent = m;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    function todayISO() {
+      const now = new Date();
+      const off = now.getTimezoneOffset();
+      return new Date(now.getTime() - off * 60000).toISOString().split('T')[0];
+    }
+
+    function monthFromDate(dateStr) {
+      return (dateStr || todayISO()).slice(0, 7);
+    }
+
+    function getHoursDecimal(s, e) {
+      if (!s || !e) return 0;
+      const [sh, sm] = s.split(':').map(Number);
+      const [eh, em] = e.split(':').map(Number);
+      let diff = (eh * 60 + em) - (sh * 60 + sm);
+      if (diff < 0) diff += 1440;
+      return diff / 60;
+    }
+
+    function getMealPay(meals) {
+      meals = Number(meals || 0);
+      if (meals === 1) return 20;
+      if (meals >= 2) return 30;
+      return 0;
+    }
+
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(days));
+    }
+
+    function saveViewDate(dateStr) {
+      localStorage.setItem(VIEW_DATE_KEY, dateStr);
+      document.getElementById('filterDate').value = dateStr;
+      document.getElementById('filterMonth').value = monthFromDate(dateStr);
+    }
+
+    function loadViewDate() {
+      return localStorage.getItem(VIEW_DATE_KEY) || todayISO();
+    }
+
+    function normalizeTypeClass(type) {
+      return String(type || '').replace(/\s+/g, '');
+    }
+
+    function switchTab(tab) {
+      ['home','planner','import','today','month'].forEach(t => {
+        document.getElementById(`panel-${t}`).classList.toggle('hidden', t !== tab);
+        document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
+        document.getElementById(`tab-${t}`).classList.toggle('inactive', t !== tab);
+        document.getElementById(`nav-${t}`).classList.toggle('active', t === tab);
+      });
+    }
+
+    function toggleWorkFields() {
+      const isWork = document.getElementById('dayType').value === 'Work Day';
+      document.getElementById('workFieldsWrap').classList.toggle('hidden', !isWork);
+      document.getElementById('legBuilderWrap').classList.toggle('hidden', !isWork);
+    }
+
+    function clearPlanner() {
+      editingId = null;
+      draftLegs = [];
+      document.getElementById('plannerTitle').textContent = 'Add/Edit Day';
+      document.getElementById('workDate').value = todayISO();
+      document.getElementById('dayType').value = 'Work Day';
+      document.getElementById('dayStatus').value = 'Planned';
+      document.getElementById('currentLegIndex').value = '1';
+      document.getElementById('payRate').value = '26.69';
+      document.getElementById('meals').value = '0';
+      document.getElementById('guaranteeCreditHours').value = '';
+      document.getElementById('dayNotes').value = '';
+      document.getElementById('train').value = '';
+      document.getElementById('route').value = '';
+      document.getElementById('reportTime').value = '';
+      document.getElementById('stationTime').value = '';
+      document.getElementById('arrival').value = '';
+      document.getElementById('end').value = '';
+      document.getElementById('legNotes').value = '';
+      renderDraftLegs();
+      toggleWorkFields();
+    }
+
+    function renderDraftLegs() {
+      const box = document.getElementById('draftLegs');
+      if (!draftLegs.length) {
+        box.innerHTML = '<div class="small">No legs added yet.</div>';
+        return;
+      }
+      box.innerHTML = draftLegs.map((leg, i) => `
+        <div class="draft-leg">
+          <div><b>Leg ${i + 1}: Train ${leg.train}</b></div>
+          <div class="small">${leg.route || ''}</div>
+          <div class="small">Report ${leg.reportTime || '--:--'} • Leave ${leg.stationTime || '--:--'} • Arrival ${leg.arrival || '--:--'} • Off ${leg.end || '--:--'}</div>
+        </div>
+      `).join('');
+    }
+
+    function addLegToDraftDay() {
+      const train = document.getElementById('train').value.trim();
+      const route = document.getElementById('route').value.trim();
+      const reportTime = document.getElementById('reportTime').value;
+      const stationTime = document.getElementById('stationTime').value;
+      const arrival = document.getElementById('arrival').value;
+      const end = document.getElementById('end').value;
+      const notes = document.getElementById('legNotes').value.trim();
+
+      if (!train || !reportTime) {
+        alert('Need Train # and Report Time');
+        return;
+      }
+
+      draftLegs.push({
+        train,
+        route,
+        reportTime,
+        stationTime,
+        arrival,
+        end,
+        actualEnd: end,
+        notes,
+        actualHours: getHoursDecimal(reportTime, end)
+      });
+
+      document.getElementById('train').value = '';
+      document.getElementById('route').value = '';
+      document.getElementById('reportTime').value = '';
+      document.getElementById('stationTime').value = '';
+      document.getElementById('arrival').value = '';
+      document.getElementById('end').value = '';
+      document.getElementById('legNotes').value = '';
+
+      renderDraftLegs();
+      showToast('Leg added');
+    }
+
+    function buildDayObject() {
+      const date = document.getElementById('workDate').value;
+      const dayType = document.getElementById('dayType').value;
+      const stage = document.getElementById('dayStatus').value;
+      const payRate = Number(document.getElementById('payRate').value || 26.69);
+      const meals = Number(document.getElementById('meals').value || 0);
+      const guaranteeCreditHoursInput = Number(document.getElementById('guaranteeCreditHours').value || 0);
+      const dayNotes = document.getElementById('dayNotes').value.trim();
+      const currentLegIndex = Number(document.getElementById('currentLegIndex').value || 1);
+
+      if (!date) {
+        alert('Please enter a date');
+        return null;
+      }
+
+      if (dayType === 'Work Day' && draftLegs.length === 0) {
+        alert('Add at least one leg for a Work Day');
+        return null;
+      }
+
+      const actualHours = dayType === 'Work Day'
+        ? draftLegs.reduce((sum, leg) => sum + Number(leg.actualHours || 0), 0)
+        : 0;
+
+      const guaranteeCreditHours =
+        (dayType === 'Protected Day' || dayType === 'Company Cancel')
+          ? (guaranteeCreditHoursInput || 8)
+          : guaranteeCreditHoursInput;
+
+      const estimatedPay =
+        dayType === 'Work Day'
+          ? (actualHours * payRate) + getMealPay(meals)
+          : 0;
+
+      return {
+        id: editingId || Date.now(),
+        date,
+        dayType,
+        stage: dayType === 'Work Day' ? stage : '',
+        payRate,
+        meals,
+        guaranteeCreditHours,
+        dayNotes,
+        currentLegIndex: dayType === 'Work Day' ? currentLegIndex : 0,
+        legs: dayType === 'Work Day' ? [...draftLegs] : [],
+        actualHours,
+        estimatedPay,
+        breakGuarantee: dayType === 'Day Off' || dayType === 'Vacation / Personal'
+      };
+    }
+
+    function saveWorkDay() {
+      const day = buildDayObject();
+      if (!day) return;
+
+      days = days.filter(d => !(d.date === day.date && d.id !== editingId ? false : d.id === editingId));
+      days = days.filter(d => d.date !== day.date || (editingId && d.id !== editingId));
+      days.push(day);
+      days.sort((a, b) => a.date.localeCompare(b.date));
+
+      save();
+      saveViewDate(day.date);
+      clearPlanner();
+      render();
+      switchTab('today');
+      showToast('Day saved');
+    }
+
+    function handleFilterDateChange() {
+      saveViewDate(document.getElementById('filterDate').value);
+      render();
+    }
+
+    function getSelectedDay() {
+      const selectedDate = document.getElementById('filterDate').value;
+      return days.find(d => d.date === selectedDate);
+    }
+
+    function quickSetStage(stage) {
+      const day = getSelectedDay();
+      if (!day) {
+        alert('No saved day for selected date.');
+        return;
+      }
+      if (day.dayType !== 'Work Day') {
+        showToast('Quick actions only work for Work Day');
+        return;
+      }
+      day.stage = stage;
+      save();
+      render();
+      showToast(`Stage: ${stage}`);
+    }
+
+    function quickMarkArrived() {
+      const day = getSelectedDay();
+      if (!day || day.dayType !== 'Work Day' || !day.legs.length) {
+        showToast('No active work leg');
+        return;
+      }
+      const idx = Math.max(0, Math.min((day.currentLegIndex || 1) - 1, day.legs.length - 1));
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      day.legs[idx].arrival = day.legs[idx].arrival || `${hh}:${mm}`;
+      day.stage = 'Layover';
+      save();
+      render();
+      showToast('Arrival marked');
+    }
+
+    function quickAdvanceToNextLeg() {
+      const day = getSelectedDay();
+      if (!day || day.dayType !== 'Work Day' || !day.legs.length) {
+        showToast('No next leg');
+        return;
+      }
+      if ((day.currentLegIndex || 1) < day.legs.length) {
+        day.currentLegIndex += 1;
+        day.stage = 'On Duty';
+        showToast(`Moved to leg ${day.currentLegIndex}`);
+      } else {
+        day.stage = 'Released';
+        showToast('Day released');
+      }
+      save();
+      render();
+    }
+
+    function deleteDay(id) {
+      days = days.filter(d => d.id !== id);
+      save();
+      render();
+      showToast('Day deleted');
+    }
+
+    function editDay(id) {
+      const day = days.find(d => d.id === id);
+      if (!day) return;
+
+      editingId = id;
+      draftLegs = [...(day.legs || [])];
+
+      document.getElementById('plannerTitle').textContent = 'Edit Day';
+      document.getElementById('workDate').value = day.date;
+      document.getElementById('dayType').value = day.dayType;
+      document.getElementById('dayStatus').value = day.stage || 'Planned';
+      document.getElementById('currentLegIndex').value = day.currentLegIndex || 1;
+      document.getElementById('payRate').value = day.payRate || 26.69;
+      document.getElementById('meals').value = day.meals || 0;
+      document.getElementById('guaranteeCreditHours').value = day.guaranteeCreditHours || '';
+      document.getElementById('dayNotes').value = day.dayNotes || '';
+
+      toggleWorkFields();
+      renderDraftLegs();
+      switchTab('planner');
+      showToast('Editing day');
+    }
+
+    function importSchedule() {
+      const raw = document.getElementById('importText').value.trim();
+      if (!raw) {
+        alert('Paste rows first');
+        return;
+      }
+
+      const grouped = {};
+      const lines = raw.split('\n').map(x => x.trim()).filter(Boolean);
+
+      lines.forEach(line => {
+        const p = line.split('|').map(x => x.trim());
+        const date = p[0] || '';
+        const type = p[1] || 'Work Day';
+
+        if (!date) return;
+
+        if (!grouped[date]) {
+          grouped[date] = {
+            id: Date.now() + Math.floor(Math.random() * 100000),
+            date,
+            dayType: type,
+            stage: 'Planned',
+            payRate: 26.69,
+            meals: 0,
+            guaranteeCreditHours: (type === 'Protected Day' || type === 'Company Cancel') ? 8 : 0,
+            dayNotes: '',
+            currentLegIndex: 1,
+            legs: [],
+            actualHours: 0,
+            estimatedPay: 0,
+            breakGuarantee: type === 'Day Off' || type === 'Vacation / Personal'
+          };
+        }
+
+        if (type === 'Work Day') {
+          const leg = {
+            train: p[2] || '',
+            route: p[3] || '',
+            reportTime: p[4] || '',
+            stationTime: p[5] || '',
+            arrival: p[6] || '',
+            end: p[7] || '',
+            actualEnd: p[7] || '',
+            notes: p[8] || '',
+            actualHours: getHoursDecimal(p[4] || '', p[7] || '')
+          };
+          if (leg.train || leg.reportTime) {
+            grouped[date].legs.push(leg);
+          }
+        } else {
+          grouped[date].dayNotes = p[8] || p[2] || '';
+        }
+      });
+
+      const imported = Object.values(grouped).map(day => {
+        day.actualHours = day.legs.reduce((sum, leg) => sum + Number(leg.actualHours || 0), 0);
+        day.estimatedPay = day.dayType === 'Work Day' ? day.actualHours * day.payRate : 0;
+        return day;
+      });
+
+      const importedDates = imported.map(d => d.date);
+      days = days.filter(d => !importedDates.includes(d.date)).concat(imported);
+      days.sort((a, b) => a.date.localeCompare(b.date));
+      save();
+
+      if (imported.length) {
+        saveViewDate(imported[0].date);
+      }
+
+      document.getElementById('importText').value = '';
+      render();
+      switchTab('today');
+      showToast(`Imported ${imported.length} day(s)`);
+    }
+
+    function renderLiveCard() {
+      const day = getSelectedDay();
+
+      if (!day) {
+        document.getElementById('liveTrainBig').textContent = '--';
+        document.getElementById('liveRoute').textContent = 'No trip';
+        document.getElementById('liveLeg').textContent = '--';
+        document.getElementById('liveReport').textContent = '--:--';
+        document.getElementById('liveFinalOff').textContent = '--:--';
+        document.getElementById('nextMoveText').textContent = 'No trip yet for selected date.';
+        document.getElementById('quickActionStatus').textContent = 'Shift Controls';
+        return;
+      }
+
+      if (day.dayType !== 'Work Day' || !day.legs.length) {
+        document.getElementById('liveTrainBig').textContent = day.dayType;
+        document.getElementById('liveRoute').textContent = day.dayNotes || 'No route';
+        document.getElementById('liveLeg').textContent = '--';
+        document.getElementById('liveReport').textContent = '--:--';
+        document.getElementById('liveFinalOff').textContent = '--:--';
+        document.getElementById('nextMoveText').textContent = `${day.dayType} saved for selected date.`;
+        document.getElementById('quickActionStatus').textContent = day.dayType;
+        return;
+      }
+
+      const idx = Math.max(0, Math.min((day.currentLegIndex || 1) - 1, day.legs.length - 1));
+      const leg = day.legs[idx];
+      const lastLeg = day.legs[day.legs.length - 1];
+
+      document.getElementById('liveTrainBig').textContent = leg.train || '--';
+      document.getElementById('liveRoute').textContent = leg.route || 'No route';
+      document.getElementById('liveLeg').textContent = `${idx + 1} of ${day.legs.length}`;
+      document.getElementById('liveReport').textContent = leg.reportTime || '--:--';
+      document.getElementById('liveFinalOff').textContent = (lastLeg.actualEnd || lastLeg.end || '--:--');
+      document.getElementById('quickActionStatus').textContent = `Stage: ${day.stage || 'Planned'}`;
+
+      let nextMove = 'Review trip';
+      if (day.stage === 'Planned') nextMove = `Report for Train ${leg.train} at ${leg.reportTime || '--:--'}`;
+      if (day.stage === 'On Duty') nextMove = `Operating Train ${leg.train}`;
+      if (day.stage === 'Layover') nextMove = 'Layover / awaiting next move';
+      if (day.stage === 'Released') nextMove = 'Day complete';
+      document.getElementById('nextMoveText').textContent = nextMove;
+    }
+
+    function renderTodayList() {
+      const selectedDate = document.getElementById('filterDate').value;
+      const list = document.getElementById('list');
+      const matches = days.filter(d => d.date === selectedDate);
+
+      if (!matches.length) {
+        list.innerHTML = '<div class="small">No saved days for this date.</div>';
+        return;
+      }
+
+      list.innerHTML = matches.map(day => `
+        <div class="day-card ${normalizeTypeClass(day.dayType)}">
+          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+            <div>
+              <div><b>${day.date}</b></div>
+              <div class="small">${day.dayType}</div>
+            </div>
+            <div class="badge">${day.dayType === 'Work Day' ? (day.stage || 'Planned') : day.dayType}</div>
+          </div>
+
+          <div class="small">Hours: ${Number(day.actualHours || 0).toFixed(2)} • Pay: $${Number(day.estimatedPay || 0).toFixed(2)}</div>
+          ${day.breakGuarantee ? '<div class="small">Breaks Guarantee</div>' : ''}
+          ${day.guaranteeCreditHours ? `<div class="small">Guarantee Credit: ${day.guaranteeCreditHours}</div>` : ''}
+          ${day.dayNotes ? `<div class="small">Note: ${day.dayNotes}</div>` : ''}
+
+          ${(day.legs || []).map((leg, i) => `
+            <div class="leg-card">
+              <div><b>Leg ${i + 1}: Train ${leg.train}</b></div>
+              <div class="small">${leg.route || ''}</div>
+              <div class="small">Report ${leg.reportTime || '--:--'} • Leave ${leg.stationTime || '--:--'} • Arrival ${leg.arrival || '--:--'} • Off ${leg.end || '--:--'}</div>
+            </div>
+          `).join('')}
+
+          <button class="warning-btn" onclick="editDay(${day.id})">Edit Day</button>
+          <button class="secondary-btn" onclick="deleteDay(${day.id})">Delete Day</button>
+        </div>
+      `).join('');
+    }
+
+    function renderMonthSummary() {
+      const month = document.getElementById('filterMonth').value;
+      const matches = days.filter(d => d.date.startsWith(month));
+      const actualHours = matches.reduce((sum, d) => sum + Number(d.actualHours || 0), 0);
+      const guaranteeCredit = matches.reduce((sum, d) => sum + Number(d.guaranteeCreditHours || 0), 0);
+      const estimatedPay = matches.reduce((sum, d) => sum + Number(d.estimatedPay || 0), 0);
+      const guaranteeBroken = matches.some(d => d.breakGuarantee);
+
+      document.getElementById('monthHours').textContent = actualHours.toFixed(2);
+      document.getElementById('guaranteeStatus').textContent = guaranteeBroken ? 'Broken' : `${(actualHours + guaranteeCredit).toFixed(2)} / ${GUARANTEE_HOURS}`;
+      document.getElementById('monthPay').textContent = `$${estimatedPay.toFixed(2)}`;
+    }
+
+    function renderHeaderSummary() {
+      const selectedDate = document.getElementById('filterDate').value;
+      const matches = days.filter(d => d.date === selectedDate);
+      const legsToday = matches.reduce((sum, d) => sum + (d.legs ? d.legs.length : 0), 0);
+      const todayHours = matches.reduce((sum, d) => sum + Number(d.actualHours || 0), 0);
+      const todayPay = matches.reduce((sum, d) => sum + Number(d.estimatedPay || 0), 0);
+      const month = document.getElementById('filterMonth').value;
+      const monthMatches = days.filter(d => d.date.startsWith(month));
+      const guaranteeHours = monthMatches.reduce((sum, d) => sum + Number(d.actualHours || 0) + Number(d.guaranteeCreditHours || 0), 0);
+
+      document.getElementById('homeDateLabel').textContent = selectedDate;
+      document.getElementById('homeLegCount').textContent = legsToday;
+      document.getElementById('quickTodayHours').textContent = todayHours.toFixed(2);
+      document.getElementById('quickTodayPay').textContent = `$${todayPay.toFixed(2)}`;
+      document.getElementById('quickGuarantee').textContent = `${guaranteeHours.toFixed(2)} / ${GUARANTEE_HOURS}`;
+      document.getElementById('homeSummaryText').textContent = matches.length ? `${matches.length} saved day(s) for ${selectedDate}` : 'Nothing saved yet.';
+    }
+
+    function render() {
+      renderHeaderSummary();
+      renderLiveCard();
+      renderTodayList();
+      renderMonthSummary();
+    }
+
+    (function init() {
+      const today = todayISO();
+      const viewDate = loadViewDate();
+
+      document.getElementById('todayChip').textContent = today;
+      document.getElementById('filterDate').value = viewDate;
+      document.getElementById('filterMonth').value = monthFromDate(viewDate);
+      document.getElementById('workDate').value = today;
+      document.getElementById('homeDateLabel').textContent = viewDate;
+
+      clearPlanner();
+      render();
+      switchTab('home');
+    })();
+  </script>
+</body>
+</html>
