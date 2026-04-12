@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RailCrew Simple Fixed</title>
+  <style>
+    :root{
+      --bg:#071321;
+      --card:#13233d;
+      --text:#f8fafc;
+      --muted:#94a3b8;
+      --accent:#ef4444;
+      --work:#22c55e;
+      --off:#64748b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:linear-gradient(#091626,#071321);
+      color:var(--text);
+      padding:16px;
+    }
+    .app{max-width:1000px;margin:0 auto}
+    .card{
+      background:var(--card);
+      border-radius:12px;
+      padding:16px;
+      margin-bottom:16px;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .col{
+      flex:1;
+      min-width:160px;
+    }
+    label{
+      display:block;
+      font-size:.85rem;
+      color:var(--muted);
+      margin-bottom:4px;
+    }
+    input,select,textarea{
+      width:100%;
+      padding:10px;
+      border:none;
+      border-radius:8px;
+      background:#0f172a;
+      color:white;
+    }
+    textarea{min-height:90px;resize:vertical}
+    button{
+      width:100%;
+      padding:10px;
+      border:none;
+      border-radius:8px;
+      background:var(--accent);
+      color:white;
+      font-weight:bold;
+      margin-top:10px;
+      cursor:pointer;
+    }
+    .secondary{background:#334155}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+    }
+    @media(min-width:800px){
+      .grid{grid-template-columns:repeat(4,1fr)}
+    }
+    .day{
+      background:#1e293b;
+      border-left:5px solid var(--off);
+      border-radius:10px;
+      padding:12px;
+    }
+    .day.work{border-left-color:var(--work)}
+    .small{color:var(--muted);font-size:.85rem;margin-top:4px}
+    .title{margin:0 0 6px 0}
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <div class="card">
+    <h2 class="title">RailCrew Simple Fixed</h2>
+    <div class="small">Stable monthly version with working date field</div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div class="col">
+        <label>Pickup Date (Day 1)</label>
+        <input type="date" id="pickupDate">
+      </div>
+      <div class="col">
+        <label>Month</label>
+        <input type="month" id="monthPicker">
+      </div>
+    </div>
+    <button onclick="buildMonth()">Build Month</button>
+  </div>
+
+  <div class="card">
+    <h3 class="title">Month Days</h3>
+    <div id="monthGrid" class="grid"></div>
+  </div>
+
+  <div class="card">
+    <h3 class="title">Edit Day</h3>
+    <div class="row">
+      <div class="col">
+        <label>Date</label>
+        <input type="date" id="editDate">
+      </div>
+      <div class="col">
+        <label>Day Type</label>
+        <select id="dayType" onchange="toggleWorkFields()">
+          <option value="Work">Work</option>
+          <option value="Off">Off</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="workFields">
+      <div class="row">
+        <div class="col">
+          <label>Train #</label>
+          <input id="train">
+        </div>
+        <div class="col">
+          <label>Route</label>
+          <input id="route">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>Report</label>
+          <input type="time" id="report">
+        </div>
+        <div class="col">
+          <label>Release</label>
+          <input type="time" id="release">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label>Notes</label>
+        <textarea id="notes"></textarea>
+      </div>
+    </div>
+
+    <button onclick="saveDay()">Save Day</button>
+    <button class="secondary" onclick="clearEditor()">Clear Editor</button>
+  </div>
+
+  <div class="card">
+    <h3 class="title">Month Summary</h3>
+    <div id="summary"></div>
+  </div>
+
+</div>
+
+<script>
+const STORAGE_KEY = "railcrew_simple_fixed_v1";
+let days = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+function saveStorage(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(days));
+}
+
+function todayISO(){
+  const now = new Date();
+  const offset = now.getTimezoneOffset();
+  return new Date(now.getTime() - offset * 60000).toISOString().split("T")[0];
+}
+
+function calcHours(start, end){
+  if(!start || !end) return 0;
+  const [sh, sm] = start.split(":").map(Number);
+  const [eh, em] = end.split(":").map(Number);
+  let diff = (eh * 60 + em) - (sh * 60 + sm);
+  if(diff < 0) diff += 1440;
+  return diff / 60;
+}
+
+function buildMonth(){
+  const pickup = document.getElementById("pickupDate").value;
+  const month = document.getElementById("monthPicker").value;
+
+  if(!pickup || !month){
+    alert("Enter pickup date and month");
+    return;
+  }
+
+  const [year, mon] = month.split("-").map(Number);
+  const totalDays = new Date(year, mon, 0).getDate();
+  const startDate = new Date(pickup + "T00:00:00");
+
+  const keepOtherMonths = days.filter(d => !d.date.startsWith(month));
+  const newMonth = [];
+
+  for(let i = 1; i <= totalDays; i++){
+    const dateObj = new Date(year, mon - 1, i);
+    const date = `${month}-${String(i).padStart(2, "0")}`;
+
+    const diffDays = Math.floor((dateObj - startDate) / 86400000);
+    const cycleDay = ((diffDays % 7) + 7) % 7;
+    const type = cycleDay < 5 ? "Work" : "Off";
+
+    newMonth.push({
+      date,
+      type,
+      train: "",
+      route: "",
+      report: "",
+      release: "",
+      notes: "",
+      hours: 0
+    });
+  }
+
+  days = [...keepOtherMonths, ...newMonth].sort((a,b) => a.date.localeCompare(b.date));
+  saveStorage();
+  render();
+}
+
+function editDay(date){
+  const day = days.find(d => d.date === date);
+  if(!day) return;
+
+  document.getElementById("editDate").value = day.date;
+  document.getElementById("dayType").value = day.type;
+  document.getElementById("train").value = day.train || "";
+  document.getElementById("route").value = day.route || "";
+  document.getElementById("report").value = day.report || "";
+  document.getElementById("release").value = day.release || "";
+  document.getElementById("notes").value = day.notes || "";
+  toggleWorkFields();
+
+  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+}
+
+function saveDay(){
+  const date = document.getElementById("editDate").value;
+  if(!date){
+    alert("Pick or enter a date first");
+    return;
+  }
+
+  const type = document.getElementById("dayType").value;
+  const train = document.getElementById("train").value.trim();
+  const route = document.getElementById("route").value.trim();
+  const report = document.getElementById("report").value;
+  const release = document.getElementById("release").value;
+  const notes = document.getElementById("notes").value.trim();
+
+  let idx = days.findIndex(d => d.date === date);
+
+  if(idx === -1){
+    days.push({
+      date,
+      type,
+      train: "",
+      route: "",
+      report: "",
+      release: "",
+      notes: "",
+      hours: 0
+    });
+    idx = days.findIndex(d => d.date === date);
+  }
+
+  days[idx].type = type;
+  days[idx].notes = notes;
+
+  if(type === "Work"){
+    days[idx].train = train;
+    days[idx].route = route;
+    days[idx].report = report;
+    days[idx].release = release;
+    days[idx].hours = calcHours(report, release);
+  } else {
+    days[idx].train = "";
+    days[idx].route = "";
+    days[idx].report = "";
+    days[idx].release = "";
+    days[idx].hours = 0;
+  }
+
+  days.sort((a,b) => a.date.localeCompare(b.date));
+  saveStorage();
+  render();
+  alert("Saved");
+}
+
+function clearEditor(){
+  document.getElementById("editDate").value = "";
+  document.getElementById("dayType").value = "Work";
+  document.getElementById("train").value = "";
+  document.getElementById("route").value = "";
+  document.getElementById("report").value = "";
+  document.getElementById("release").value = "";
+  document.getElementById("notes").value = "";
+  toggleWorkFields();
+}
+
+function toggleWorkFields(){
+  const isWork = document.getElementById("dayType").value === "Work";
+  document.getElementById("workFields").style.display = isWork ? "block" : "none";
+}
+
+function render(){
+  const month = document.getElementById("monthPicker").value;
+  const monthDays = month ? days.filter(d => d.date.startsWith(month)) : [];
+
+  const grid = document.getElementById("monthGrid");
+  if(!monthDays.length){
+    grid.innerHTML = `<div class="small">Build a month first.</div>`;
+  } else {
+    grid.innerHTML = monthDays.map(d => `
+      <div class="day ${d.type === "Work" ? "work" : ""}">
+        <div><b>${d.date}</b></div>
+        <div class="small">${d.type}</div>
+        ${d.type === "Work" ? `
+          <div class="small">${d.train || "No train"}</div>
+          <div class="small">${d.report || "--:--"} - ${d.release || "--:--"}</div>
+          <div class="small">${d.hours.toFixed(2)} hrs</div>
+        ` : `
+          <div class="small">Off day</div>
+        `}
+        <button onclick="editDay('${d.date}')">Edit</button>
+      </div>
+    `).join("");
+  }
+
+  const totalHours = monthDays.reduce((sum, d) => sum + Number(d.hours || 0), 0);
+  const workDays = monthDays.filter(d => d.type === "Work").length;
+  const offDays = monthDays.filter(d => d.type === "Off").length;
+
+  document.getElementById("summary").innerHTML = `
+    <div class="small">Work Days: <b>${workDays}</b></div>
+    <div class="small">Off Days: <b>${offDays}</b></div>
+    <div class="small">Total Hours: <b>${totalHours.toFixed(2)}</b></div>
+    <div class="small">Guarantee: <b>${totalHours >= 185 ? "Met" : "Below 185"}</b></div>
+  `;
+}
+
+(function init(){
+  const today = todayISO();
+  document.getElementById("pickupDate").value = today;
+  document.getElementById("monthPicker").value = today.slice(0,7);
+  toggleWorkFields();
+  render();
+})();
+</script>
+</body>
+</html>
