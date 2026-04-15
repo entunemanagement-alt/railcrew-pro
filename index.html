@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>RailCrew Pro Elite</title>
+  <style>
+    :root{
+      --bg:#03101f;
+      --bg2:#071a31;
+      --card:#0f2746;
+      --card2:#17365f;
+      --card3:#1b4675;
+      --text:#f8fafc;
+      --muted:#b5c3d7;
+      --accent:#ff4d5a;
+      --accent2:#ff7a59;
+      --accentSoft:rgba(255,77,90,.16);
+      --cyan:#22d3ee;
+      --green:#22c55e;
+      --yellow:#f59e0b;
+      --blue:#3b82f6;
+      --slate:#64748b;
+      --line:rgba(255,255,255,.09);
+      --shadow:0 16px 40px rgba(0,0,0,.34);
+      --radius:20px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+
+    body{
+      margin:0;
+      font-family:Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(255,77,90,.20), transparent 23%),
+        radial-gradient(circle at top left, rgba(34,211,238,.10), transparent 20%),
+        linear-gradient(180deg,var(--bg2),var(--bg));
+      padding:16px 16px 108px;
+    }
+
+    .app{
+      max-width:1150px;
+      margin:0 auto;
+    }
+
+    .hero{
+      background:
+        linear-gradient(135deg, rgba(255,77,90,.20), rgba(23,54,95,.96)),
+        linear-gradient(180deg, var(--card), var(--card2));
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:20px;
+      margin-bottom:18px;
+      box-shadow:var(--shadow);
+    }
+
+    .hero h1{
+      margin:0;
+      font-size:1.95rem;
+      letter-spacing:.2px;
+    }
+
+    .hero p{
+      margin:8px 0 0;
+      color:#dce7f5;
+      line-height:1.45;
+    }
+
+    .card{
+      background:
+        linear-gradient(180deg, rgba(15,39,70,.98), rgba(23,54,95,.98));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:18px;
+      margin-bottom:16px;
+      box-shadow:var(--shadow);
+    }
+
+    .section-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+
+    .section-title h2,
+    .section-title h3{
+      margin:0;
+    }
+
+    .subtle{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
+    .hero-panel{
+      background:
+        linear-gradient(135deg, rgba(255,77,90,.16), rgba(255,255,255,.03));
+      border:1px solid rgba(255,77,90,.20);
+      border-radius:18px;
+      padding:15px;
+      margin-bottom:12px;
+    }
+
+    .label{
+      color:#b8c6d8;
+      font-size:.75rem;
+      text-transform:uppercase;
+      letter-spacing:.55px;
+    }
+
+    .big{
+      font-size:1.75rem;
+      font-weight:900;
+      margin-top:6px;
+      line-height:1.12;
+    }
+
+    .countdown{
+      font-size:2rem;
+      font-weight:900;
+      color:#ffb3a7;
+      margin-top:6px;
+    }
+
+    .small{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.35;
+    }
+
+    .grid{
+      display:grid;
+      gap:12px;
+    }
+
+    .home-grid,.today-grid,.summary-grid,.pay-grid{
+      grid-template-columns:repeat(2,1fr);
+    }
+
+    .month-grid{
+      grid-template-columns:repeat(2,1fr);
+    }
+
+    .weekly-grid{
+      grid-template-columns:1fr;
+    }
+
+    @media(min-width:820px){
+      .home-grid,.today-grid,.summary-grid,.pay-grid{
+        grid-template-columns:repeat(4,1fr);
+      }
+      .month-grid{
+        grid-template-columns:repeat(4,1fr);
+      }
+      .weekly-grid{
+        grid-template-columns:repeat(2,1fr);
+      }
+    }
+
+    .box,.weekly-card,.day-card,.leg-card{
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:14px;
+    }
+
+    .value{
+      margin-top:6px;
+      font-size:1.12rem;
+      font-weight:800;
+      word-break:break-word;
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .col{
+      flex:1;
+      min-width:160px;
+    }
+
+    label{
+      display:block;
+      font-size:.82rem;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+
+    input,select,textarea{
+      width:100%;
+      padding:12px 13px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.08);
+      background:#09172b;
+      color:white;
+      outline:none;
+    }
+
+    input:focus,select:focus,textarea:focus{
+      border-color:rgba(255,122,89,.7);
+      box-shadow:0 0 0 3px rgba(255,122,89,.14);
+    }
+
+    textarea{
+      min-height:90px;
+      resize:vertical;
+    }
+
+    button{
+      width:100%;
+      padding:13px 14px;
+      border:none;
+      border-radius:14px;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:white;
+      font-weight:800;
+      cursor:pointer;
+      margin-top:10px;
+    }
+
+    .secondary{background:linear-gradient(135deg,#334155,#475569)}
+    .blue{background:linear-gradient(135deg,#2563eb,#38bdf8)}
+    .green{background:linear-gradient(135deg,#169c46,#22c55e)}
+    .yellow{background:linear-gradient(135deg,#b45309,#f59e0b)}
+
+    .btn-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .btn-row button{
+      flex:1;
+      min-width:120px;
+      margin-top:8px;
+    }
+
+    .pill{
+      display:inline-block;
+      padding:5px 9px;
+      border-radius:999px;
+      background:rgba(255,255,255,.10);
+      font-size:.74rem;
+      margin-right:6px;
+      margin-top:7px;
+    }
+
+    .pill.live{background:rgba(34,197,94,.18)}
+    .pill.warn{background:rgba(245,158,11,.18)}
+    .pill.off{background:rgba(100,116,139,.22)}
+
+    .weekday-work{border-left:5px solid var(--green)}
+    .weekday-off{border-left:5px solid var(--slate)}
+    .day-card.work{border-left:5px solid var(--green)}
+    .day-card.off{border-left:5px solid var(--slate)}
+
+    .page{display:none}
+    .page.active{display:block}
+
+    .bottom-nav{
+      position:fixed;
+      left:12px;
+      right:12px;
+      bottom:12px;
+      max-width:1150px;
+      margin:0 auto;
+      background:rgba(8,20,37,.94);
+      backdrop-filter:blur(12px);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:22px;
+      padding:10px;
+      display:grid;
+      grid-template-columns:repeat(6,1fr);
+      gap:8px;
+      z-index:100;
+      box-shadow:0 12px 28px rgba(0,0,0,.25);
+    }
+
+    .nav-btn{
+      margin-top:0;
+      padding:11px 8px;
+      background:rgba(255,255,255,.05);
+      font-size:.8rem;
+      border-radius:14px;
+    }
+
+    .nav-btn.active{
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:92px;
+      transform:translateX(-50%) translateY(20px);
+      background:rgba(7,20,37,.96);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      padding:12px 16px;
+      color:white;
+      opacity:0;
+      transition:.22s ease;
+      pointer-events:none;
+      z-index:1000;
+      min-width:220px;
+      text-align:center;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <div class="hero">
+    <h1>RailCrew Pro Elite</h1>
+    <p>Home command center, Today edit, recurring weekly schedule, month builder, next-leg preview, tomorrow preview, pay tracker, and local alerts.</p>
+  </div>
+
+  <div id="page-home" class="page active">
+    <div class="card">
+      <div class="section-title">
+        <h2>Home</h2>
+        <span class="subtle" id="homeDateLabel"></span>
+      </div>
+
+      <div class="hero-panel">
+        <div class="label">Next Move</div>
+        <div class="big" id="homeNextMove">Build this month to begin.</div>
+        <div class="small" id="homeHint"></div>
+      </div>
+
+      <div class="hero-panel">
+        <div class="label">Countdown</div>
+        <div class="countdown" id="homeCountdown">--</div>
+        <div class="small" id="homeCountdownLabel"></div>
+      </div>
+
+      <div class="hero-panel">
+        <div class="label" style="color:#ffb3a7;">Tomorrow Preview</div>
+        <div class="big" id="homeTomorrowMove">--</div>
+        <div class="small" id="homeTomorrowHint"></div>
+      </div>
+
+      <div class="grid home-grid">
+        <div class="box"><div class="label">Current / Next Train</div><div class="value" id="homeTrain">--</div></div>
+        <div class="box"><div class="label">Status</div><div class="value" id="homeStatus">--</div></div>
+        <div class="box"><div class="label">Next Event</div><div class="value" id="homeEventType">--</div></div>
+        <div class="box"><div class="label">Next Event Time</div><div class="value" id="homeNextTime">--:--</div></div>
+
+        <div class="box"><div class="label">Current / Next Leg</div><div class="value" id="homeLeg">--</div></div>
+        <div class="box"><div class="label">Gate / Track</div><div class="value" id="homeGate">--</div></div>
+        <div class="box"><div class="label">Today Route</div><div class="value" id="homeRoute">--</div></div>
+        <div class="box"><div class="label">Today Release</div><div class="value" id="homeRelease">--:--</div></div>
+
+        <div class="box"><div class="label">After This</div><div class="value" id="homeNextLegPreview">--</div></div>
+        <div class="box"><div class="label">Next Train</div><div class="value" id="homeNextTrain">--</div></div>
+        <div class="box"><div class="label">Layover</div><div class="value" id="homeLayover">--</div></div>
+        <div class="box"><div class="label">Alerts</div><div class="value" id="homeAlertState">Off</div></div>
+
+        <div class="box"><div class="label">Month Hours</div><div class="value" id="homeMonthHours">0.00</div></div>
+        <div class="box"><div class="label">Guarantee</div><div class="value" id="homeGuarantee">Below 185</div></div>
+        <div class="box"><div class="label">Estimated Pay</div><div class="value" id="homePay">$0.00</div></div>
+        <div class="box"><div class="label">OT Hours</div><div class="value" id="homeOT">0.00</div></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="blue" onclick="enableAlerts()">Enable Alerts</button>
+        <button class="secondary" onclick="manualRefresh()">Refresh Now</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-today" class="page">
+    <div class="card">
+      <div class="section-title">
+        <h2>Today</h2>
+        <span class="subtle" id="todayDateLabel"></span>
+      </div>
+
+      <div class="hero-panel">
+        <div class="label">Today’s Next Move</div>
+        <div class="big" id="todayNextMove">Build this month to begin.</div>
+        <div class="small" id="todayHint"></div>
+      </div>
+
+      <div class="grid today-grid">
+        <div class="box"><div class="label">Train</div><div class="value" id="todayTrain">--</div></div>
+        <div class="box"><div class="label">Route</div><div class="value" id="todayRoute">No trip</div></div>
+        <div class="box"><div class="label">Report</div><div class="value" id="todayReport">--:--</div></div>
+        <div class="box"><div class="label">Station Time</div><div class="value" id="todayDepart">--:--</div></div>
+        <div class="box"><div class="label">Actual Time</div><div class="value" id="todayActual">--:--</div></div>
+        <div class="box"><div class="label">Gate / Track</div><div class="value" id="todayGate">--</div></div>
+        <div class="box"><div class="label">Release</div><div class="value" id="todayRelease">--:--</div></div>
+        <div class="box"><div class="label">Status</div><div class="value" id="todayStatus">--</div></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="blue" onclick="openTrainStatus()">Open Train Status</button>
+        <button class="secondary" onclick="openSchedules()">Open Schedules</button>
+        <button class="secondary" onclick="openStationInfo()">Open Station Info</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">
+        <h3>Today Quick Edit</h3>
+        <span class="subtle">Update today without changing your weekly template</span>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label>Leg Number</label>
+          <select id="todayLegSelect" onchange="loadTodayLegIntoEditor()"></select>
+        </div>
+        <div class="col">
+          <label>Train</label>
+          <input id="todayEditTrain" readonly>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label>Report Time</label>
+          <input type="time" id="todayEditReport">
+        </div>
+        <div class="col">
+          <label>Station Time</label>
+          <input type="time" id="todayEditDepart">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label>Actual Time</label>
+          <input type="time" id="todayEditActual">
+        </div>
+        <div class="col">
+          <label>Release</label>
+          <input type="time" id="todayEditRelease">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label>Gate / Track</label>
+          <input id="todayEditGate" placeholder="e.g. Track 8">
+        </div>
+        <div class="col">
+          <label>Leg Notes</label>
+          <textarea id="todayEditLegNotes"></textarea>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label>Day Notes</label>
+          <textarea id="todayEditDayNotes"></textarea>
+        </div>
+      </div>
+
+      <button onclick="saveTodayQuickEdit()">Save Today Updates</button>
+    </div>
+  </div>
+
+  <div id="page-template" class="page">
+    <div class="card">
+      <div class="section-title">
+        <h3>Weekly Template</h3>
+        <span class="subtle">Already preloaded with your schedule</span>
+      </div>
+      <div class="btn-row">
+        <button class="blue" onclick="resetToDefaultSchedule()">Reload Preloaded Schedule</button>
+      </div>
+      <div id="weeklyTemplateGrid" class="grid weekly-grid"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">
+        <h3>Edit Weekly Day</h3>
+        <span class="subtle">Update one weekday and rebuild the month</span>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label>Weekday</label>
+          <select id="templateWeekday" onchange="loadWeekdayTemplate()">
+            <option value="1">Monday</option>
+            <option value="2">Tuesday</option>
+            <option value="3">Wednesday</option>
+            <option value="4">Thursday</option>
+            <option value="5">Friday</option>
+            <option value="6">Saturday</option>
+            <option value="0">Sunday</option>
+          </select>
+        </div>
+        <div class="col">
+          <label>Day Type</label>
+          <select id="templateDayType" onchange="toggleTemplateWorkFields()">
+            <option value="Work">Work</option>
+            <option value="Off">Off</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="blue" onclick="copyCurrentDayToAllWorkDays()">Copy This To All Work Days</button>
+        <button class="secondary" onclick="clearTemplateEditor()">Clear Editor</button>
+      </div>
+
+      <div id="templateWorkFields">
+        <div class="row">
+          <div class="col">
+            <label>Train #</label>
+            <input id="templateTrain">
+          </div>
+          <div class="col">
+            <label>Route</label>
+            <input id="templateRoute">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label>Report Time</label>
+            <input type="time" id="templateReport">
+          </div>
+          <div class="col">
+            <label>Train Departure (Station Time)</label>
+            <input type="time" id="templateDepart">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label>Actual Time</label>
+            <input type="time" id="templateActual">
+          </div>
+          <div class="col">
+            <label>Release</label>
+            <input type="time" id="templateRelease">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label>Gate / Track</label>
+            <input id="templateGate" placeholder="e.g. Track 8">
+          </div>
+          <div class="col">
+            <label>Leg Notes</label>
+            <textarea id="templateLegNotes"></textarea>
+          </div>
+        </div>
+
+        <button class="green" onclick="addTemplateLeg()">Add Leg</button>
+        <div id="templateLegList"></div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label>Weekly Day Notes</label>
+          <textarea id="templateDayNotes"></textarea>
+        </div>
+      </div>
+
+      <button onclick="saveWeeklyTemplateDay()">Save Weekly Day</button>
+    </div>
+  </div>
+
+  <div id="page-month" class="page">
+    <div class="card">
+      <div class="section-title">
+        <h3>Build Month</h3>
+        <span class="subtle">Uses your weekly schedule automatically</span>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>Month</label>
+          <input type="month" id="monthPicker">
+        </div>
+      </div>
+      <button onclick="buildMonthFromWeeklyTemplate()">Build Month</button>
+    </div>
+
+    <div class="card">
+      <div class="section-title">
+        <h3>Built Month</h3>
+        <span class="subtle">Auto-filled from your weekly schedule</span>
+      </div>
+      <div id="monthGrid" class="grid month-grid"></div>
+    </div>
+  </div>
+
+  <div id="page-summary" class="page">
+    <div class="card">
+      <div class="section-title">
+        <h3>Month Summary</h3>
+        <span class="subtle">Quick view</span>
+      </div>
+      <div class="grid summary-grid">
+        <div class="box"><div class="label">Work Days</div><div class="value" id="sumWorkDays">0</div></div>
+        <div class="box"><div class="label">Off Days</div><div class="value" id="sumOffDays">0</div></div>
+        <div class="box"><div class="label">Total Hours</div><div class="value" id="sumHours">0.00</div></div>
+        <div class="box"><div class="label">Guarantee</div><div class="value" id="sumGuarantee">Below 185</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-pay" class="page">
+    <div class="card">
+      <div class="section-title">
+        <h3>Pay Tracker</h3>
+        <span class="subtle">Live estimate</span>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label>Hourly Rate</label>
+          <input type="number" id="payRate" step="0.01" value="26.69" onchange="renderPayPage(); renderHomePage();">
+        </div>
+        <div class="col">
+          <label>Guarantee Hours</label>
+          <input type="number" id="guaranteeHours" step="0.01" value="185" onchange="renderPayPage(); renderHomePage(); renderSummary();">
+        </div>
+      </div>
+
+      <div class="grid pay-grid">
+        <div class="box"><div class="label">Total Hours</div><div class="value" id="payTotalHours">0.00</div></div>
+        <div class="box"><div class="label">Regular Hours</div><div class="value" id="payRegularHours">0.00</div></div>
+        <div class="box"><div class="label">Overtime Hours</div><div class="value" id="payOTHours">0.00</div></div>
+        <div class="box"><div class="label">Work Days</div><div class="value" id="payWorkDays">0</div></div>
+        <div class="box"><div class="label">Off Days</div><div class="value" id="payOffDays">0</div></div>
+        <div class="box"><div class="label">Guarantee Status</div><div class="value" id="payGuaranteeStatus">Below 185</div></div>
+        <div class="box"><div class="label">Estimated Regular Pay</div><div class="value" id="payRegularDollars">$0.00</div></div>
+        <div class="box"><div class="label">Estimated Total Pay</div><div class="value" id="payTotalDollars">$0.00</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <button class="nav-btn active" id="nav-home" onclick="showPage('home')">Home</button>
+  <button class="nav-btn" id="nav-today" onclick="showPage('today')">Today</button>
+  <button class="nav-btn" id="nav-template" onclick="showPage('template')">Template</button>
+  <button class="nav-btn" id="nav-month" onclick="showPage('month')">Month</button>
+  <button class="nav-btn" id="nav-summary" onclick="showPage('summary')">Summary</button>
+  <button class="nav-btn" id="nav-pay" onclick="showPage('pay')">Pay</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const WEEKLY_TEMPLATE_KEY = "railcrew_elite_weekly_template_v1";
+const MONTH_KEY = "railcrew_elite_generated_months_v1";
+const ALERTS_KEY = "railcrew_elite_alerts_v1";
+const ALERT_MEMORY_KEY = "railcrew_elite_alert_memory_v1";
+
+const WEEKDAY_NAMES = {
+  0: "Sunday",
+  1: "Monday",
+  2: "Tuesday",
+  3: "Wednesday",
+  4: "Thursday",
+  5: "Friday",
+  6: "Saturday"
+};
+
+const DEFAULT_TEMPLATE = [
+  { weekday:1, name:"Monday", type:"Off", legs:[], notes:"" },
+  { weekday:2, name:"Tuesday", type:"Off", legs:[], notes:"" },
+  { weekday:3, name:"Wednesday", type:"Work", legs:[
+      {train:"0093", route:"NYP-WAS", report:"13:00", depart:"13:00", actual:"", gate:"", release:"17:25", notes:"", hours:4.42},
+      {train:"2124", route:"WAS-NYP", report:"17:25", depart:"17:25", actual:"", gate:"", release:"21:20", notes:"", hours:3.92}
+    ], notes:"1st work day" },
+  { weekday:4, name:"Thursday", type:"Work", legs:[
+      {train:"0093", route:"NYP-WAS", report:"13:00", depart:"13:00", actual:"", gate:"", release:"17:25", notes:"", hours:4.42},
+      {train:"2124", route:"WAS-NYP", report:"17:25", depart:"17:25", actual:"", gate:"", release:"21:20", notes:"", hours:3.92}
+    ], notes:"2nd work day" },
+  { weekday:5, name:"Friday", type:"Work", legs:[
+      {train:"0095", route:"NYP-WAS", report:"09:35", depart:"09:35", actual:"", gate:"", release:"14:05", notes:"", hours:4.50},
+      {train:"0148", route:"WAS-NYP", report:"14:05", depart:"14:05", actual:"", gate:"", release:"18:27", notes:"", hours:4.37}
+    ], notes:"3rd work day" },
+  { weekday:6, name:"Saturday", type:"Work", legs:[
+      {train:"0153", route:"NYP-WAS", report:"07:05", depart:"07:05", actual:"", gate:"", release:"11:32", notes:"", hours:4.45},
+      {train:"0140", route:"WAS-NYP", report:"11:32", depart:"11:32", actual:"", gate:"", release:"15:51", notes:"", hours:4.32}
+    ], notes:"4th work day" },
+  { weekday:0, name:"Sunday", type:"Work", legs:[
+      {train:"0143", route:"NYP-WAS", report:"08:47", depart:"08:47", actual:"", gate:"", release:"13:24", notes:"", hours:4.62},
+      {train:"2258", route:"WAS-NYP", report:"13:24", depart:"13:24", actual:"", gate:"", release:"19:05", notes:"", hours:5.68}
+    ], notes:"5th work day" }
+];
+
+let weeklyTemplate = JSON.parse(localStorage.getItem(WEEKLY_TEMPLATE_KEY) || "null") || JSON.parse(JSON.stringify(DEFAULT_TEMPLATE));
+let monthDays = JSON.parse(localStorage.getItem(MONTH_KEY) || "[]");
+let alertsEnabled = JSON.parse(localStorage.getItem(ALERTS_KEY) || "false");
+let alertMemory = JSON.parse(localStorage.getItem(ALERT_MEMORY_KEY) || "{}");
+let draftTemplateLegs = [];
+let toastTimer = null;
+
+function saveAll(){
+  localStorage.setItem(WEEKLY_TEMPLATE_KEY, JSON.stringify(weeklyTemplate));
+  localStorage.setItem(MONTH_KEY, JSON.stringify(monthDays));
+  localStorage.setItem(ALERTS_KEY, JSON.stringify(alertsEnabled));
+  localStorage.setItem(ALERT_MEMORY_KEY, JSON.stringify(alertMemory));
+}
+
+function showToast(msg){
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2200);
+}
+
+function money(v){
+  return `$${Number(v || 0).toFixed(2)}`;
+}
+
+function getPayRate(){
+  return Number(document.getElementById("payRate")?.value || 26.69);
+}
+
+function getGuaranteeHours(){
+  return Number(document.getElementById("guaranteeHours")?.value || 185);
+}
+
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`page-${name}`).classList.add('active');
+  document.getElementById(`nav-${name}`).classList.add('active');
+}
+
+function todayISO(){
+  const now = new Date();
+  const offset = now.getTimezoneOffset();
+  return new Date(now.getTime() - offset * 60000).toISOString().split("T")[0];
+}
+
+function tomorrowISO(){
+  const now = new Date();
+  now.setDate(now.getDate() + 1);
+  const offset = now.getTimezoneOffset();
+  return new Date(now.getTime() - offset * 60000).toISOString().split("T")[0];
+}
+
+function calcHours(start, end){
+  if(!start || !end) return 0;
+  const [sh, sm] = start.split(":").map(Number);
+  const [eh, em] = end.split(":").map(Number);
+  let diff = (eh * 60 + em) - (sh * 60 + sm);
+  if(diff < 0) diff += 1440;
+  return diff / 60;
+}
+
+function getNowMinutes(){
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
+function timeToMinutes(t){
+  if(!t) return null;
+  const [h,m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function formatMinutes(mins){
+  if(mins == null || isNaN(mins)) return "--";
+  const abs = Math.abs(mins);
+  const h = Math.floor(abs / 60);
+  const m = abs % 60;
+  return `${h}h ${m}m`;
+}
+
+function manualRefresh(){
+  renderMonthGrid();
+  renderSummary();
+  renderTodayCard();
+  loadTodayLegOptions();
+  renderHomePage();
+  renderPayPage();
+  updateAlertState();
+  checkAlerts();
+  showToast("Refreshed");
+}
+
+function enableAlerts(){
+  alertsEnabled = true;
+  saveAll();
+  updateAlertState();
+  showToast("Local alerts enabled");
+}
+
+function updateAlertState(){
+  document.getElementById("homeAlertState").textContent = alertsEnabled ? "On" : "Off";
+}
+
+function resetToDefaultSchedule(){
+  weeklyTemplate = JSON.parse(JSON.stringify(DEFAULT_TEMPLATE));
+  saveAll();
+  renderWeeklyTemplateGrid();
+  loadWeekdayTemplate();
+  showToast("Preloaded schedule restored");
+}
+
+function toggleTemplateWorkFields(){
+  const isWork = document.getElementById("templateDayType").value === "Work";
+  document.getElementById("templateWorkFields").style.display = isWork ? "block" : "none";
+}
+
+function renderTemplateLegs(){
+  const box = document.getElementById("templateLegList");
+  if(!draftTemplateLegs.length){
+    box.innerHTML = '<div class="small">No legs added yet.</div>';
+    return;
+  }
+
+  box.innerHTML = draftTemplateLegs.map((leg, i) => `
+    <div class="leg-card">
+      <div><b>Leg ${i + 1}: Train ${leg.train || "--"}</b></div>
+      <div class="small">${leg.route || ""}</div>
+      <div class="small">Report ${leg.report || "--:--"} • Depart ${leg.depart || "--:--"} • Actual ${leg.actual || "--:--"} • Release ${leg.release || "--:--"}</div>
+      <div class="small">Gate: ${leg.gate || "--"}</div>
+      <div class="small">${Number(leg.hours || 0).toFixed(2)} hrs</div>
+      ${leg.notes ? `<div class="small">Note: ${leg.notes}</div>` : ""}
+      <button class="secondary" onclick="removeTemplateLeg(${i})">Remove Leg</button>
+    </div>
+  `).join("");
+}
+
+function addTemplateLeg(){
+  const train = document.getElementById("templateTrain").value.trim();
+  const route = document.getElementById("templateRoute").value.trim();
+  const report = document.getElementById("templateReport").value;
+  const depart = document.getElementById("templateDepart").value;
+  const actual = document.getElementById("templateActual").value;
+  const gate = document.getElementById("templateGate").value.trim();
+  const release = document.getElementById("templateRelease").value;
+  const notes = document.getElementById("templateLegNotes").value.trim();
+
+  if(!train || !report){
+    showToast("Enter Train # and Report");
+    return;
+  }
+
+  draftTemplateLegs.push({
+    train, route, report, depart, actual, gate, release, notes,
+    hours: calcHours(report, release)
+  });
+
+  document.getElementById("templateTrain").value = "";
+  document.getElementById("templateRoute").value = "";
+  document.getElementById("templateReport").value = "";
+  document.getElementById("templateDepart").value = "";
+  document.getElementById("templateActual").value = "";
+  document.getElementById("templateGate").value = "";
+  document.getElementById("templateRelease").value = "";
+  document.getElementById("templateLegNotes").value = "";
+
+  renderTemplateLegs();
+}
+
+function removeTemplateLeg(index){
+  draftTemplateLegs.splice(index, 1);
+  renderTemplateLegs();
+}
+
+function loadWeekdayTemplate(){
+  const weekday = Number(document.getElementById("templateWeekday").value);
+  const day = weeklyTemplate.find(x => Number(x.weekday) === weekday);
+  if(!day) return;
+
+  document.getElementById("templateDayType").value = day.type;
+  document.getElementById("templateDayNotes").value = day.notes || "";
+  draftTemplateLegs = Array.isArray(day.legs) ? JSON.parse(JSON.stringify(day.legs)) : [];
+
+  toggleTemplateWorkFields();
+  renderTemplateLegs();
+}
+
+function clearTemplateEditor(){
+  document.getElementById("templateWeekday").value = "1";
+  document.getElementById("templateDayType").value = "Work";
+  document.getElementById("templateTrain").value = "";
+  document.getElementById("templateRoute").value = "";
+  document.getElementById("templateReport").value = "";
+  document.getElementById("templateDepart").value = "";
+  document.getElementById("templateActual").value = "";
+  document.getElementById("templateGate").value = "";
+  document.getElementById("templateRelease").value = "";
+  document.getElementById("templateLegNotes").value = "";
+  document.getElementById("templateDayNotes").value = "";
+  draftTemplateLegs = [];
+  renderTemplateLegs();
+  toggleTemplateWorkFields();
+  loadWeekdayTemplate();
+}
+
+function saveWeeklyTemplateDay(){
+  const weekday = Number(document.getElementById("templateWeekday").value);
+  const type = document.getElementById("templateDayType").value;
+  const notes = document.getElementById("templateDayNotes").value.trim();
+
+  const idx = weeklyTemplate.findIndex(x => Number(x.weekday) === weekday);
+  if(idx === -1) return;
+
+  weeklyTemplate[idx].type = type;
+  weeklyTemplate[idx].notes = notes;
+  weeklyTemplate[idx].legs = type === "Work" ? JSON.parse(JSON.stringify(draftTemplateLegs)) : [];
+
+  saveAll();
+  renderWeeklyTemplateGrid();
+  showToast("Weekly day saved");
+}
+
+function copyCurrentDayToAllWorkDays(){
+  const sourceWeekday = Number(document.getElementById("templateWeekday").value);
+  const source = weeklyTemplate.find(x => Number(x.weekday) === sourceWeekday);
+  if(!source || source.type !== "Work"){
+    showToast("Selected day must be a Work day");
+    return;
+  }
+
+  weeklyTemplate = weeklyTemplate.map(day => {
+    if(day.type === "Work"){
+      return {
+        ...day,
+        legs: JSON.parse(JSON.stringify(source.legs)),
+        notes: source.notes
+      };
+    }
+    return day;
+  });
+
+  saveAll();
+  renderWeeklyTemplateGrid();
+  loadWeekdayTemplate();
+  showToast("Copied to all Work days");
+}
+
+function renderWeeklyTemplateGrid(){
+  const order = [1,2,3,4,5,6,0];
+  const box = document.getElementById("weeklyTemplateGrid");
+
+  box.innerHTML = [...weeklyTemplate]
+    .sort((a,b) => order.indexOf(Number(a.weekday)) - order.indexOf(Number(b.weekday)))
+    .map(day => {
+      const totalHours = (day.legs || []).reduce((sum, leg) => sum + Number(leg.hours || 0), 0);
+      return `
+        <div class="weekly-card ${day.type === "Work" ? "weekday-work" : "weekday-off"}">
+          <div><b>${day.name}</b></div>
+          <div class="small"><span class="pill ${day.type === "Work" ? "live" : "off"}">${day.type}</span></div>
+          ${day.type === "Work" ? `
+            <div class="small">Legs: ${(day.legs || []).length}</div>
+            <div class="small">Hours: ${totalHours.toFixed(2)}</div>
+            <div class="small">${day.legs[0] ? `First train: ${day.legs[0].train}` : "No legs yet"}</div>
+          ` : `<div class="small">Off day</div>`}
+          ${day.notes ? `<div class="small">Note: ${day.notes}</div>` : ""}
+        </div>
+      `;
+    }).join("");
+}
+
+function buildMonthFromWeeklyTemplate(){
+  const month = document.getElementById("monthPicker").value;
+  if(!month){
+    showToast("Pick a month first");
+    return;
+  }
+
+  const [year, mon] = month.split("-").map(Number);
+  const totalDays = new Date(year, mon, 0).getDate();
+  const rebuilt = [];
+
+  for(let i = 1; i <= totalDays; i++){
+    const dateObj = new Date(year, mon - 1, i);
+    const date = `${month}-${String(i).padStart(2, "0")}`;
+    const weekday = dateObj.getDay();
+    const templateDay = weeklyTemplate.find(x => Number(x.weekday) === weekday);
+    if(!templateDay) continue;
+
+    rebuilt.push({
+      date,
+      weekday,
+      weekdayName: WEEKDAY_NAMES[weekday],
+      type: templateDay.type,
+      notes: templateDay.notes || "",
+      legs: JSON.parse(JSON.stringify(templateDay.legs || [])),
+      hours: (templateDay.legs || []).reduce((sum, leg) => sum + Number(leg.hours || 0), 0)
+    });
+  }
+
+  monthDays = rebuilt;
+  saveAll();
+  manualRefresh();
+  showToast("Month built");
+}
+
+function renderMonthGrid(){
+  const month = document.getElementById("monthPicker").value;
+  const box = document.getElementById("monthGrid");
+
+  if(!month){
+    box.innerHTML = '<div class="small">Pick a month first.</div>';
+    return;
+  }
+
+  const daysForMonth = monthDays.filter(d => d.date.startsWith(month));
+  if(!daysForMonth.length){
+    box.innerHTML = '<div class="small">Build the month first.</div>';
+    return;
+  }
+
+  box.innerHTML = daysForMonth.map(day => `
+    <div class="day-card ${day.type === "Work" ? "work" : "off"}">
+      <div><b>${day.date}</b></div>
+      <div class="small">${day.weekdayName}</div>
+      <div class="small"><span class="pill ${day.type === "Work" ? "live" : "off"}">${day.type}</span></div>
+      ${day.type === "Work" ? `
+        <div class="small">Legs: ${(day.legs || []).length}</div>
+        <div class="small">Hours: ${Number(day.hours || 0).toFixed(2)}</div>
+        <div class="small">${day.legs[0] ? `First train: ${day.legs[0].train}` : "No legs yet"}</div>
+      ` : `<div class="small">Off day</div>`}
+      ${day.notes ? `<div class="small">Note: ${day.notes}</div>` : ""}
+    </div>
+  `).join("");
+}
+
+function getMonthStats(){
+  const month = document.getElementById("monthPicker").value;
+  const daysForMonth = month ? monthDays.filter(d => d.date.startsWith(month)) : [];
+  const totalHours = daysForMonth.reduce((sum, d) => sum + Number(d.hours || 0), 0);
+  const workDays = daysForMonth.filter(d => d.type === "Work").length;
+  const offDays = daysForMonth.filter(d => d.type === "Off").length;
+  const guaranteeHours = getGuaranteeHours();
+  const payRate = getPayRate();
+  const overtimeHours = Math.max(0, totalHours - guaranteeHours);
+  const regularHours = Math.min(totalHours, guaranteeHours);
+  const regularPay = regularHours * payRate;
+  const totalPay = totalHours * payRate;
+
+  return {
+    totalHours, workDays, offDays, guaranteeHours, payRate,
+    overtimeHours, regularHours, regularPay, totalPay,
+    guaranteeStatus: totalHours >= guaranteeHours ? "Met" : "Below 185"
+  };
+}
+
+function renderSummary(){
+  const stats = getMonthStats();
+  document.getElementById("sumWorkDays").textContent = stats.workDays;
+  document.getElementById("sumOffDays").textContent = stats.offDays;
+  document.getElementById("sumHours").textContent = stats.totalHours.toFixed(2);
+  document.getElementById("sumGuarantee").textContent = stats.guaranteeStatus;
+}
+
+function renderPayPage(){
+  const stats = getMonthStats();
+  document.getElementById("payTotalHours").textContent = stats.totalHours.toFixed(2);
+  document.getElementById("payRegularHours").textContent = stats.regularHours.toFixed(2);
+  document.getElementById("payOTHours").textContent = stats.overtimeHours.toFixed(2);
+  document.getElementById("payWorkDays").textContent = stats.workDays;
+  document.getElementById("payOffDays").textContent = stats.offDays;
+  document.getElementById("payGuaranteeStatus").textContent = stats.guaranteeStatus;
+  document.getElementById("payRegularDollars").textContent = money(stats.regularPay);
+  document.getElementById("payTotalDollars").textContent = money(stats.totalPay);
+}
+
+function getTodayBuiltDay(){
+  return monthDays.find(d => d.date === todayISO()) || null;
+}
+
+function getTomorrowBuiltDay(){
+  return monthDays.find(d => d.date === tomorrowISO()) || null;
+}
+
+function loadTodayLegOptions(){
+  const select = document.getElementById("todayLegSelect");
+  const day = getTodayBuiltDay();
+
+  if(!day || day.type !== "Work" || !day.legs.length){
+    select.innerHTML = '<option value="">No legs today</option>';
+    document.getElementById("todayEditTrain").value = "";
+    document.getElementById("todayEditReport").value = "";
+    document.getElementById("todayEditDepart").value = "";
+    document.getElementById("todayEditActual").value = "";
+    document.getElementById("todayEditRelease").value = "";
+    document.getElementById("todayEditGate").value = "";
+    document.getElementById("todayEditLegNotes").value = "";
+    document.getElementById("todayEditDayNotes").value = day ? (day.notes || "") : "";
+    return;
+  }
+
+  select.innerHTML = day.legs.map((leg, i) => `
+    <option value="${i}">Leg ${i + 1} - Train ${leg.train}</option>
+  `).join("");
+
+  document.getElementById("todayEditDayNotes").value = day.notes || "";
+  loadTodayLegIntoEditor();
+}
+
+function loadTodayLegIntoEditor(){
+  const day = getTodayBuiltDay();
+  const idx = Number(document.getElementById("todayLegSelect").value || 0);
+  if(!day || day.type !== "Work" || !day.legs[idx]) return;
+
+  const leg = day.legs[idx];
+  document.getElementById("todayEditTrain").value = leg.train || "";
+  document.getElementById("todayEditReport").value = leg.report || "";
+  document.getElementById("todayEditDepart").value = leg.depart || "";
+  document.getElementById("todayEditActual").value = leg.actual || "";
+  document.getElementById("todayEditRelease").value = leg.release || "";
+  document.getElementById("todayEditGate").value = leg.gate || "";
+  document.getElementById("todayEditLegNotes").value = leg.notes || "";
+}
+
+function saveTodayQuickEdit(){
+  const day = getTodayBuiltDay();
+  if(!day || day.type !== "Work" || !day.legs.length){
+    showToast("No work legs for today");
+    return;
+  }
+
+  const idx = Number(document.getElementById("todayLegSelect").value || 0);
+  if(!day.legs[idx]){
+    showToast("Select a valid leg");
+    return;
+  }
+
+  day.legs[idx].report = document.getElementById("todayEditReport").value;
+  day.legs[idx].depart = document.getElementById("todayEditDepart").value;
+  day.legs[idx].actual = document.getElementById("todayEditActual").value;
+  day.legs[idx].release = document.getElementById("todayEditRelease").value;
+  day.legs[idx].gate = document.getElementById("todayEditGate").value.trim();
+  day.legs[idx].notes = document.getElementById("todayEditLegNotes").value.trim();
+  day.notes = document.getElementById("todayEditDayNotes").value.trim();
+  day.legs[idx].hours = calcHours(day.legs[idx].report, day.legs[idx].release);
+  day.hours = day.legs.reduce((sum, leg) => sum + Number(leg.hours || 0), 0);
+
+  saveAll();
+  manualRefresh();
+  showToast("Today updated");
+}
+
+function getTodayState(){
+  const day = getTodayBuiltDay();
+
+  if(!day){
+    return {
+      move:"Build this month to begin",
+      hint:"Pick a month and tap Build Month",
+      train:"--",
+      route:"No trip",
+      report:"--:--",
+      depart:"--:--",
+      actual:"--:--",
+      gate:"--",
+      release:"--:--",
+      status:"--",
+      countdown:"--",
+      countdownLabel:"",
+      nextTime:"--:--",
+      eventType:"--",
+      legText:"--",
+      currentLegIndex:-1,
+      nextEventMinutes:null
+    };
+  }
+
+  if(day.type !== "Work" || !day.legs.length){
+    return {
+      move:"Off day",
+      hint:day.notes || "No work scheduled today",
+      train:"OFF",
+      route:"No trip",
+      report:"--:--",
+      depart:"--:--",
+      actual:"--:--",
+      gate:"--",
+      release:"--:--",
+      status:"Off",
+      countdown:"--",
+      countdownLabel:"No active countdown",
+      nextTime:"--:--",
+      eventType:"Off",
+      legText:"--",
+      currentLegIndex:-1,
+      nextEventMinutes:null
+    };
+  }
+
+  const now = getNowMinutes();
+  const legs = day.legs.map((leg, i) => ({
+    ...leg,
+    i,
+    reportMins: timeToMinutes(leg.report),
+    departMins: timeToMinutes(leg.depart),
+    actualMins: timeToMinutes(leg.actual),
+    releaseMins: timeToMinutes(leg.release)
+  }));
+
+  let active = legs[0];
+  let move = `Report for Train ${active.train}`;
+  let hint = "";
+  let status = "Scheduled";
+  let countdown = "--";
+  let countdownLabel = "";
+  let nextTime = "--:--";
+  let eventType = "--";
+  let legText = `Leg 1 of ${legs.length}`;
+  let currentLegIndex = 0;
+  let nextEventMinutes = null;
+
+  for(let i = 0; i < legs.length; i++){
+    const leg = legs[i];
+    const boardTime = leg.actualMins || leg.departMins || leg.reportMins;
+
+    if(leg.reportMins != null && now < leg.reportMins){
+      active = leg;
+      move = `Report for Train ${leg.train}`;
+      hint = leg.route ? `Get ready for ${leg.route}` : "Get ready for duty";
+      status = "Pre-Report";
+      countdown = formatMinutes(leg.reportMins - now);
+      countdownLabel = "Until report";
+      nextTime = leg.report || "--:--";
+      eventType = "Report";
+      legText = `Leg ${i + 1} of ${legs.length}`;
+      currentLegIndex = i;
+      nextEventMinutes = leg.reportMins;
+      break;
+    }
+
+    if(leg.reportMins != null && boardTime != null && now >= leg.reportMins && now < boardTime){
+      active = leg;
+      move = `Board Train ${leg.train}`;
+      hint = leg.gate ? `Gate / Track: ${leg.gate}` : "Waiting for gate / track";
+      status = "Boarding";
+      countdown = formatMinutes(boardTime - now);
+      countdownLabel = "Until station time";
+      nextTime = leg.actual || leg.depart || "--:--";
+      eventType = "Board";
+      legText = `Leg ${i + 1} of ${legs.length}`;
+      currentLegIndex = i;
+      nextEventMinutes = boardTime;
+      break;
+    }
+
+    if(boardTime != null && leg.releaseMins != null && now >= boardTime && now <= leg.releaseMins){
+      active = leg;
+      move = `Ride Train ${leg.train}`;
+      hint = leg.route ? `Working ${leg.route}` : "On duty";
+      status = "On Duty";
+      countdown = formatMinutes(leg.releaseMins - now);
+      countdownLabel = "Until release";
+      nextTime = leg.release || "--:--";
+      eventType = "Release";
+      legText = `Leg ${i + 1} of ${legs.length}`;
+      currentLegIndex = i;
+      nextEventMinutes = leg.releaseMins;
+      break;
+    }
+
+    const nextLeg = legs[i + 1];
+    if(nextLeg && leg.releaseMins != null){
+      const nextBoardTime = nextLeg.actualMins || nextLeg.departMins || nextLeg.reportMins;
+      if(nextBoardTime != null && now > leg.releaseMins && now < nextBoardTime){
+        active = nextLeg;
+        move = `Next Leg: Train ${nextLeg.train}`;
+        hint = nextLeg.gate ? `Gate / Track: ${nextLeg.gate}` : (nextLeg.route ? `Prepare for ${nextLeg.route}` : "Prepare for next leg");
+        status = "Layover";
+        countdown = formatMinutes(nextBoardTime - now);
+        countdownLabel = "Until next leg";
+        nextTime = nextLeg.actual || nextLeg.depart || nextLeg.report || "--:--";
+        eventType = "Next Leg";
+        legText = `Leg ${i + 2} of ${legs.length}`;
+        currentLegIndex = i + 1;
+        nextEventMinutes = nextBoardTime;
+        break;
+      }
+    }
+
+    if(i === legs.length - 1 && leg.releaseMins != null && now > leg.releaseMins){
+      active = leg;
+      move = "Released for the day";
+      hint = `Finished all ${legs.length} legs`;
+      status = "Released";
+      countdown = "--";
+      countdownLabel = "No active countdown";
+      nextTime = "--:--";
+      eventType = "Done";
+      legText = `Completed ${legs.length} legs`;
+      currentLegIndex = i;
+      nextEventMinutes = null;
+    }
+  }
+
+  return {
+    move, hint,
+    train:active.train || "--",
+    route:active.route || "No route",
+    report:active.report || "--:--",
+    depart:active.depart || "--:--",
+    actual:active.actual || "--:--",
+    gate:active.gate || "--",
+    release:active.release || "--:--",
+    status, countdown, countdownLabel, nextTime, eventType, legText, currentLegIndex, nextEventMinutes
+  };
+}
+
+function getTomorrowState(){
+  const day = getTomorrowBuiltDay();
+
+  if(!day){
+    return {
+      move:"No tomorrow preview yet",
+      hint:"Build the month to load tomorrow",
+    };
+  }
+
+  if(day.type !== "Work" || !day.legs.length){
+    return {
+      move:"Tomorrow is an off day",
+      hint:day.notes || "No work scheduled tomorrow",
+    };
+  }
+
+  const firstLeg = day.legs[0];
+  return {
+    move:`Tomorrow: Train ${firstLeg.train || "--"}`,
+    hint:`${firstLeg.route || "No route"} • Report ${firstLeg.report || "--:--"} • ${day.legs.length} leg(s)`,
+  };
+}
+
+function renderTodayCard(){
+  const state = getTodayState();
+  document.getElementById("todayDateLabel").textContent = todayISO();
+  document.getElementById("todayNextMove").textContent = state.move;
+  document.getElementById("todayHint").textContent = state.hint;
+  document.getElementById("todayTrain").textContent = state.train;
+  document.getElementById("todayRoute").textContent = state.route;
+  document.getElementById("todayReport").textContent = state.report;
+  document.getElementById("todayDepart").textContent = state.depart;
+  document.getElementById("todayActual").textContent = state.actual;
+  document.getElementById("todayGate").textContent = state.gate;
+  document.getElementById("todayRelease").textContent = state.release;
+  document.getElementById("todayStatus").textContent = state.status;
+}
+
+function renderHomePage(){
+  const state = getTodayState();
+  const tomorrowState = getTomorrowState();
+  const stats = getMonthStats();
+  const day = getTodayBuiltDay();
+
+  document.getElementById("homeDateLabel").textContent = todayISO();
+  document.getElementById("homeNextMove").textContent = state.move;
+  document.getElementById("homeHint").textContent =
+    `${state.hint}${state.legText && state.legText !== "--" ? " • " + state.legText : ""}${state.eventType && state.eventType !== "--" ? " • " + state.eventType : ""}`;
+  document.getElementById("homeCountdown").textContent = state.countdown;
+  document.getElementById("homeCountdownLabel").textContent = state.countdownLabel;
+  document.getElementById("homeTomorrowMove").textContent = tomorrowState.move;
+  document.getElementById("homeTomorrowHint").textContent = tomorrowState.hint;
+  document.getElementById("homeTrain").textContent = state.train;
+  document.getElementById("homeStatus").textContent = state.status;
+  document.getElementById("homeEventType").textContent = state.eventType;
+  document.getElementById("homeNextTime").textContent = state.nextTime;
+  document.getElementById("homeLeg").textContent = state.legText;
+  document.getElementById("homeGate").textContent = state.gate;
+  document.getElementById("homeRoute").textContent = state.route;
+  document.getElementById("homeRelease").textContent = state.release;
+  document.getElementById("homeMonthHours").textContent = stats.totalHours.toFixed(2);
+  document.getElementById("homeGuarantee").textContent = stats.guaranteeStatus;
+  document.getElementById("homePay").textContent = money(stats.totalPay);
+  document.getElementById("homeOT").textContent = stats.overtimeHours.toFixed(2);
+
+  const nextLegPreviewEl = document.getElementById("homeNextLegPreview");
+  const nextTrainEl = document.getElementById("homeNextTrain");
+  const layoverEl = document.getElementById("homeLayover");
+
+  if(day && day.type === "Work" && day.legs && day.legs.length > 1){
+    const currentLegIndex = Math.max(0, state.currentLegIndex || 0);
+    const currentLeg = day.legs[currentLegIndex];
+    const nextLeg = day.legs[currentLegIndex + 1];
+
+    if(nextLeg){
+      nextLegPreviewEl.textContent = `${nextLeg.train || "--"} • ${nextLeg.route || "No route"}`;
+      nextTrainEl.textContent = nextLeg.train || "--";
+
+      const currentRelease = currentLeg?.release ? timeToMinutes(currentLeg.release) : null;
+      const nextReport = nextLeg?.report ? timeToMinutes(nextLeg.report) : null;
+
+      if(currentRelease != null && nextReport != null){
+        let diff = nextReport - currentRelease;
+        if(diff < 0) diff += 1440;
+        layoverEl.textContent = formatMinutes(diff);
+      } else {
+        layoverEl.textContent = "--";
+      }
+    } else {
+      nextLegPreviewEl.textContent = "Last leg";
+      nextTrainEl.textContent = "--";
+      layoverEl.textContent = "--";
+    }
+  } else {
+    nextLegPreviewEl.textContent = "--";
+    nextTrainEl.textContent = "--";
+    layoverEl.textContent = "--";
+  }
+}
+
+function checkAlerts(){
+  if(!alertsEnabled) return;
+
+  const state = getTodayState();
+  if(state.nextEventMinutes == null || state.eventType === "--" || state.eventType === "Done" || state.eventType === "Off") return;
+
+  const now = getNowMinutes();
+  const diff = state.nextEventMinutes - now;
+  const dateKey = todayISO();
+
+  const targets = [
+    { m: 30, label: "30 min" },
+    { m: 10, label: "10 min" },
+    { m: 5,  label: "5 min" }
+  ];
+
+  for(const t of targets){
+    const key = `${dateKey}_${state.eventType}_${state.train}_${t.m}`;
+    if(diff >= 0 && diff <= t.m && !alertMemory[key]){
+      alertMemory[key] = true;
+      saveAll();
+      showToast(`${state.eventType} for ${state.train} in ${t.label}`);
+    }
+  }
+}
+
+function openTrainStatus(){
+  window.open("https://www.amtrak.com/how-to-check-a-train-status", "_blank");
+}
+
+function openSchedules(){
+  window.open("https://www.amtrak.com/train-schedules-timetables", "_blank");
+}
+
+function openStationInfo(){
+  window.open("https://www.amtrak.com/at-the-station", "_blank");
+}
+
+(function init(){
+  const today = todayISO();
+  document.getElementById("monthPicker").value = today.slice(0,7);
+
+  renderWeeklyTemplateGrid();
+  loadWeekdayTemplate();
+  renderTemplateLegs();
+  renderMonthGrid();
+  renderSummary();
+  renderTodayCard();
+  loadTodayLegOptions();
+  renderHomePage();
+  renderPayPage();
+  updateAlertState();
+
+  setInterval(() => {
+    renderTodayCard();
+    renderHomePage();
+    checkAlerts();
+  }, 15000);
+})();
+</script>
+</body>
+</html>
