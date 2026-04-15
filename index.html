@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RailCrew Pro Fire Full + Today Edit</title>
+  <style>
+    :root{
+      --bg:#06101d;
+      --bg2:#0a172b;
+      --card:#10233f;
+      --card2:#162b4b;
+      --text:#f8fafc;
+      --muted:#94a3b8;
+      --accent:#ef4444;
+      --green:#22c55e;
+      --off:#64748b;
+      --line:rgba(255,255,255,.08);
+      --shadow:0 12px 28px rgba(0,0,0,.28);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(239,68,68,.16), transparent 28%),
+        linear-gradient(180deg,var(--bg2),var(--bg));
+      color:var(--text);
+      padding:16px;
+    }
+
+    .app{
+      max-width:1100px;
+      margin:0 auto;
+    }
+
+    .hero{
+      background:linear-gradient(135deg, rgba(239,68,68,.22), rgba(16,35,63,.96));
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:18px;
+      margin-bottom:16px;
+      box-shadow:var(--shadow);
+    }
+
+    .hero h1{
+      margin:0;
+      font-size:1.8rem;
+    }
+
+    .hero p{
+      margin:6px 0 0;
+      color:#dbe7f7;
+    }
+
+    .card{
+      background:linear-gradient(180deg,var(--card),var(--card2));
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      margin-bottom:16px;
+      box-shadow:var(--shadow);
+    }
+
+    .section-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+
+    .section-title h2,
+    .section-title h3{
+      margin:0;
+    }
+
+    .subtle{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .col{
+      flex:1;
+      min-width:160px;
+    }
+
+    label{
+      display:block;
+      font-size:.82rem;
+      color:var(--muted);
+      margin-bottom:5px;
+    }
+
+    input,select,textarea{
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:12px;
+      background:#0a1526;
+      color:white;
+      outline:none;
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    textarea{
+      min-height:90px;
+      resize:vertical;
+    }
+
+    button{
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--accent),#dc2626);
+      color:white;
+      font-weight:700;
+      cursor:pointer;
+      margin-top:10px;
+    }
+
+    .secondary{ background:#334155; }
+    .green{ background:linear-gradient(135deg,#15803d,#16a34a); }
+    .blue{ background:linear-gradient(135deg,#2563eb,#3b82f6); }
+
+    .summary-grid,
+    .today-grid,
+    .month-grid,
+    .weekly-grid{
+      display:grid;
+      gap:12px;
+    }
+
+    .summary-grid{ grid-template-columns:repeat(2,1fr); }
+    .today-grid{ grid-template-columns:repeat(2,1fr); }
+    .month-grid{ grid-template-columns:repeat(2,1fr); }
+    .weekly-grid{ grid-template-columns:1fr; }
+
+    @media(min-width:800px){
+      .summary-grid{ grid-template-columns:repeat(4,1fr); }
+      .today-grid{ grid-template-columns:repeat(4,1fr); }
+      .month-grid{ grid-template-columns:repeat(4,1fr); }
+      .weekly-grid{ grid-template-columns:repeat(2,1fr); }
+    }
+
+    .stat,
+    .today-box,
+    .day-card,
+    .weekly-card,
+    .leg-card{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:14px;
+      padding:12px;
+    }
+
+    .stat-label,
+    .today-label{
+      color:var(--muted);
+      font-size:.76rem;
+      text-transform:uppercase;
+      letter-spacing:.4px;
+    }
+
+    .stat-value,
+    .today-value{
+      margin-top:4px;
+      font-size:1.08rem;
+      font-weight:700;
+    }
+
+    .today-hero{
+      background:linear-gradient(135deg, rgba(239,68,68,.16), rgba(255,255,255,.04));
+      border:1px solid rgba(239,68,68,.18);
+      border-radius:16px;
+      padding:14px;
+      margin-bottom:12px;
+    }
+
+    .today-big{
+      font-size:1.55rem;
+      font-weight:800;
+      margin-top:4px;
+    }
+
+    .weekday-work{
+      border-left:5px solid var(--green);
+    }
+
+    .weekday-off{
+      border-left:5px solid var(--off);
+    }
+
+    .day-card.work{
+      border-left:5px solid var(--green);
+    }
+
+    .day-card.off{
+      border-left:5px solid var(--off);
+    }
+
+    .pill{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:999px;
+      background:rgba(255,255,255,.1);
+      font-size:.74rem;
+      margin-right:6px;
+      margin-top:6px;
+    }
+
+    .small{
+      color:var(--muted);
+      font-size:.86rem;
+      margin-top:4px;
+    }
+
+    .btn-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .btn-row button{
+      flex:1;
+      min-width:120px;
+      margin-top:8px;
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <div class="hero">
+    <h1>RailCrew Pro Fire Full</h1>
+    <p>Weekly recurring schedule, boarding info, gate/track, actual time, and quick today editing.</p>
+  </div>
+
+  <div class="card">
+    <div class="section-title">
+      <h2>Today</h2>
+      <span class="subtle" id="todayDateLabel"></span>
+    </div>
+
+    <div class="today-hero">
+      <div class="today-label">Today’s Next Move</div>
+      <div class="today-big" id="todayNextMove">No trip loaded for today.</div>
+      <div class="small" id="todayHint"></div>
+    </div>
+
+    <div class="today-grid">
+      <div class="today-box">
+        <div class="today-label">Train</div>
+        <div class="today-value" id="todayTrain">--</div>
+      </div>
+      <div class="today-box">
+        <div class="today-label">Route</div>
+        <div class="today-value" id="todayRoute">No trip</div>
+      </div>
+      <div class="today-box">
+        <div class="today-label">Report</div>
+        <div class="today-value" id="todayReport">--:--</div>
+      </div>
+      <div class="today-box">
+        <div class="today-label">Station Time</div>
+        <div class="today-value" id="todayDepart">--:--</div>
+      </div>
+      <div class="today-box">
+        <div class="today-label">Actual Time</div>
+        <div class="today-value" id="todayActual">--:--</div>
+      </div>
+      <div class="today-box">
+        <div class="today-label">Gate / Track</div>
+        <div class="today-value" id="todayGate">--</div>
+      </div>
+      <div class="today-box">
+        <div class="today-label">Release</div>
+        <div class="today-value" id="todayRelease">--:--</div>
+      </div>
+      <div class="today-box">
+        <div class="today-label">Status</div>
+        <div class="today-value" id="todayStatus">--</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">
+      <h3>Today Quick Edit</h3>
+      <span class="subtle">Update today without changing your weekly template</span>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label>Leg Number</label>
+        <select id="todayLegSelect" onchange="loadTodayLegIntoEditor()"></select>
+      </div>
+      <div class="col">
+        <label>Train</label>
+        <input id="todayEditTrain" readonly>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label>Report Time</label>
+        <input type="time" id="todayEditReport">
+      </div>
+      <div class="col">
+        <label>Station Time</label>
+        <input type="time" id="todayEditDepart">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label>Actual Time</label>
+        <input type="time" id="todayEditActual">
+      </div>
+      <div class="col">
+        <label>Release</label>
+        <input type="time" id="todayEditRelease">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label>Gate / Track</label>
+        <input id="todayEditGate" placeholder="e.g. Gate B / Track 8">
+      </div>
+      <div class="col">
+        <label>Leg Notes</label>
+        <textarea id="todayEditLegNotes"></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label>Day Notes</label>
+        <textarea id="todayEditDayNotes"></textarea>
+      </div>
+    </div>
+
+    <button onclick="saveTodayQuickEdit()">Save Today Updates</button>
+  </div>
+
+  <div class="card">
+    <div class="section-title">
+      <h3>Build Month</h3>
+      <span class="subtle">Uses your weekly schedule automatically</span>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label>Month</label>
+        <input type="month" id="monthPicker">
+      </div>
+    </div>
+    <button onclick="buildMonthFromWeeklyTemplate()">Build Month</button>
+  </div>
+
+  <div class="card">
+    <div class="section-title">
+      <h3>Weekly Template</h3>
+      <span class="subtle">This repeats until you change it</span>
+    </div>
+    <div id="weeklyTemplateGrid" class="weekly-grid"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">
+      <h3>Edit Weekly Day</h3>
+      <span class="subtle">Update one weekday and rebuild the month</span>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label>Weekday</label>
+        <select id="templateWeekday" onchange="loadWeekdayTemplate()">
+          <option value="1">Monday</option>
+          <option value="2">Tuesday</option>
+          <option value="3">Wednesday</option>
+          <option value="4">Thursday</option>
+          <option value="5">Friday</option>
+          <option value="6">Saturday</option>
+          <option value="0">Sunday</option>
+        </select>
+      </div>
+      <div class="col">
+        <label>Day Type</label>
+        <select id="templateDayType" onchange="toggleTemplateWorkFields()">
+          <option value="Work">Work</option>
+          <option value="Off">Off</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="blue" onclick="copyCurrentDayToAllWorkDays()">Copy This To All Work Days</button>
+      <button class="secondary" onclick="clearTemplateEditor()">Clear Editor</button>
+    </div>
+
+    <div id="templateWorkFields">
+      <div class="row">
+        <div class="col">
+          <label>Train #</label>
+          <input id="templateTrain">
+        </div>
+        <div class="col">
+          <label>Route</label>
+          <input id="templateRoute">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label>Report Time</label>
+          <input type="time" id="templateReport">
+        </div>
+        <div class="col">
+          <label>Train Departure (Station Time)</label>
+          <input type="time" id="templateDepart">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label>Actual Time (Optional)</label>
+          <input type="time" id="templateActual">
+        </div>
+        <div class="col">
+          <label>Release</label>
+          <input type="time" id="templateRelease">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label>Gate / Track</label>
+          <input id="templateGate" placeholder="e.g. Gate B / Track 8">
+        </div>
+        <div class="col">
+          <label>Leg Notes</label>
+          <textarea id="templateLegNotes"></textarea>
+        </div>
+      </div>
+
+      <button class="green" onclick="addTemplateLeg()">Add Leg</button>
+      <div id="templateLegList"></div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label>Weekly Day Notes</label>
+        <textarea id="templateDayNotes"></textarea>
+      </div>
+    </div>
+
+    <button onclick="saveWeeklyTemplateDay()">Save Weekly Day</button>
+  </div>
+
+  <div class="card">
+    <div class="section-title">
+      <h3>Built Month</h3>
+      <span class="subtle">Auto-filled from your weekly schedule</span>
+    </div>
+    <div id="monthGrid" class="month-grid"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">
+      <h3>Month Summary</h3>
+      <span class="subtle">Quick view</span>
+    </div>
+    <div class="summary-grid">
+      <div class="stat">
+        <div class="stat-label">Work Days</div>
+        <div class="stat-value" id="sumWorkDays">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Off Days</div>
+        <div class="stat-value" id="sumOffDays">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Total Hours</div>
+        <div class="stat-value" id="sumHours">0.00</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Guarantee</div>
+        <div class="stat-value" id="sumGuarantee">Below 185</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const WEEKLY_TEMPLATE_KEY = "railcrew_fire_full_weekly_template_v2";
+const MONTH_KEY = "railcrew_fire_full_generated_months_v2";
+
+const WEEKDAY_NAMES = {
+  0: "Sunday",
+  1: "Monday",
+  2: "Tuesday",
+  3: "Wednesday",
+  4: "Thursday",
+  5: "Friday",
+  6: "Saturday"
+};
+
+const DEFAULT_TEMPLATE = [
+  { weekday:1, name:"Monday", type:"Off", legs:[], notes:"" },
+  { weekday:2, name:"Tuesday", type:"Off", legs:[], notes:"" },
+  { weekday:3, name:"Wednesday", type:"Work", legs:[
+      {train:"0093", route:"NYP-WAS", report:"13:00", depart:"13:00", actual:"", gate:"", release:"17:25", notes:"", hours:4.42},
+      {train:"2124", route:"WAS-NYP", report:"17:25", depart:"17:25", actual:"", gate:"", release:"21:20", notes:"", hours:3.92}
+    ], notes:"1st work day" },
+  { weekday:4, name:"Thursday", type:"Work", legs:[
+      {train:"0093", route:"NYP-WAS", report:"13:00", depart:"13:00", actual:"", gate:"", release:"17:25", notes:"", hours:4.42},
+      {train:"2124", route:"WAS-NYP", report:"17:25", depart:"17:25", actual:"", gate:"", release:"21:20", notes:"", hours:3.92}
+    ], notes:"2nd work day" },
+  { weekday:5, name:"Friday", type:"Work", legs:[
+      {train:"0095", route:"NYP-WAS", report:"09:35", depart:"09:35", actual:"", gate:"", release:"14:05", notes:"", hours:4.50},
+      {train:"0148", route:"WAS-NYP", report:"14:05", depart:"14:05", actual:"", gate:"", release:"18:27", notes:"", hours:4.37}
+    ], notes:"3rd work day" },
+  { weekday:6, name:"Saturday", type:"Work", legs:[
+      {train:"0153", route:"NYP-WAS", report:"07:05", depart:"07:05", actual:"", gate:"", release:"11:32", notes:"", hours:4.45},
+      {train:"0140", route:"WAS-NYP", report:"11:32", depart:"11:32", actual:"", gate:"", release:"15:51", notes:"", hours:4.32}
+    ], notes:"4th work day" },
+  { weekday:0, name:"Sunday", type:"Work", legs:[
+      {train:"0143", route:"NYP-WAS", report:"08:47", depart:"08:47", actual:"", gate:"", release:"13:24", notes:"", hours:4.62},
+      {train:"2258", route:"WAS-NYP", report:"13:24", depart:"13:24", actual:"", gate:"", release:"19:05", notes:"", hours:5.68}
+    ], notes:"5th work day" }
+];
+
+let weeklyTemplate = JSON.parse(localStorage.getItem(WEEKLY_TEMPLATE_KEY) || "null") || JSON.parse(JSON.stringify(DEFAULT_TEMPLATE));
+let monthDays = JSON.parse(localStorage.getItem(MONTH_KEY) || "[]");
+let draftTemplateLegs = [];
+
+function saveAll(){
+  localStorage.setItem(WEEKLY_TEMPLATE_KEY, JSON.stringify(weeklyTemplate));
+  localStorage.setItem(MONTH_KEY, JSON.stringify(monthDays));
+}
+
+function todayISO(){
+  const now = new Date();
+  const offset = now.getTimezoneOffset();
+  return new Date(now.getTime() - offset * 60000).toISOString().split("T")[0];
+}
+
+function calcHours(start, end){
+  if(!start || !end) return 0;
+  const [sh, sm] = start.split(":").map(Number);
+  const [eh, em] = end.split(":").map(Number);
+  let diff = (eh * 60 + em) - (sh * 60 + sm);
+  if(diff < 0) diff += 1440;
+  return diff / 60;
+}
+
+function getNowMinutes(){
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
+function timeToMinutes(t){
+  if(!t) return null;
+  const [h,m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function formatMinutes(mins){
+  if(mins == null || isNaN(mins)) return "";
+  const abs = Math.abs(mins);
+  const h = Math.floor(abs / 60);
+  const m = abs % 60;
+  return `${h}h ${m}m`;
+}
+
+function toggleTemplateWorkFields(){
+  const isWork = document.getElementById("templateDayType").value === "Work";
+  document.getElementById("templateWorkFields").style.display = isWork ? "block" : "none";
+}
+
+function renderTemplateLegs(){
+  const box = document.getElementById("templateLegList");
+  if(!draftTemplateLegs.length){
+    box.innerHTML = '<div class="small">No legs added yet.</div>';
+    return;
+  }
+
+  box.innerHTML = draftTemplateLegs.map((leg, i) => `
+    <div class="leg-card">
+      <div><b>Leg ${i + 1}: Train ${leg.train || "--"}</b></div>
+      <div class="small">${leg.route || ""}</div>
+      <div class="small">Report ${leg.report || "--:--"} • Depart ${leg.depart || "--:--"} • Actual ${leg.actual || "--:--"} • Release ${leg.release || "--:--"}</div>
+      <div class="small">Gate: ${leg.gate || "--"}</div>
+      <div class="small">${Number(leg.hours || 0).toFixed(2)} hrs</div>
+      ${leg.notes ? `<div class="small">Note: ${leg.notes}</div>` : ""}
+      <button class="secondary" onclick="removeTemplateLeg(${i})">Remove Leg</button>
+    </div>
+  `).join("");
+}
+
+function addTemplateLeg(){
+  const train = document.getElementById("templateTrain").value.trim();
+  const route = document.getElementById("templateRoute").value.trim();
+  const report = document.getElementById("templateReport").value;
+  const depart = document.getElementById("templateDepart").value;
+  const actual = document.getElementById("templateActual").value;
+  const gate = document.getElementById("templateGate").value.trim();
+  const release = document.getElementById("templateRelease").value;
+  const notes = document.getElementById("templateLegNotes").value.trim();
+
+  if(!train || !report){
+    alert("Enter Train # and Report");
+    return;
+  }
+
+  draftTemplateLegs.push({
+    train,
+    route,
+    report,
+    depart,
+    actual,
+    gate,
+    release,
+    notes,
+    hours: calcHours(report, release)
+  });
+
+  document.getElementById("templateTrain").value = "";
+  document.getElementById("templateRoute").value = "";
+  document.getElementById("templateReport").value = "";
+  document.getElementById("templateDepart").value = "";
+  document.getElementById("templateActual").value = "";
+  document.getElementById("templateGate").value = "";
+  document.getElementById("templateRelease").value = "";
+  document.getElementById("templateLegNotes").value = "";
+
+  renderTemplateLegs();
+}
+
+function removeTemplateLeg(index){
+  draftTemplateLegs.splice(index, 1);
+  renderTemplateLegs();
+}
+
+function loadWeekdayTemplate(){
+  const weekday = Number(document.getElementById("templateWeekday").value);
+  const day = weeklyTemplate.find(x => Number(x.weekday) === weekday);
+  if(!day) return;
+
+  document.getElementById("templateDayType").value = day.type;
+  document.getElementById("templateDayNotes").value = day.notes || "";
+  draftTemplateLegs = Array.isArray(day.legs) ? JSON.parse(JSON.stringify(day.legs)) : [];
+
+  toggleTemplateWorkFields();
+  renderTemplateLegs();
+}
+
+function clearTemplateEditor(){
+  document.getElementById("templateWeekday").value = "1";
+  document.getElementById("templateDayType").value = "Work";
+  document.getElementById("templateTrain").value = "";
+  document.getElementById("templateRoute").value = "";
+  document.getElementById("templateReport").value = "";
+  document.getElementById("templateDepart").value = "";
+  document.getElementById("templateActual").value = "";
+  document.getElementById("templateGate").value = "";
+  document.getElementById("templateRelease").value = "";
+  document.getElementById("templateLegNotes").value = "";
+  document.getElementById("templateDayNotes").value = "";
+  draftTemplateLegs = [];
+  renderTemplateLegs();
+  toggleTemplateWorkFields();
+  loadWeekdayTemplate();
+}
+
+function saveWeeklyTemplateDay(){
+  const weekday = Number(document.getElementById("templateWeekday").value);
+  const type = document.getElementById("templateDayType").value;
+  const notes = document.getElementById("templateDayNotes").value.trim();
+
+  const idx = weeklyTemplate.findIndex(x => Number(x.weekday) === weekday);
+  if(idx === -1) return;
+
+  weeklyTemplate[idx].type = type;
+  weeklyTemplate[idx].notes = notes;
+  weeklyTemplate[idx].legs = type === "Work" ? JSON.parse(JSON.stringify(draftTemplateLegs)) : [];
+
+  saveAll();
+  renderWeeklyTemplateGrid();
+  alert("Weekly day saved");
+}
+
+function editWeeklyDay(weekday){
+  document.getElementById("templateWeekday").value = String(weekday);
+  loadWeekdayTemplate();
+  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+}
+
+function copyCurrentDayToAllWorkDays(){
+  const sourceWeekday = Number(document.getElementById("templateWeekday").value);
+  const source = weeklyTemplate.find(x => Number(x.weekday) === sourceWeekday);
+  if(!source || source.type !== "Work"){
+    alert("The selected day must be a Work day to copy.");
+    return;
+  }
+
+  weeklyTemplate = weeklyTemplate.map(day => {
+    if(day.type === "Work"){
+      return {
+        ...day,
+        legs: JSON.parse(JSON.stringify(source.legs)),
+        notes: source.notes
+      };
+    }
+    return day;
+  });
+
+  saveAll();
+  renderWeeklyTemplateGrid();
+  loadWeekdayTemplate();
+  alert("Copied to all Work days");
+}
+
+function buildMonthFromWeeklyTemplate(){
+  const month = document.getElementById("monthPicker").value;
+  if(!month){
+    alert("Pick a month first");
+    return;
+  }
+
+  const [year, mon] = month.split("-").map(Number);
+  const totalDays = new Date(year, mon, 0).getDate();
+
+  const keepOtherMonths = monthDays.filter(d => !d.date.startsWith(month));
+  const rebuilt = [];
+
+  for(let i = 1; i <= totalDays; i++){
+    const dateObj = new Date(year, mon - 1, i);
+    const date = `${month}-${String(i).padStart(2, "0")}`;
+    const weekday = dateObj.getDay();
+    const templateDay = weeklyTemplate.find(x => Number(x.weekday) === weekday);
+    if(!templateDay) continue;
+
+    rebuilt.push({
+      date,
+      weekday,
+      weekdayName: WEEKDAY_NAMES[weekday],
+      type: templateDay.type,
+      notes: templateDay.notes || "",
+      legs: JSON.parse(JSON.stringify(templateDay.legs || [])),
+      hours: (templateDay.legs || []).reduce((sum, leg) => sum + Number(leg.hours || 0), 0)
+    });
+  }
+
+  monthDays = [...keepOtherMonths, ...rebuilt].sort((a,b) => a.date.localeCompare(b.date));
+  saveAll();
+  renderMonthGrid();
+  renderSummary();
+  renderTodayCard();
+  loadTodayLegOptions();
+  alert("Month built from weekly schedule");
+}
+
+function renderWeeklyTemplateGrid(){
+  const order = [1,2,3,4,5,6,0];
+  const box = document.getElementById("weeklyTemplateGrid");
+
+  box.innerHTML = [...weeklyTemplate]
+    .sort((a,b) => order.indexOf(Number(a.weekday)) - order.indexOf(Number(b.weekday)))
+    .map(day => {
+      const totalHours = (day.legs || []).reduce((sum, leg) => sum + Number(leg.hours || 0), 0);
+      return `
+        <div class="weekly-card ${day.type === "Work" ? "weekday-work" : "weekday-off"}">
+          <div><b>${day.name}</b></div>
+          <div class="small">${day.type}</div>
+          ${day.type === "Work" ? `
+            <div class="small">Legs: ${(day.legs || []).length}</div>
+            <div class="small">Hours: ${totalHours.toFixed(2)}</div>
+            <div class="small">${day.legs[0] ? `First train: ${day.legs[0].train}` : "No legs yet"}</div>
+          ` : `
+            <div class="small">Off day</div>
+          `}
+          ${day.notes ? `<div class="small">Note: ${day.notes}</div>` : ""}
+          <div>
+            <span class="pill">${day.name}</span>
+            <span class="pill">${day.type}</span>
+          </div>
+          <button onclick="editWeeklyDay(${day.weekday})">Edit ${day.name}</button>
+        </div>
+      `;
+    }).join("");
+}
+
+function renderMonthGrid(){
+  const month = document.getElementById("monthPicker").value;
+  const box = document.getElementById("monthGrid");
+
+  if(!month){
+    box.innerHTML = '<div class="small">Pick a month first.</div>';
+    return;
+  }
+
+  const daysForMonth = monthDays.filter(d => d.date.startsWith(month));
+  if(!daysForMonth.length){
+    box.innerHTML = '<div class="small">Build the month first.</div>';
+    return;
+  }
+
+  box.innerHTML = daysForMonth.map(day => `
+    <div class="day-card ${day.type === "Work" ? "work" : "off"}">
+      <div><b>${day.date}</b></div>
+      <div class="small">${day.weekdayName}</div>
+      <div class="small">${day.type}</div>
+      ${day.type === "Work" ? `
+        <div class="small">Legs: ${(day.legs || []).length}</div>
+        <div class="small">Hours: ${Number(day.hours || 0).toFixed(2)}</div>
+        <div class="small">${day.legs[0] ? `First train: ${day.legs[0].train}` : "No legs yet"}</div>
+      ` : `
+        <div class="small">Off day</div>
+      `}
+      ${day.notes ? `<div class="small">Note: ${day.notes}</div>` : ""}
+    </div>
+  `).join("");
+}
+
+function renderSummary(){
+  const month = document.getElementById("monthPicker").value;
+  const daysForMonth = monthDays.filter(d => d.date.startsWith(month));
+
+  const totalHours = daysForMonth.reduce((sum, d) => sum + Number(d.hours || 0), 0);
+  const workDays = daysForMonth.filter(d => d.type === "Work").length;
+  const offDays = daysForMonth.filter(d => d.type === "Off").length;
+
+  document.getElementById("sumWorkDays").textContent = workDays;
+  document.getElementById("sumOffDays").textContent = offDays;
+  document.getElementById("sumHours").textContent = totalHours.toFixed(2);
+  document.getElementById("sumGuarantee").textContent = totalHours >= 185 ? "Met" : "Below 185";
+}
+
+function getTodayBuiltDay(){
+  const today = todayISO();
+  return monthDays.find(d => d.date === today) || null;
+}
+
+function loadTodayLegOptions(){
+  const select = document.getElementById("todayLegSelect");
+  const day = getTodayBuiltDay();
+
+  if(!day || day.type !== "Work" || !day.legs.length){
+    select.innerHTML = '<option value="">No legs today</option>';
+    document.getElementById("todayEditTrain").value = "";
+    document.getElementById("todayEditReport").value = "";
+    document.getElementById("todayEditDepart").value = "";
+    document.getElementById("todayEditActual").value = "";
+    document.getElementById("todayEditRelease").value = "";
+    document.getElementById("todayEditGate").value = "";
+    document.getElementById("todayEditLegNotes").value = "";
+    document.getElementById("todayEditDayNotes").value = day ? (day.notes || "") : "";
+    return;
+  }
+
+  select.innerHTML = day.legs.map((leg, i) => `
+    <option value="${i}">Leg ${i + 1} - Train ${leg.train}</option>
+  `).join("");
+
+  document.getElementById("todayEditDayNotes").value = day.notes || "";
+  loadTodayLegIntoEditor();
+}
+
+function loadTodayLegIntoEditor(){
+  const day = getTodayBuiltDay();
+  const idx = Number(document.getElementById("todayLegSelect").value || 0);
+
+  if(!day || day.type !== "Work" || !day.legs.length || !day.legs[idx]){
+    return;
+  }
+
+  const leg = day.legs[idx];
+  document.getElementById("todayEditTrain").value = leg.train || "";
+  document.getElementById("todayEditReport").value = leg.report || "";
+  document.getElementById("todayEditDepart").value = leg.depart || "";
+  document.getElementById("todayEditActual").value = leg.actual || "";
+  document.getElementById("todayEditRelease").value = leg.release || "";
+  document.getElementById("todayEditGate").value = leg.gate || "";
+  document.getElementById("todayEditLegNotes").value = leg.notes || "";
+}
+
+function saveTodayQuickEdit(){
+  const day = getTodayBuiltDay();
+  if(!day || day.type !== "Work" || !day.legs.length){
+    alert("No work legs for today.");
+    return;
+  }
+
+  const idx = Number(document.getElementById("todayLegSelect").value || 0);
+  if(!day.legs[idx]){
+    alert("Select a valid leg.");
+    return;
+  }
+
+  day.legs[idx].report = document.getElementById("todayEditReport").value;
+  day.legs[idx].depart = document.getElementById("todayEditDepart").value;
+  day.legs[idx].actual = document.getElementById("todayEditActual").value;
+  day.legs[idx].release = document.getElementById("todayEditRelease").value;
+  day.legs[idx].gate = document.getElementById("todayEditGate").value.trim();
+  day.legs[idx].notes = document.getElementById("todayEditLegNotes").value.trim();
+  day.notes = document.getElementById("todayEditDayNotes").value.trim();
+  day.legs[idx].hours = calcHours(day.legs[idx].report, day.legs[idx].release);
+  day.hours = day.legs.reduce((sum, leg) => sum + Number(leg.hours || 0), 0);
+
+  saveAll();
+  renderMonthGrid();
+  renderSummary();
+  renderTodayCard();
+  loadTodayLegOptions();
+  alert("Today updated");
+}
+
+function renderTodayCard(){
+  const today = todayISO();
+  document.getElementById("todayDateLabel").textContent = today;
+
+  const day = getTodayBuiltDay();
+
+  if(!day){
+    document.getElementById("todayNextMove").textContent = "Build this month to see today’s schedule.";
+    document.getElementById("todayHint").textContent = "";
+    document.getElementById("todayTrain").textContent = "--";
+    document.getElementById("todayRoute").textContent = "No trip";
+    document.getElementById("todayReport").textContent = "--:--";
+    document.getElementById("todayDepart").textContent = "--:--";
+    document.getElementById("todayActual").textContent = "--:--";
+    document.getElementById("todayGate").textContent = "--";
+    document.getElementById("todayRelease").textContent = "--:--";
+    document.getElementById("todayStatus").textContent = "--";
+    return;
+  }
+
+  if(day.type !== "Work" || !day.legs.length){
+    document.getElementById("todayNextMove").textContent = "Off day";
+    document.getElementById("todayHint").textContent = day.notes || "";
+    document.getElementById("todayTrain").textContent = "OFF";
+    document.getElementById("todayRoute").textContent = "No trip";
+    document.getElementById("todayReport").textContent = "--:--";
+    document.getElementById("todayDepart").textContent = "--:--";
+    document.getElementById("todayActual").textContent = "--:--";
+    document.getElementById("todayGate").textContent = "--";
+    document.getElementById("todayRelease").textContent = "--:--";
+    document.getElementById("todayStatus").textContent = "Off";
+    return;
+  }
+
+  const now = getNowMinutes();
+  const legs = day.legs.map((leg, i) => ({
+    ...leg,
+    i,
+    reportMins: timeToMinutes(leg.report),
+    departMins: timeToMinutes(leg.depart),
+    actualMins: timeToMinutes(leg.actual),
+    releaseMins: timeToMinutes(leg.release)
+  }));
+
+  let active = legs[0];
+  let move = `Report for Train ${active.train} at ${active.report}`;
+  let hint = "";
+  let status = "Scheduled";
+
+  for(let i = 0; i < legs.length; i++){
+    const leg = legs[i];
+    const boardTime = leg.actualMins || leg.departMins || leg.reportMins;
+
+    if(leg.reportMins != null && now < leg.reportMins){
+      active = leg;
+      move = `Report for Train ${leg.train}`;
+      hint = `Report in ${formatMinutes(leg.reportMins - now)}`;
+      status = "Pre-Report";
+      break;
+    }
+
+    if(leg.reportMins != null && boardTime != null && now >= leg.reportMins && now < boardTime){
+      active = leg;
+      move = "At station - waiting to board";
+      hint = leg.gate ? `Gate / Track: ${leg.gate}` : "Waiting for gate";
+      status = "Boarding";
+      break;
+    }
+
+    if(boardTime != null && leg.releaseMins != null && now >= boardTime && now <= leg.releaseMins){
+      active = leg;
+      move = `On Train ${leg.train}`;
+      hint = `Release in ${formatMinutes(leg.releaseMins - now)}`;
+      status = "On Duty";
+      break;
+    }
+
+    const nextLeg = legs[i + 1];
+    if(nextLeg && leg.releaseMins != null){
+      const nextBoardTime = nextLeg.actualMins || nextLeg.departMins || nextLeg.reportMins;
+      if(nextBoardTime != null && now > leg.releaseMins && now < nextBoardTime){
+        active = nextLeg;
+        move = `Layover • Next Train ${nextLeg.train}`;
+        hint = nextLeg.gate ? `Gate / Track: ${nextLeg.gate}` : `Next board in ${formatMinutes(nextBoardTime - now)}`;
+        status = "Layover";
+        break;
+      }
+    }
+
+    if(i === legs.length - 1 && leg.releaseMins != null && now > leg.releaseMins){
+      active = leg;
+      move = "Released for the day";
+      hint = `Released ${formatMinutes(now - leg.releaseMins)} ago`;
+      status = "Released";
+    }
+  }
+
+  document.getElementById("todayNextMove").textContent = move;
+  document.getElementById("todayHint").textContent = hint;
+  document.getElementById("todayTrain").textContent = active.train || "--";
+  document.getElementById("todayRoute").textContent = active.route || "No route";
+  document.getElementById("todayReport").textContent = active.report || "--:--";
+  document.getElementById("todayDepart").textContent = active.depart || "--:--";
+  document.getElementById("todayActual").textContent = active.actual || "--:--";
+  document.getElementById("todayGate").textContent = active.gate || "--";
+  document.getElementById("todayRelease").textContent = active.release || "--:--";
+  document.getElementById("todayStatus").textContent = status;
+}
+
+(function init(){
+  const today = todayISO();
+  document.getElementById("monthPicker").value = today.slice(0,7);
+  renderTemplateLegs();
+  toggleTemplateWorkFields();
+  loadWeekdayTemplate();
+  renderWeeklyTemplateGrid();
+  renderMonthGrid();
+  renderSummary();
+  renderTodayCard();
+  loadTodayLegOptions();
+
+  setInterval(() => {
+    renderTodayCard();
+  }, 15000);
+})();
+</script>
+</body>
+</html>
