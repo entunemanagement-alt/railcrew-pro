@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RailCrew Pro</title>
+  <style>
+    :root{
+      --primary:#00529b;
+      --bg:#f4f7f6;
+      --card:#ffffff;
+      --soft:#eef2f3;
+      --text:#333;
+      --muted:#666;
+      --green:#198754;
+      --orange:#fd7e14;
+      --red:#d9534f;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      padding:12px;
+    }
+
+    .container{
+      max-width:900px;
+      margin:auto;
+      background:var(--card);
+      padding:16px;
+      border-radius:14px;
+      box-shadow:0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    h1{
+      margin:0 0 6px;
+      color:var(--primary);
+      font-size:2rem;
+    }
+
+    .sub{
+      color:var(--muted);
+      font-size:.9rem;
+      margin-bottom:14px;
+    }
+
+    .nav{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      margin-bottom:14px;
+    }
+
+    .nav button{
+      padding:12px;
+      border:none;
+      background:#dcdcdc;
+      border-radius:8px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .page{display:none}
+    .page.active{display:block}
+
+    .card{
+      background:var(--soft);
+      padding:14px;
+      margin-bottom:12px;
+      border-radius:12px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .big{
+      font-size:1.8rem;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+
+    .small{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
+    .label{
+      font-size:.8rem;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+
+    .value{
+      font-size:1.25rem;
+      font-weight:700;
+    }
+
+    .good{color:var(--green)}
+    .warn{color:var(--orange)}
+    .bad{color:var(--red)}
+
+    input{
+      width:100%;
+      padding:12px;
+      border:1px solid #ccc;
+      border-radius:8px;
+      margin-top:6px;
+      margin-bottom:10px;
+    }
+
+    .btn-main{
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:8px;
+      background:var(--primary);
+      color:white;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+    }
+
+    th,td{
+      text-align:left;
+      padding:10px;
+      border-bottom:1px solid #ddd;
+      font-size:.95rem;
+      vertical-align:top;
+    }
+
+    .pill{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:999px;
+      background:#dde7f2;
+      font-size:.75rem;
+      font-weight:700;
+      color:var(--primary);
+    }
+
+    @media(max-width:700px){
+      .grid,.nav{
+        grid-template-columns:1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>RailCrew Pro</h1>
+  <div class="sub">Live Crew Mode Active</div>
+
+  <div class="nav">
+    <button onclick="show('progress')">Progress</button>
+    <button onclick="show('today')">Today</button>
+    <button onclick="show('log')">Log</button>
+  </div>
+
+  <!-- PROGRESS PAGE -->
+  <div id="page-progress" class="page active">
+    <div class="card">
+      <div class="big" id="move">--</div>
+      <div class="small" id="hint">Auto schedule loaded</div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="label">Train</div>
+        <div class="value" id="train">--</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Leg</div>
+        <div class="value" id="leg">--</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Next Move</div>
+        <div class="value" id="next">--</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Final Off</div>
+        <div class="value" id="final">--</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="label">Today Schedule</div>
+      <div id="todaySummary">--</div>
+    </div>
+  </div>
+
+  <!-- TODAY PAGE -->
+  <div id="page-today" class="page">
+    <div class="card">
+      <div class="label">Today Auto Schedule</div>
+      <div id="todayAuto">--</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Final Arrival Override (optional)</div>
+      <input type="time" id="finalArrivalOverride" />
+      <button class="btn-main" onclick="saveOverride()">Save Final Arrival Override</button>
+    </div>
+  </div>
+
+  <!-- LOG PAGE -->
+  <div id="page-log" class="page">
+    <div class="card">
+      <div class="label">Weekly Schedule Loaded</div>
+      <div class="small">Monday / Tuesday off. Wednesday to Sunday work.</div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Legs</th>
+        </tr>
+      </thead>
+      <tbody id="logTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const OVERRIDE_KEY = "railcrew_final_arrival_override_v1";
+
+function show(page){
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById("page-" + page).classList.add("active");
+}
+
+function todayISO(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function getOverrides(){
+  return JSON.parse(localStorage.getItem(OVERRIDE_KEY) || "{}");
+}
+
+function saveOverride(){
+  const val = document.getElementById("finalArrivalOverride").value;
+  const overrides = getOverrides();
+  overrides[todayISO()] = val;
+  localStorage.setItem(OVERRIDE_KEY, JSON.stringify(overrides));
+  render();
+}
+
+function getSchedule(day){
+  switch(day){
+    case 1:
+      return { type:"OFF", name:"Monday", legs:[] };
+
+    case 2:
+      return { type:"OFF", name:"Tuesday", legs:[] };
+
+    case 3:
+      return {
+        type:"WORK",
+        name:"Wednesday",
+        legs:[
+          {train:"0093", route:"NYP-WAS", report:"13:00", depart:"13:00", release:"17:25"},
+          {train:"2124", route:"WAS-NYP", report:"17:25", depart:"17:25", release:"21:20"}
+        ]
+      };
+
+    case 4:
+      return {
+        type:"WORK",
+        name:"Thursday",
+        legs:[
+          {train:"0093", route:"NYP-WAS", report:"13:00", depart:"13:00", release:"17:25"},
+          {train:"2124", route:"WAS-NYP", report:"17:25", depart:"17:25", release:"21:20"}
+        ]
+      };
+
+    case 5:
+      return {
+        type:"WORK",
+        name:"Friday",
+        legs:[
+          {train:"0095", route:"NYP-WAS", report:"09:35", depart:"09:35", release:"14:05"},
+          {train:"0148", route:"WAS-NYP", report:"14:05", depart:"14:05", release:"18:27"}
+        ]
+      };
+
+    case 6:
+      return {
+        type:"WORK",
+        name:"Saturday",
+        legs:[
+          {train:"0153", route:"NYP-WAS", report:"07:05", depart:"07:05", release:"11:32"},
+          {train:"0140", route:"WAS-NYP", report:"11:32", depart:"11:32", release:"15:51"}
+        ]
+      };
+
+    case 0:
+      return {
+        type:"WORK",
+        name:"Sunday",
+        legs:[
+          {train:"0143", route:"NYP-WAS", report:"08:47", depart:"08:47", release:"13:24"},
+          {train:"2258", route:"WAS-NYP", report:"13:24", depart:"13:24", release:"19:05"}
+        ]
+      };
+  }
+}
+
+function mins(t){
+  if(!t) return null;
+  const [h,m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function nowM(){
+  const d = new Date();
+  return d.getHours() * 60 + d.getMinutes();
+}
+
+function fmt(m){
+  if(m == null) return "--";
+  if(m < 0) m += 1440;
+  const h = Math.floor(m / 60);
+  const min = m % 60;
+  return `${h}h ${min}m`;
+}
+
+function getTodayScheduleSummary(sched){
+  if(!sched || sched.type === "OFF") return "Off Day";
+  return sched.legs.map((leg, i) =>
+    `Leg ${i+1}: ${leg.train} ${leg.route} • ${leg.report}-${leg.release}`
+  ).join(" | ");
+}
+
+function renderLog(){
+  const tbody = document.getElementById("logTable");
+  const rows = [1,2,3,4,5,6,0].map(dayNum => {
+    const sched = getSchedule(dayNum);
+    const legsText = sched.type === "OFF"
+      ? `<span class="pill">OFF</span>`
+      : sched.legs.map((leg, i) =>
+          `<div>Leg ${i+1}: ${leg.train} ${leg.route} • ${leg.report}-${leg.release}</div>`
+        ).join("");
+    return `<tr><td>${sched.name}</td><td>${legsText}</td></tr>`;
+  }).join("");
+  tbody.innerHTML = rows;
+}
+
+function render(){
+  const d = new Date();
+  const sched = getSchedule(d.getDay());
+  const overrides = getOverrides();
+  const overrideArrival = overrides[todayISO()] || "";
+
+  document.getElementById("finalArrivalOverride").value = overrideArrival;
+  document.getElementById("todaySummary").innerText = getTodayScheduleSummary(sched);
+  document.getElementById("todayAuto").innerText = getTodayScheduleSummary(sched);
+
+  if(!sched || sched.type === "OFF"){
+    move.innerText = "Off Day";
+    hint.innerText = "No work scheduled today";
+    train.innerText = "--";
+    leg.innerText = "--";
+    next.innerText = "--";
+    final.innerText = "--";
+    return;
+  }
+
+  const now = nowM();
+  const finalLeg = sched.legs[sched.legs.length - 1];
+  const finalOffMins = mins(overrideArrival || finalLeg.release);
+
+  for(let i = 0; i < sched.legs.length; i++){
+    const L = sched.legs[i];
+    const nextLeg = sched.legs[i + 1];
+
+    const r = mins(L.report);
+    const dep = mins(L.depart);
+    const rel = mins(L.release);
+
+    // BEFORE REPORT
+    if(now < r){
+      move.innerText = "Report " + L.train;
+      hint.innerText = `${L.route} • Leg ${i+1}`;
+      train.innerText = L.train;
+      leg.innerText = i + 1;
+      next.innerText = fmt(r - now);
+      final.innerText = fmt(finalOffMins - now);
+      return;
+    }
+
+    // BETWEEN REPORT AND DEPART
+    if(now >= r && now < dep){
+      move.innerText = "Board " + L.train;
+      hint.innerText = `${L.route} • Leg ${i+1}`;
+      train.innerText = L.train;
+      leg.innerText = i + 1;
+      next.innerText = fmt(dep - now);
+      final.innerText = fmt(finalOffMins - now);
+      return;
+    }
+
+    // ON TRAIN
+    if(now >= dep && now < rel){
+      move.innerText = "On " + L.train;
+      hint.innerText = `${L.route} • Leg ${i+1}`;
+      train.innerText = L.train;
+      leg.innerText = i + 1;
+      next.innerText = fmt(rel - now);
+      final.innerText = fmt(finalOffMins - now);
+      return;
+    }
+
+    // LAYOVER
+    if(nextLeg){
+      const nr = mins(nextLeg.report);
+      if(now >= rel && now < nr){
+        move.innerText = "Layover";
+        hint.innerText = `${L.train} → ${nextLeg.train}`;
+        train.innerText = `${L.train} → ${nextLeg.train}`;
+        leg.innerText = `${i+1}→${i+2}`;
+        next.innerText = fmt(nr - now);
+        final.innerText = fmt(finalOffMins - now);
+        return;
+      }
+    }
+  }
+
+  // DONE FOR THE DAY
+  if(now >= finalOffMins){
+    move.innerText = "Done ✔";
+    hint.innerText = "Finished for the day";
+    train.innerText = finalLeg.train;
+    leg.innerText = "Complete";
+    next.innerText = "--";
+    final.innerText = "0h 0m";
+    return;
+  }
+
+  // FALLBACK
+  move.innerText = "Processing...";
+  hint.innerText = "Checking current leg";
+  train.innerText = "--";
+  leg.innerText = "--";
+  next.innerText = "--";
+  final.innerText = "--";
+}
+
+renderLog();
+render();
+setInterval(render, 15000);
+</script>
+
+</body>
+</html>
