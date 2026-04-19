@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RailCrew Pro</title>
+  <style>
+    :root{
+      --primary:#00529b;
+      --bg:#f4f7f6;
+      --card:#ffffff;
+      --soft:#eef2f3;
+      --text:#333;
+      --muted:#666;
+      --green:#198754;
+      --orange:#fd7e14;
+      --red:#d9534f;
+      --line:#d9e1e5;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      padding:12px;
+    }
+
+    .container{
+      max-width:960px;
+      margin:auto;
+      background:var(--card);
+      padding:16px;
+      border-radius:14px;
+      box-shadow:0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    h1{
+      margin:0 0 6px;
+      color:var(--primary);
+      font-size:2rem;
+    }
+
+    .sub{
+      color:var(--muted);
+      font-size:.9rem;
+      margin-bottom:14px;
+    }
+
+    .nav{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      margin-bottom:14px;
+    }
+
+    .nav button{
+      padding:12px;
+      border:none;
+      background:#dcdcdc;
+      border-radius:8px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .page{display:none}
+    .page.active{display:block}
+
+    .card{
+      background:var(--soft);
+      padding:14px;
+      margin-bottom:12px;
+      border-radius:12px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .row2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .row3{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+    }
+
+    .big{
+      font-size:1.8rem;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+
+    .small{
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.4;
+    }
+
+    .label{
+      font-size:.8rem;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+
+    .value{
+      font-size:1.25rem;
+      font-weight:700;
+    }
+
+    .section-title{
+      font-size:1rem;
+      font-weight:800;
+      color:var(--primary);
+      margin-bottom:8px;
+    }
+
+    input, textarea{
+      width:100%;
+      padding:12px;
+      border:1px solid #ccc;
+      border-radius:8px;
+      margin-top:6px;
+      margin-bottom:10px;
+      font:inherit;
+    }
+
+    textarea{
+      min-height:90px;
+      resize:vertical;
+    }
+
+    .btn-main{
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:8px;
+      background:var(--primary);
+      color:white;
+      font-weight:700;
+      cursor:pointer;
+      margin-top:8px;
+    }
+
+    .btn-secondary{
+      background:#888;
+    }
+
+    .btn-orange{
+      background:var(--orange);
+    }
+
+    .btn-green{
+      background:var(--green);
+    }
+
+    .btn-red{
+      background:var(--red);
+    }
+
+    .btn-row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .leg-card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      margin-bottom:10px;
+    }
+
+    .leg-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .leg-title{
+      font-weight:800;
+      color:var(--primary);
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+    }
+
+    th,td{
+      text-align:left;
+      padding:10px;
+      border-bottom:1px solid #ddd;
+      font-size:.95rem;
+      vertical-align:top;
+    }
+
+    .pill{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:999px;
+      background:#dde7f2;
+      font-size:.75rem;
+      font-weight:700;
+      color:var(--primary);
+      margin-right:6px;
+      margin-top:4px;
+    }
+
+    .memo-box{
+      background:#fff8e8;
+      border:1px solid #f0d48b;
+      border-radius:12px;
+      padding:12px;
+    }
+
+    @media(max-width:700px){
+      .grid,.nav,.row2,.row3,.btn-row{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>RailCrew Pro</h1>
+  <div class="sub">Live Crew Mode Active • Dynamic legs • Date-based memo and tomorrow preview</div>
+
+  <div class="nav">
+    <button onclick="show('progress')">Progress</button>
+    <button onclick="show('today')">Today</button>
+    <button onclick="show('log')">Log</button>
+  </div>
+
+  <!-- PROGRESS PAGE -->
+  <div id="page-progress" class="page active">
+    <div class="card">
+      <div class="big" id="move">--</div>
+      <div class="small" id="hint">Auto schedule loaded</div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="label">Date</div>
+        <div class="value" id="progressDate">--</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Train</div>
+        <div class="value" id="train">--</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Leg</div>
+        <div class="value" id="leg">--</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Next Move</div>
+        <div class="value" id="next">--</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Final Off</div>
+        <div class="value" id="final">--</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Final Time</div>
+        <div class="value" id="finalTime">--</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Today Schedule</div>
+      <div id="todaySummary">--</div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Tomorrow Preview</div>
+      <div id="tomorrowSummary">--</div>
+    </div>
+
+    <div class="card memo-box">
+      <div class="section-title">Today Memo / Action Notes</div>
+      <div class="small" id="progressMemoDate">Date: --</div>
+      <div id="progressMemoText" class="small">No memo for today.</div>
+    </div>
+  </div>
+
+  <!-- TODAY PAGE -->
+  <div id="page-today" class="page">
+    <div class="card">
+      <div class="section-title">Edit Schedule For Date</div>
+      <div class="row2">
+        <div>
+          <div class="label">Date</div>
+          <input type="date" id="editDate" />
+        </div>
+        <div>
+          <div class="label">Final Arrival Override (last leg only)</div>
+          <input type="time" id="finalArrivalOverride" />
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-main btn-orange" onclick="useFinalArrivalAsFinalOff()">Use Final Arrival As Last Leg Release</button>
+        <button class="btn-main btn-secondary" onclick="loadEditorForDate()">Load Date</button>
+      </div>
+    </div>
+
+    <div class="card memo-box">
+      <div class="section-title">Memo / Action Notes For This Date</div>
+      <div class="small">Use this for late trains, issues, instructions, reminders, or anything that happened on that exact date.</div>
+      <textarea id="memoText" placeholder="Example: Got off late on last leg. Train 2258 arrived late. Keep record for this date."></textarea>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Legs For Selected Date</div>
+      <div id="legsEditor"></div>
+      <div class="btn-row">
+        <button class="btn-main btn-green" onclick="addLeg()">Add Leg</button>
+        <button class="btn-main btn-secondary" onclick="resetDateToDefault()">Reset Date To Default Schedule</button>
+      </div>
+      <button class="btn-main" onclick="saveDateEdits()">Save Date</button>
+    </div>
+  </div>
+
+  <!-- LOG PAGE -->
+  <div id="page-log" class="page">
+    <div class="card">
+      <div class="section-title">Weekly Schedule Loaded</div>
+      <div class="small">Monday / Tuesday off. Wednesday to Sunday work.</div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Default Weekly Schedule</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Legs</th>
+          </tr>
+        </thead>
+        <tbody id="logTable"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Saved Date Overrides</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Leg Count</th>
+            <th>Memo</th>
+          </tr>
+        </thead>
+        <tbody id="overrideTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const OVERRIDE_KEY = "railcrew_date_overrides_v4";
+let currentEditLegs = [];
+
+function show(page){
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById("page-" + page).classList.add("active");
+}
+
+function todayISO(){
+  const d = new Date();
+  return toISO(d);
+}
+
+function tomorrowISO(){
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  return toISO(d);
+}
+
+function toISO(d){
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function formatDatePretty(iso){
+  if(!iso) return "--";
+  const [y,m,d] = iso.split("-");
+  return `${m}/${d}/${y}`;
+}
+
+function getOverrides(){
+  return JSON.parse(localStorage.getItem(OVERRIDE_KEY) || "{}");
+}
+
+function saveOverrides(obj){
+  localStorage.setItem(OVERRIDE_KEY, JSON.stringify(obj));
+}
+
+function getSchedule(day){
+  switch(day){
+    case 1:
+      return { type:"OFF", name:"Monday", legs:[] };
+
+    case 2:
+      return { type:"OFF", name:"Tuesday", legs:[] };
+
+    case 3:
+      return {
+        type:"WORK",
+        name:"Wednesday",
+        legs:[
+          {train:"0093", route:"NYP-WAS", report:"13:00", depart:"13:00", release:"17:25"},
+          {train:"2124", route:"WAS-NYP", report:"17:25", depart:"17:25", release:"21:20"}
+        ]
+      };
+
+    case 4:
+      return {
+        type:"WORK",
+        name:"Thursday",
+        legs:[
+          {train:"0093", route:"NYP-WAS", report:"13:00", depart:"13:00", release:"17:25"},
+          {train:"2124", route:"WAS-NYP", report:"17:25", depart:"17:25", release:"21:20"}
+        ]
+      };
+
+    case 5:
+      return {
+        type:"WORK",
+        name:"Friday",
+        legs:[
+          {train:"0095", route:"NYP-WAS", report:"09:35", depart:"09:35", release:"14:05"},
+          {train:"0148", route:"WAS-NYP", report:"14:05", depart:"14:05", release:"18:27"}
+        ]
+      };
+
+    case 6:
+      return {
+        type:"WORK",
+        name:"Saturday",
+        legs:[
+          {train:"0153", route:"NYP-WAS", report:"07:05", depart:"07:05", release:"11:32"},
+          {train:"0140", route:"WAS-NYP", report:"11:32", depart:"11:32", release:"15:51"}
+        ]
+      };
+
+    case 0:
+      return {
+        type:"WORK",
+        name:"Sunday",
+        legs:[
+          {train:"0143", route:"NYP-WAS", report:"08:47", depart:"08:47", release:"13:24"},
+          {train:"2258", route:"WAS-NYP", report:"13:24", depart:"13:24", release:"19:05"}
+        ]
+      };
+  }
+}
+
+function getBaseScheduleForDate(iso){
+  const d = new Date(iso + "T00:00:00");
+  return getSchedule(d.getDay());
+}
+
+function getScheduleForDate(iso){
+  const base = getBaseScheduleForDate(iso);
+  const overrides = getOverrides()[iso];
+
+  if(!base || base.type === "OFF"){
+    return {
+      ...(base || {type:"OFF", name:"Unknown", legs:[]}),
+      finalArrival:"",
+      memo: overrides?.memo || ""
+    };
+  }
+
+  if(!overrides){
+    return {
+      ...base,
+      finalArrival:"",
+      memo:""
+    };
+  }
+
+  return {
+    ...base,
+    legs: overrides.legs && overrides.legs.length ? overrides.legs : base.legs,
+    finalArrival: overrides.finalArrival || "",
+    memo: overrides.memo || ""
+  };
+}
+
+function mins(t){
+  if(!t) return null;
+  const [h,m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function nowM(){
+  const d = new Date();
+  return d.getHours() * 60 + d.getMinutes();
+}
+
+function fmt(m){
+  if(m == null) return "--";
+  if(m < 0) m += 1440;
+  const h = Math.floor(m / 60);
+  const min = m % 60;
+  return `${h}h ${min}m`;
+}
+
+function getScheduleSummary(sched){
+  if(!sched || sched.type === "OFF") return "Off Day";
+  if(!sched.legs || !sched.legs.length) return "No legs";
+  return sched.legs.map((leg, i) =>
+    `Leg ${i+1}: ${leg.train || "--"} ${leg.route || ""} • ${leg.report || "--"}-${leg.release || "--"}`
+  ).join(" | ");
+}
+
+function renderLegEditor(){
+  const box = document.getElementById("legsEditor");
+
+  if(!currentEditLegs.length){
+    box.innerHTML = `<div class="small">No legs for this date.</div>`;
+    return;
+  }
+
+  box.innerHTML = currentEditLegs.map((leg, i) => `
+    <div class="leg-card">
+      <div class="leg-header">
+        <div class="leg-title">Leg ${i+1}</div>
+        <button class="btn-main btn-red" style="width:auto;padding:8px 12px;margin:0;" onclick="removeLeg(${i})">Remove</button>
+      </div>
+
+      <div class="row2">
+        <div>
+          <div class="label">Train</div>
+          <input id="legTrain_${i}" value="${leg.train || ""}">
+        </div>
+        <div>
+          <div class="label">Route</div>
+          <input id="legRoute_${i}" value="${leg.route || ""}">
+        </div>
+      </div>
+
+      <div class="row3">
+        <div>
+          <div class="label">Report</div>
+          <input type="time" id="legReport_${i}" value="${leg.report || ""}">
+        </div>
+        <div>
+          <div class="label">Depart</div>
+          <input type="time" id="legDepart_${i}" value="${leg.depart || ""}">
+        </div>
+        <div>
+          <div class="label">Release</div>
+          <input type="time" id="legRelease_${i}" value="${leg.release || ""}">
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function addLeg(){
+  currentEditLegs.push({
+    train:"",
+    route:"",
+    report:"",
+    depart:"",
+    release:""
+  });
+  renderLegEditor();
+}
+
+function removeLeg(index){
+  currentEditLegs.splice(index, 1);
+  renderLegEditor();
+}
+
+function collectLegEditorValues(){
+  currentEditLegs = currentEditLegs.map((_, i) => ({
+    train: document.getElementById(`legTrain_${i}`)?.value.trim() || "",
+    route: document.getElementById(`legRoute_${i}`)?.value.trim() || "",
+    report: document.getElementById(`legReport_${i}`)?.value || "",
+    depart: document.getElementById(`legDepart_${i}`)?.value || "",
+    release: document.getElementById(`legRelease_${i}`)?.value || ""
+  }));
+}
+
+function loadEditorForDate(){
+  const iso = document.getElementById("editDate").value || todayISO();
+  const sched = getScheduleForDate(iso);
+
+  currentEditLegs = JSON.parse(JSON.stringify(sched.legs || []));
+  document.getElementById("finalArrivalOverride").value = sched.finalArrival || "";
+  document.getElementById("memoText").value = sched.memo || "";
+  renderLegEditor();
+}
+
+function resetDateToDefault(){
+  const iso = document.getElementById("editDate").value || todayISO();
+  const overrides = getOverrides();
+  delete overrides[iso];
+  saveOverrides(overrides);
+  loadEditorForDate();
+  render();
+}
+
+function useFinalArrivalAsFinalOff(){
+  const finalArrival = document.getElementById("finalArrivalOverride").value;
+  if(!finalArrival){
+    alert("Enter Final Arrival first.");
+    return;
+  }
+  if(!currentEditLegs.length){
+    alert("No legs to update.");
+    return;
+  }
+  currentEditLegs[currentEditLegs.length - 1].release = finalArrival;
+  renderLegEditor();
+}
+
+function saveDateEdits(){
+  const iso = document.getElementById("editDate").value || todayISO();
+  collectLegEditorValues();
+
+  const overrides = getOverrides();
+  overrides[iso] = {
+    legs: currentEditLegs,
+    finalArrival: document.getElementById("finalArrivalOverride").value || "",
+    memo: document.getElementById("memoText").value.trim()
+  };
+
+  saveOverrides(overrides);
+  render();
+}
+
+function renderWeeklyLog(){
+  const tbody = document.getElementById("logTable");
+  const rows = [1,2,3,4,5,6,0].map(dayNum => {
+    const sched = getSchedule(dayNum);
+    const legsText = sched.type === "OFF"
+      ? `<span class="pill">OFF</span>`
+      : sched.legs.map((leg, i) =>
+          `<div>Leg ${i+1}: ${leg.train} ${leg.route} • ${leg.report}-${leg.release}</div>`
+        ).join("");
+    return `<tr><td>${sched.name}</td><td>${legsText}</td></tr>`;
+  }).join("");
+  tbody.innerHTML = rows;
+}
+
+function renderOverrideLog(){
+  const tbody = document.getElementById("overrideTable");
+  const overrides = getOverrides();
+  const keys = Object.keys(overrides).sort();
+
+  if(!keys.length){
+    tbody.innerHTML = `<tr><td colspan="3">No saved date overrides yet.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = keys.map(date => {
+    const item = overrides[date];
+    return `
+      <tr>
+        <td>${formatDatePretty(date)}</td>
+        <td>${item.legs?.length || 0}</td>
+        <td>${item.memo || "--"}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function render(){
+  const iso = todayISO();
+  const sched = getScheduleForDate(iso);
+  const tomorrowSched = getScheduleForDate(tomorrowISO());
+  const progressDate = formatDatePretty(iso);
+
+  document.getElementById("progressDate").innerText = progressDate;
+  document.getElementById("todaySummary").innerText = getScheduleSummary(sched);
+  document.getElementById("progressMemoDate").innerText = `Date: ${progressDate}`;
+  document.getElementById("progressMemoText").innerText = sched.memo || "No memo for today.";
+
+  const tomorrowEl = document.getElementById("tomorrowSummary");
+  if(tomorrowSched && tomorrowSched.type !== "OFF" && tomorrowSched.legs && tomorrowSched.legs.length){
+    const firstLeg = tomorrowSched.legs[0];
+    tomorrowEl.innerText =
+      `${formatDatePretty(tomorrowISO())} • Train ${firstLeg.train || "--"} • Report ${firstLeg.report || "--"} • ${tomorrowSched.legs.length} leg(s)`;
+  } else {
+    tomorrowEl.innerText = `${formatDatePretty(tomorrowISO())} • Off Day`;
+  }
+
+  if(document.getElementById("editDate").value === "" || document.getElementById("editDate").value === iso){
+    document.getElementById("editDate").value = iso;
+    loadEditorForDate();
+  }
+
+  if(!sched || sched.type === "OFF"){
+    move.innerText = "Off Day";
+    hint.innerText = "No work scheduled today";
+    train.innerText = "--";
+    leg.innerText = "--";
+    next.innerText = "--";
+    final.innerText = "--";
+    finalTime.innerText = "--";
+    renderWeeklyLog();
+    renderOverrideLog();
+    return;
+  }
+
+  const now = nowM();
+  const finalLeg = sched.legs[sched.legs.length - 1];
+  const finalDisplay = sched.finalArrival || finalLeg.release;
+  const finalOffMins = mins(finalDisplay);
+
+  finalTime.innerText = finalDisplay || "--";
+
+  for(let i = 0; i < sched.legs.length; i++){
+    const L = sched.legs[i];
+    const nextLeg = sched.legs[i + 1];
+
+    const r = mins(L.report);
+    const dep = mins(L.depart);
+    const rel = mins(L.release);
+
+    if(r != null && now < r){
+      move.innerText = "Report " + (L.train || "--");
+      hint.innerText = `${L.route || ""} • Leg ${i+1} • ${progressDate}`;
+      train.innerText = L.train || "--";
+      leg.innerText = i + 1;
+      next.innerText = fmt(r - now);
+      final.innerText = fmt(finalOffMins - now);
+      renderWeeklyLog();
+      renderOverrideLog();
+      return;
+    }
+
+    if(r != null && dep != null && now >= r && now < dep){
+      move.innerText = "Board " + (L.train || "--");
+      hint.innerText = `${L.route || ""} • Leg ${i+1} • ${progressDate}`;
+      train.innerText = L.train || "--";
+      leg.innerText = i + 1;
+      next.innerText = fmt(dep - now);
+      final.innerText = fmt(finalOffMins - now);
+      renderWeeklyLog();
+      renderOverrideLog();
+      return;
+    }
+
+    if(dep != null && rel != null && now >= dep && now < rel){
+      move.innerText = "On " + (L.train || "--");
+      hint.innerText = `${L.route || ""} • Leg ${i+1} • ${progressDate}`;
+      train.innerText = L.train || "--";
+      leg.innerText = i + 1;
+      next.innerText = fmt(rel - now);
+      final.innerText = fmt(finalOffMins - now);
+      renderWeeklyLog();
+      renderOverrideLog();
+      return;
+    }
+
+    if(nextLeg){
+      const nr = mins(nextLeg.report);
+      if(rel != null && nr != null && now >= rel && now < nr){
+        move.innerText = "Layover";
+        hint.innerText = `${L.train || "--"} → ${nextLeg.train || "--"} • ${progressDate}`;
+        train.innerText = `${L.train || "--"} → ${nextLeg.train || "--"}`;
+        leg.innerText = `${i+1}→${i+2}`;
+        next.innerText = fmt(nr - now);
+        final.innerText = fmt(finalOffMins - now);
+        renderWeeklyLog();
+        renderOverrideLog();
+        return;
+      }
+    }
+  }
+
+  if(finalOffMins != null && now >= finalOffMins){
+    move.innerText = "Done ✔";
+    hint.innerText = `Finished for the day • ${progressDate}`;
+    train.innerText = finalLeg.train || "--";
+    leg.innerText = "Complete";
+    next.innerText = "--";
+    final.innerText = "0h 0m";
+    renderWeeklyLog();
+    renderOverrideLog();
+    return;
+  }
+
+  move.innerText = "Processing...";
+  hint.innerText = `Checking current leg • ${progressDate}`;
+  train.innerText = "--";
+  leg.innerText = "--";
+  next.innerText = "--";
+  final.innerText = "--";
+
+  renderWeeklyLog();
+  renderOverrideLog();
+}
+
+document.getElementById("editDate").value = todayISO();
+render();
+setInterval(render, 15000);
+</script>
+
+</body>
+</html>
