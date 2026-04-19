@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RailCrew Pro</title>
+
+<style>
+body{font-family:sans-serif;background:#f4f7f6;margin:0;padding:10px;}
+.container{max-width:900px;margin:auto;background:white;padding:15px;border-radius:10px;}
+.nav{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:10px;}
+.nav button{padding:10px;border:none;background:#ddd;font-weight:bold;}
+.page{display:none;}
+.active{display:block;}
+.card{background:#eef2f3;padding:12px;margin-bottom:10px;border-radius:8px;}
+.big{font-size:1.4em;font-weight:bold;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h2>RailCrew Pro</h2>
+
+<div class="nav">
+<button onclick="show('progress')">Progress</button>
+<button onclick="show('today')">Today</button>
+<button onclick="show('log')">Log</button>
+</div>
+
+<!-- PROGRESS -->
+<div id="progress" class="page active">
+
+<div class="card">
+<div class="big" id="move">--</div>
+<div id="hint"></div>
+</div>
+
+<div class="grid">
+<div class="card">Train: <span id="train">--</span></div>
+<div class="card">Leg: <span id="leg">--</span></div>
+<div class="card">Next Move: <span id="next">--</span></div>
+<div class="card">Final Off: <span id="final">--</span></div>
+</div>
+
+</div>
+
+<!-- TODAY -->
+<div id="today" class="page">
+<div class="card">
+Auto schedule loaded. Edit if needed.
+</div>
+</div>
+
+<!-- LOG -->
+<div id="log" class="page">
+<div id="logTable"></div>
+</div>
+
+</div>
+
+<script>
+
+// ===== YOUR SCHEDULE =====
+function getSchedule(day){
+
+// 0 Sunday
+// 1 Monday
+// etc
+
+switch(day){
+
+case 1: return {type:"OFF"};
+
+case 2: return {type:"OFF"};
+
+case 3: return {
+legs:[
+{train:"93", report:"13:00", depart:"13:00", release:"17:25"},
+{train:"2124", report:"17:25", depart:"17:25", release:"21:20"}
+]};
+
+case 4: return {
+legs:[
+{train:"93", report:"13:00", depart:"13:00", release:"17:25"},
+{train:"2124", report:"17:25", depart:"17:25", release:"21:20"}
+]};
+
+case 5: return {
+legs:[
+{train:"95", report:"09:35", depart:"09:35", release:"14:05"},
+{train:"148", report:"14:05", depart:"14:05", release:"18:27"}
+]};
+
+case 6: return {
+legs:[
+{train:"153", report:"07:05", depart:"07:05", release:"11:32"},
+{train:"140", report:"11:32", depart:"11:32", release:"15:51"}
+]};
+
+case 0: return {
+legs:[
+{train:"143", report:"08:47", depart:"08:47", release:"13:24"},
+{train:"2258", report:"13:24", depart:"13:24", release:"19:05"}
+]};
+
+}
+}
+
+// ===== HELPERS =====
+function mins(t){
+let [h,m]=t.split(":").map(Number);
+return h*60+m;
+}
+
+function nowM(){
+let d=new Date();
+return d.getHours()*60+d.getMinutes();
+}
+
+function fmt(m){
+if(m<0)m+=1440;
+return Math.floor(m/60)+"h "+(m%60)+"m";
+}
+
+// ===== PROGRESS =====
+function render(){
+
+let d=new Date();
+let sched=getSchedule(d.getDay());
+
+if(!sched || sched.type==="OFF"){
+move.innerText="Off Day";
+return;
+}
+
+let now=nowM();
+
+for(let i=0;i<sched.legs.length;i++){
+
+let L=sched.legs[i];
+let next=sched.legs[i+1];
+
+let r=mins(L.report);
+let dep=mins(L.depart);
+let rel=mins(L.release);
+
+if(now<r){
+move.innerText="Report "+L.train;
+train.innerText=L.train;
+leg.innerText=i+1;
+next.innerText=fmt(r-now);
+return;
+}
+
+if(now>=r && now<dep){
+move.innerText="Board "+L.train;
+train.innerText=L.train;
+leg.innerText=i+1;
+next.innerText=fmt(dep-now);
+return;
+}
+
+if(now>=dep && now<rel){
+move.innerText="On "+L.train;
+train.innerText=L.train;
+leg.innerText=i+1;
+next.innerText=fmt(rel-now);
+return;
+}
+
+if(next){
+let nr=mins(next.report);
+
+if(now>=rel && now<nr){
+move.innerText="Layover";
+train.innerText=L.train+" → "+next.train;
+leg.innerText=i+1+"→"+(i+2);
+next.innerText=fmt(nr-now);
+return;
+}
+}
+}
+
+// done
+let last=sched.legs[sched.legs.length-1];
+move.innerText="Done";
+train.innerText=last.train;
+leg.innerText="Complete";
+next.innerText="--";
+
+}
+
+// NAV
+function show(p){
+document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+document.getElementById(p).classList.add("active");
+}
+
+// RUN
+render();
+setInterval(render,15000);
+
+</script>
+
+</body>
+</html>
