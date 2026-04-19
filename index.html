@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RailCrew Pro v2.4</title>
+    <style>
+        :root { --primary: #00529b; --accent: #f6b21b; --bg: #f4f7f6; --text: #333; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: var(--primary); text-align: center; margin-bottom: 5px; }
+        .guarantee-note { text-align: center; font-size: 0.8em; color: #666; margin-bottom: 20px; }
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: #eef2f3; padding: 15px; border-radius: 8px; text-align: center; border-left: 4px solid var(--primary); }
+        .stat-card span { display: block; font-size: 1.4em; font-weight: bold; color: var(--primary); }
+        .quick-fill { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+        .btn-q { padding: 10px; font-size: 0.8em; background: #fff; border: 1px solid var(--primary); border-radius: 5px; cursor: pointer; }
+        .btn-q:hover { background: var(--primary); color: white; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .btn-main { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .ot-active { color: #d9534f !important; } /* Red for OT hours */
+        table { width: 100%; margin-top: 20px; border-collapse: collapse; font-size: 0.9em; }
+        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>RailCrew Pro</h1>
+    <div class="guarantee-note">185h Guarantee | OT kicks in at 186h</div>
+    
+    <div class="dashboard">
+        <div class="stat-card">
+            <label>Total Hours</label>
+            <span id="totalHours">0.00</span>
+        </div>
+        <div class="stat-card">
+            <label>Est. Gross</label>
+            <span id="totalPay">$0.00</span>
+        </div>
+    </div>
+
+    <label><b>Quick Add Shifts (From your Paper):</b></label>
+    <div class="quick-fill">
+        <button class="btn-q" onclick="quickAdd(8.33)">Day 1/2 (8:20)</button>
+        <button class="btn-q" onclick="quickAdd(8.87)">Day 3 (8:52)</button>
+        <button class="btn-q" onclick="quickAdd(8.77)">Day 4 (8:46)</button>
+        <button class="btn-q" onclick="quickAdd(10.3)">Day 5 (10:18)</button>
+    </div>
+
+    <input type="number" id="manualHours" step="0.01" placeholder="Or enter hours manually">
+    <button class="btn-main" onclick="addManual()">Add Custom Hours</button>
+    <button style="background:#ccc; color:#333; margin-top:10px;" class="btn-main" onclick="clearData()">Clear Month</button>
+
+    <table>
+        <thead><tr><th>Date</th><th>Hours</th><th>Status</th></tr></thead>
+        <tbody id="shiftLog"></tbody>
+    </table>
+</div>
+
+<script>
+    const RATE = 26.96;
+    const GUARANTEE = 185;
+    let shifts = JSON.parse(localStorage.getItem('railShifts_v24')) || [];
+
+    function quickAdd(hrs) { addShift(hrs); }
+    function addManual() {
+        const hrs = parseFloat(document.getElementById('manualHours').value);
+        if (hrs) { addShift(hrs); document.getElementById('manualHours').value = ''; }
+    }
+
+    function addShift(hrs) {
+        shifts.push({ hours: hrs, date: new Date().toLocaleDateString() });
+        saveAndRender();
+    }
+
+    function saveAndRender() {
+        localStorage.setItem('railShifts_v24', JSON.stringify(shifts));
+        let totalHrs = 0;
+        let html = '';
+
+        shifts.forEach(s => {
+            totalHrs += s.hours;
+            html += `<tr><td>${s.date}</td><td>${s.hours}</td><td>Checked</td></tr>`;
+        });
+
+        // Pay Calculation Logic
+        let displayPay = 0;
+        if (totalHrs <= GUARANTEE) {
+            // Pay based on the 185h guarantee even if hours are lower
+            displayPay = GUARANTEE * RATE; 
+        } else {
+            // Guarantee (185) + Regular pay for the 186th hour + OT (1.5x) for everything AFTER 186
+            let regularExtra = Math.min(totalHrs - GUARANTEE, 1); // The "186th" hour at straight time
+            let otHours = Math.max(totalHrs - (GUARANTEE + 1), 0); // Anything above 186
+            displayPay = (GUARANTEE * RATE) + (regularExtra * RATE) + (otHours * RATE * 1.5);
+        }
+
+        document.getElementById('totalHours').innerText = totalHrs.toFixed(2);
+        document.getElementById('totalHours').className = totalHrs >= 186 ? 'ot-active' : '';
+        document.getElementById('totalPay').innerText = `$${displayPay.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        document.getElementById('shiftLog').innerHTML = html;
+    }
+
+    function clearData() { if(confirm("Clear month?")) { shifts = []; saveAndRender(); } }
+    saveAndRender();
+</script>
+
+</body>
+</html>
